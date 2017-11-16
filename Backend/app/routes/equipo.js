@@ -4,7 +4,11 @@ var router=require('express').Router()
 
 //GET ALL
 router.get('/', (req, res, next) => {
-  Equipo.find(function (err, result) {
+  Equipo.find().
+  populate('jugador').
+  populate('estadio').
+  populate('torneo').
+  exec(function (err, result) {
     if (err) {
       res.status(500).send(err);
     }
@@ -19,7 +23,11 @@ router.get('/', (req, res, next) => {
 
 //GET ONE
 router.get('/:id', (req, res, next) => {
-  Equipo.findOne({_id: req.params.id}, function (err, result) {
+  Equipo.findOne({_id: req.params.id}).
+  populate('jugador').
+  populate('estadio').
+  populate('torneo').
+  exec(function (err, result) {
     if (err) {
       res.status(500).send(err);
     } 
@@ -34,8 +42,10 @@ router.get('/:id', (req, res, next) => {
 //CREATE
 router.post('/', (req, res, next) => {
   let nombreNuevo=req.body.nombre;
+  let tecnicoNuevo=req.body.tecnico;
   var equipoNuevo = new Equipo({
       nombre: nombreNuevo,
+      tecnico: tecnicoNuevo
   })
   equipoNuevo.save((err) => {
     if(err){
@@ -55,6 +65,7 @@ router.put('/:id', (req, res, next) => {
     } 
     else if (result) {
       result.nombre = req.body.nombre || result.nombre;
+      result.tecnico = req.body.tecnico || result.tecnico;
       result.save((err, result) => {
         if(err) {
           res.status(500).send(err)
