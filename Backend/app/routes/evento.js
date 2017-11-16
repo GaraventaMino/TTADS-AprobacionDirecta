@@ -10,6 +10,7 @@ router.get('/', (req, res, next) => {
     populate('tipo_evento').
     populate('partido').
     populate('equipo').
+    populate('jugador').
     exec(function (err, evento) {
       if (err) {
         res.send(err);
@@ -30,6 +31,7 @@ router.get('/:id', (req, res, next) => {
     populate('tipo_evento').
     populate('partido').
     populate('equipo').
+    populate('jugador').
     exec(function (err, evento) {
       if (err) {
         res.send(err);
@@ -50,23 +52,28 @@ router.post('/', (req, res, next) => {
       res.send(err);
     }
     else if (correcto) {
-      let fecha_horaNuevo = req.body.fecha_hora;
-      let partidoNuevo = req.body.partido;
-      let tipo_eventoNuevo = req.body.tipo_evento;
-      let equipoNuevo = req.body.equipo;
-      var eventoNuevo = new Evento({
-        fecha_hora: fecha_horaNuevo,
-        partido: partidoNuevo,
-        tipo_evento: tipo_eventoNuevo,
-        equipo: equipoNuevo
-      })
+      if(req.body.tiempo_ocurrencia <= 90 && req.body.tiempo_ocurrencia >= 0) {
+        let tiempo_ocurrenciaNuevo = req.body.tiempo_ocurrencia;
+        let partidoNuevo = req.body.partido;
+        let tipo_eventoNuevo = req.body.tipo_evento;
+        let equipoNuevo = req.body.equipo;
+        let jugadorNuevo = req.body.jugador;
+        var eventoNuevo = new Evento({
+          tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
+          partido: partidoNuevo,
+          tipo_evento: tipo_eventoNuevo,
+          equipo: equipoNuevo,
+          jugador: jugadorNuevo
+        })
+      }
+      
       eventoNuevo.save((err, eventoCreado)=> {
         if(err){
           res.send(err);
         }
         else {          
           if(correcto.fecha_hora <= eventoCreado.fecha_hora) { 
-            correcto.fecha_hora.setHours(correcto.fecha_hora.getHours() + 2);
+            //correcto.fecha_hora.setHours(correcto.fecha_hora.getHours() + 2);
             if(correcto.fecha_hora >= eventoCreado.fecha_hora) {
               correcto.eventos.push(eventoCreado);
               correcto.save((err, resultado) => {
