@@ -17,6 +17,8 @@ router.get('/', (req, res, next) => {
     path: 'eventos',
     populate: { path: 'tipo_evento' }
   }).
+  populate('arbitro').
+  populate('estadio').
   exec(function (err, partido) {
     if (err) {
       res.send(err);
@@ -44,6 +46,8 @@ router.get('/:id', (req, res, next) => {
       path: 'eventos',
       populate: { path: 'tipo_evento' }
     }).
+    populate('arbitro').
+    populate('estadio').
     exec(function (err, partido) {
       if (err) {
         res.send(err);
@@ -61,11 +65,15 @@ router.get('/:id', (req, res, next) => {
 router.post('/', (req, res, next) => {
   let fecha_hora=req.body.fecha_hora;
   let equipo_local =req.body.equipo_local;
-  let equipo_visitante = req.body.equipo_visitante; 
+  let equipo_visitante = req.body.equipo_visitante;
+  let arbitro = req.body.arbitro;
+  let estadio = req.body.estadio;
   var partidoNuevo = new Partido({
       fecha_hora: fecha_hora,
       equipo_local: equipo_local,
-      equipo_visitante: equipo_visitante
+      equipo_visitante: equipo_visitante,
+      arbitro: arbitro,
+      estadio: estadio
   })
   partidoNuevo.save((err, resultado) => {
     if(err){
@@ -87,6 +95,8 @@ router.put('/:id', (req, res, next) => {
       result.fecha_hora = req.body.fecha_hora || result.fecha_hora;
       result.equipo_local = req.body.equipo_local || result.equipo_local;
       result.equipo_visitante = req.body.equipo_visitante || result.equipo_visitante;
+      result.arbitro = req.body.arbitro || result.arbitro;
+      result.estadio = req.body.estadio || result.estadio;
       result.save((err, result) => {
         if(err) {
           res.status(500).send(err)
