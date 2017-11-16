@@ -64,40 +64,16 @@ router.post('/', (req, res, next) => {
           tipo_evento: tipo_eventoNuevo,
           equipo: equipoNuevo,
           jugador: jugadorNuevo
-        })
+        });
+        eventoNuevo.save((err, eventoCreado)=> {
+          if(err){
+            res.send(err);
+          }
+          else {
+
+          }
+        });
       }
-      
-      eventoNuevo.save((err, eventoCreado)=> {
-        if(err){
-          res.send(err);
-        }
-        else {          
-          if(correcto.fecha_hora <= eventoCreado.fecha_hora) { 
-            //correcto.fecha_hora.setHours(correcto.fecha_hora.getHours() + 2);
-            if(correcto.fecha_hora >= eventoCreado.fecha_hora) {
-              correcto.eventos.push(eventoCreado);
-              correcto.save((err, resultado) => {
-                if(err) {
-                  res.status(500).send(err)
-                }
-                else {
-                  res.send(eventoCreado);
-                }
-              })
-            }
-            else {
-              eventoNuevo.remove((err, deleteEv) => {
-                if(err) {
-                  res.status(500).send(err);
-                }
-                else{
-                  res.status(200).send("El evento debe suceder dentro del horario del partido!!");
-                }
-              });
-            }  
-          }        
-        }
-      });
     }
     else {
       res.send("No existe ese partido");
@@ -112,10 +88,11 @@ router.put('/:id', (req, res, next) =>{
         res.status(500).send(err);
       } 
       else if (result) {
-        result.fecha_hora = req.body.fecha_hora || result.fecha_hora;
+        result.tiempo_ocurrencia = req.body.tiempo_ocurrencia || result.tiempo_ocurrencia;
         result.partido = req.body.partido || result.partido;
         result.tipo_evento = req.body.tipo_evento || result.tipo_evento;
         result.equipo = req.body.equipo || result.equipo;
+        result.jugador = req.body.jugador || result.jugador;
         result.save((err, resultado) => {
           if(err) {
             res.status(500).send(err)
