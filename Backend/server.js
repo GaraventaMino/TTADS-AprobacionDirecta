@@ -18,6 +18,10 @@ require('./models/equipo.js');
 require('./models/partido.js');
 require('./models/evento.js');
 require('./models/tipo_evento.js');
+require('./models/arbitro.js');
+require('./models/jugador.js');
+require('./models/estadio.js');
+require('./models/torneo.js');
 
 
 app.use(require('./app/routes'));
