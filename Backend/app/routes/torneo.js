@@ -2,13 +2,44 @@ var mongoose = require('mongoose');
 var Torneo = mongoose.model('torneo');
 var router=require('express').Router()
 
+
+//Presentacion de torneos
+router.get('/', (req, res, next) => {
+  Torneo.find({}, 'nombre logo imagen_trofeo', function (err, result) {
+    if (err) {
+      res.status(500).send(err);
+    }
+    else if (result.length != 0) {
+      res.json(result);
+    }
+    else {
+      res.send("No existe ningún torneo aún");
+    }
+  });
+});
+
+//Get tabla de posiciones
+router.get('/posiciones', (req, res, next) => {
+  Torneo.find({}, 'equipos').
+  populate('equipos', 'nombre puntaje').
+  exec(function (err, result) {
+    if (err) {
+      res.status(500).send(err);
+    }
+    else {
+      res.json(result);
+    }
+  });
+});
+
+
 //GET ALL
 router.get('/', (req, res, next) => {
   Torneo.find(function (err, result) {
     if (err) {
       res.status(500).send(err);
     }
-    else if (result) {
+    else if (result.length != 0) {
       res.json(result);
     }
     else {
@@ -23,7 +54,7 @@ router.get('/:id', (req, res, next) => {
     if (err) {
       res.status(500).send(err);
     } 
-    if(result) {
+    if(result.length != 0) {
       res.json(result);
     } else {
       res.send("Ningún Torneo Encontrado");

@@ -2,6 +2,30 @@ var mongoose = require('mongoose');
 var Partido = mongoose.model('partido');
 var router=require('express').Router()
 
+//Fin de partido
+router.put('/:id', (req, res, next) => {
+  Partido.findOne({_id: req.params.id}, function (err, result) {
+    if (err) {
+      res.status(500).send(err);
+    } 
+    else if (result.length != 0) {
+      result.finalizado = true;
+      result.save((err, result) => {
+        if(err) {
+          res.status(500).send(err)
+        }
+        else {
+          res.status(200).send(result);
+        }
+      });
+    }
+    else {
+      res.send("El partido que desea finalizar no existe");
+    }
+  });
+});
+
+
 //GET ALL
 router.get('/', (req, res, next) => {
   Partido.
