@@ -34,8 +34,12 @@ router.get('/:id', (req, res, next) => {
 //CREATE
 router.post('/', (req, res, next) => {
   let nombre=req.body.nombre;
+  let logo=req.body.logo;
+  let imagen_trofeo=req.body.imagen_trofeo;
   var torneoNuevo = new Torneo({
-      nombre: nombre
+      nombre: nombre,
+      logo: logo,
+      imagen_trofeo: imagen_trofeo
   })
   torneoNuevo.save((err, result) => {
     if(err){
@@ -55,6 +59,8 @@ router.put('/:id', (req, res, next) => {
     } 
     else if (result) {
       result.nombre = req.body.nombre || result.nombre;
+      result.logo = req.body.logo || result.logo;
+      result.imagen_trofeo = req.body.imagen_trofeo || result.imagen_trofeo;
       result.save((err, resultado) => {
         if(err) {
           res.status(500).send(err)
