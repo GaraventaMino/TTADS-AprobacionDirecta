@@ -68,7 +68,7 @@ router.put('/:id', (req, res, next) => {
       });
     }
     else {
-      res.send("El estadio que quiere modificar no existe");
+      res.send("El árbitro que quiere modificar no existe");
     }
   });
 });

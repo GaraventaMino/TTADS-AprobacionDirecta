@@ -41,7 +41,7 @@ router.post('/', (req, res, next) => {
   let edad=req.body.edad;
   let equipo=req.body.equipo;
   let imagen=req.body.imagen;
-  var jugadorNuevo = new Tipo_evento({
+  var jugadorNuevo = new Jugador({
       nombre: nombre,
       edad: edad,
       equipo: equipo,
