@@ -36,7 +36,7 @@ router.get('/:id/posiciones', (req, res, next) => {
 
 //Get Tabla de goleadores de un torneo
 router.get('/:id/goleadores', (req, res, next) => {
-  var contador = 0;
+  //Debería borrar los goles de todos los jugadores acá, para que no se mezclen entre torneos.
   Torneo.find({_id: req.params.id}, 'partidos').
   populate({
     path: 'partidos',
@@ -54,8 +54,6 @@ router.get('/:id/goleadores', (req, res, next) => {
       })
     }),
   }).
-  //Hasta acá me traigo todos los eventos que pasaron en el torneo. Necesitaria solos los goles.
-  //Cuando tengo todos los goles debería contarlos por cada jugador y ordenarlos descendente.
   exec(function (err, result) {
     if (err) {
       res.status(500).send(err);
