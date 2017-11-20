@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Estadio = mongoose.model('estadio');
+var Equipo = mongoose.model('equipo');
 var router=require('express').Router()
 
 //GET ALL
@@ -37,11 +38,11 @@ router.get('/:id', (req, res, next) => {
 
 //CREATE
 router.post('/', (req, res, next) => {
-  Equipo.findOne({_id: req.body.equipo}, function(err, res) {
+  Equipo.findOne({_id: req.body.equipo}, function(err, resu) {
     if(err){
         res.send(err);
     }
-    else if (res){
+    else if (resu){
         let nombreNuevo=req.body.nombre;
         let direccionNuevo=req.body.direccion;
         let equipoNuevo=req.body.equipo;
@@ -52,12 +53,20 @@ router.post('/', (req, res, next) => {
             equipo: equipoNuevo,
             imagen: imagen
         })
-        estadioNuevo.save((err) => {
+        estadioNuevo.save((err, guardado) => {
             if(err){
-            res.send(err);
+              res.send(err);
             }
             else {
-            res.send(estadioNuevo);
+              resu.estadio = guardado._id;
+              resu.save((err) => {
+                if (err) {
+                  res.send(err);
+                }
+                else {
+                  res.send(guardado);
+                }
+              })
             }
         })
     }

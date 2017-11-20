@@ -55,6 +55,39 @@ router.get('/activos', (req, res, next) => {
   });
 });
 
+//Get Partidos planificados (ni activos ni finalizados)
+router.get('/planificados', (req, res, next) => {
+  var today = new Date();
+  Partido.
+  find().
+  where('fecha_hora').gt(today.getTime()).
+  sort({fecha_hora: 'asc'}).
+  populate('equipo_local').
+  populate('equipo_visitante').
+  populate({
+    path: 'eventos',
+    populate: { path: 'equipo' },
+    
+  }).
+  populate({
+    path: 'eventos',
+    populate: { path: 'tipo_evento' }
+  }).
+  populate('arbitro').
+  populate('estadio').
+  exec(function (err, partido) {
+    if (err) {
+      res.send(err);
+    }
+    else if(!partido) {
+      res.send("Ningún partido encontrado");
+    }
+    else {
+      res.json(partido);
+    }
+  });
+});
+
 //GET ALL
 router.get('/', (req, res, next) => {
   Partido.
@@ -85,7 +118,7 @@ router.get('/', (req, res, next) => {
   });
 });
 
-//GET ONE
+//Get one
 router.get('/:id', (req, res, next) => {
   Partido.
     findOne({_id: req.params.id}).
@@ -98,6 +131,10 @@ router.get('/:id', (req, res, next) => {
     populate({
       path: 'eventos',
       populate: { path: 'tipo_evento' }
+    }).
+    populate({
+      path: 'eventos',
+      populate: { path: 'jugador' }
     }).
     populate('arbitro').
     populate('estadio').

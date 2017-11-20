@@ -36,7 +36,19 @@ router.get('/:id/posiciones', (req, res, next) => {
 
 //Get Tabla de goleadores de un torneo
 router.get('/:id/goleadores', (req, res, next) => {
-  var contador = 0;
+  Jugador.find(function (err, resultado) {
+      if (err) {
+        res.status(500).send(err);
+      }
+      else if (resultado.length != 0) {
+        for(var k = 0; k < resultado.length; k++) {
+          resultado[k].goles = 0;
+        }
+      }
+      else {
+        res.send("No existe ningún Jugador aún");
+      }
+    });  
   Torneo.find({_id: req.params.id}, 'partidos').
   populate({
     path: 'partidos',
@@ -54,8 +66,6 @@ router.get('/:id/goleadores', (req, res, next) => {
       })
     }),
   }).
-  //Hasta acá me traigo todos los eventos que pasaron en el torneo. Necesitaria solos los goles.
-  //Cuando tengo todos los goles debería contarlos por cada jugador y ordenarlos descendente.
   exec(function (err, result) {
     if (err) {
       res.status(500).send(err);
@@ -64,11 +74,29 @@ router.get('/:id/goleadores', (req, res, next) => {
       for(var i = 0; i < result.partidos.length; i++) {
         for(var j = 0; j < result.partidos[i].eventos.length; j++) {
           if(result.partidos[i].eventos[j].tipo_evento.nombre == "Gol") {
-            
+            result.partidos[i].eventos[j].jugador.goles += 1;
+            result.save((err, correcto) => {
+              if(err){
+                res.send(err);
+              }
+            });
           }
         }
       }
-      res.json(result);
+      Jugador.find().
+      sort({goles: 'des'}).
+      populate({
+        path: 'equipo',
+        select: '_id nombre escudo'
+      }).
+      exec(function (err, goleadores) {
+        if(err) {
+          res.send(err);
+        }
+        else {
+          res.send(goleadores);
+        }
+      });
     }
   });
 });

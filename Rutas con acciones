@@ -3,16 +3,19 @@ En TORNEO
 //Get Presentacion de todos los torneos
 router.get('/')
 
-//Get Tabla de posiciones de un torneo
+//Get Tabla de posiciones de un torneo				NO PROBADO
 router.get('/:id/posiciones')
 
-//Get Tabla de goleadores de un torneo		NO TERMINADO AÚN
+//Get Tabla de goleadores de un torneo				NO PROBADO
 router.get('/:id/goleadores')
 
 
 En PARTIDO
 
-//Finalizar partido
+//Finalizar partido						NO PROBADO
 router.put('/:id')
+
+//Get Partidos planificados (ni activos ni finalizados)		NO PROBADO
+router.get('/planificados')
 
 
