@@ -25,6 +25,35 @@ router.put('/:id', (req, res, next) => {
   });
 });
 
+//Get Partidos activos
+router.get('/activos', (req, res, next) => {
+  var today = new Date();
+  Partido.
+  where('fecha_hora').gt(today.getTime() - (6300000)).
+  lt(today.getTime() + (6300000)).
+  sort({fecha_hora: 'asc'}).
+  populate('equipo_local').
+  populate('equipo_visitante').
+  populate({
+    path: 'eventos',
+    populate: { path: 'equipo' }   
+  }).
+  populate({
+    path: 'eventos',
+    populate: { path: 'tipo_evento' }
+  })
+  .exec(function (err, partido) {
+    if (err) {
+      res.send(err);
+    }
+    else if(!partido) {
+      res.send("Ningún partido encontrado");
+    }
+    else {
+      res.json(partido);
+    }
+  });
+});
 
 //GET ALL
 router.get('/', (req, res, next) => {

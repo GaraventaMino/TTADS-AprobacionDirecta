@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Torneo = mongoose.model('torneo');
+var Jugador = mongoose.model('jugador');
 var router=require('express').Router()
 
 
@@ -35,6 +36,7 @@ router.get('/:id/posiciones', (req, res, next) => {
 
 //Get Tabla de goleadores de un torneo
 router.get('/:id/goleadores', (req, res, next) => {
+  var contador = 0;
   Torneo.find({_id: req.params.id}, 'partidos').
   populate({
     path: 'partidos',
@@ -59,6 +61,13 @@ router.get('/:id/goleadores', (req, res, next) => {
       res.status(500).send(err);
     }
     else {
+      for(var i = 0; i < result.partidos.length; i++) {
+        for(var j = 0; j < result.partidos[i].eventos.length; j++) {
+          if(result.partidos[i].eventos[j].tipo_evento.nombre == "Gol") {
+            
+          }
+        }
+      }
       res.json(result);
     }
   });
