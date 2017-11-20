@@ -3,9 +3,9 @@ var Torneo = mongoose.model('torneo');
 var router=require('express').Router()
 
 
-//Presentacion de torneos
+//Get Presentacion de todos los torneos
 router.get('/', (req, res, next) => {
-  Torneo.find({}, 'nombre logo imagen_trofeo', function (err, result) {
+  Torneo.find({}, '_id nombre logo imagen_trofeo', function (err, result) {
     if (err) {
       res.status(500).send(err);
     }
@@ -18,10 +18,42 @@ router.get('/', (req, res, next) => {
   });
 });
 
-//Get tabla de posiciones
-router.get('/posiciones', (req, res, next) => {
-  Torneo.find({}, 'equipos').
+//Get Tabla de posiciones de un torneo
+router.get('/:id/posiciones', (req, res, next) => {
+  Torneo.find({_id: req.params.id}, 'equipos').
   populate('equipos', 'nombre puntaje').
+  sort('-puntaje').
+  exec(function (err, result) {
+    if (err) {
+      res.status(500).send(err);
+    }
+    else {
+      res.json(result);
+    }
+  });
+});
+
+//Get Tabla de goleadores de un torneo
+router.get('/:id/goleadores', (req, res, next) => {
+  Torneo.find({_id: req.params.id}, 'partidos').
+  populate({
+    path: 'partidos',
+    select: 'eventos',
+    populate: ({ 
+      path: 'eventos',
+      select: 'tipo_evento jugador',
+      populate: ({
+        path: 'tipo_evento',
+        select: 'nombre',
+      }),
+      populate: ({
+        path: 'jugador',
+        select: '_id nombre',
+      })
+    }),
+  }).
+  //Hasta acá me traigo todos los eventos que pasaron en el torneo. Necesitaria solos los goles.
+  //Cuando tengo todos los goles debería contarlos por cada jugador y ordenarlos descendente.
   exec(function (err, result) {
     if (err) {
       res.status(500).send(err);

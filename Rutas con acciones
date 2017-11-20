@@ -1,0 +1,18 @@
+En TORNEO
+
+//Get Presentacion de todos los torneos
+router.get('/')
+
+//Get Tabla de posiciones de un torneo
+router.get('/:id/posiciones')
+
+//Get Tabla de goleadores de un torneo		NO TERMINADO AÚN
+router.get('/:id/goleadores')
+
+
+En PARTIDO
+
+//Finalizar partido
+router.put('/:id')
+
+

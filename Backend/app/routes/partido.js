@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Partido = mongoose.model('partido');
 var router=require('express').Router()
 
-//Fin de partido
+//Finalizar partido
 router.put('/:id', (req, res, next) => {
   Partido.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
