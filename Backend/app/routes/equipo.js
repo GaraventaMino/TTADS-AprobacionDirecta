@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
     if (err) {
       res.status(500).send(err);
     }
-    else if (result) {
+    else if (result.length != 0) {
       res.json(result);
     }
     else {
@@ -31,7 +31,7 @@ router.get('/:id', (req, res, next) => {
     if (err) {
       res.status(500).send(err);
     } 
-    if(result) {
+    if(result.length != 0) {
       res.json(result);
     } else {
       res.send("No existe el equipo buscado");
@@ -43,9 +43,11 @@ router.get('/:id', (req, res, next) => {
 router.post('/', (req, res, next) => {
   let nombreNuevo=req.body.nombre;
   let tecnicoNuevo=req.body.tecnico;
+  let escudoNuevo=req.body.escudo;
   var equipoNuevo = new Equipo({
       nombre: nombreNuevo,
-      tecnico: tecnicoNuevo
+      tecnico: tecnicoNuevo,
+      escudo: escudoNuevo
   })
   equipoNuevo.save((err) => {
     if(err){
@@ -66,6 +68,7 @@ router.put('/:id', (req, res, next) => {
     else if (result) {
       result.nombre = req.body.nombre || result.nombre;
       result.tecnico = req.body.tecnico || result.tecnico;
+      result.escudo = req.body.escudo || result.escudo;
       result.save((err, result) => {
         if(err) {
           res.status(500).send(err)

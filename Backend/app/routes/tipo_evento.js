@@ -34,8 +34,10 @@ router.get('/:id', (req, res, next) => {
 //CREATE
 router.post('/', (req, res, next) => {
   let nombre=req.body.nombre;
+  let icono=req.body.icono;
   var tipo_eventoNuevo = new Tipo_evento({
-      nombre: nombre
+      nombre: nombre,
+      icono: icono
   })
   tipo_eventoNuevo.save((err, result) => {
     if(err){
@@ -55,6 +57,7 @@ router.put('/:id', (req, res, next) => {
     } 
     else if (result) {
       result.nombre = req.body.nombre || result.nombre;
+      result.icono = req.body.icono || result.icono;
       result.save((err, resultado) => {
         if(err) {
           res.status(500).send(err)

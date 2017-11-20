@@ -2,6 +2,59 @@ var mongoose = require('mongoose');
 var Partido = mongoose.model('partido');
 var router=require('express').Router()
 
+//Finalizar partido
+router.put('/:id', (req, res, next) => {
+  Partido.findOne({_id: req.params.id}, function (err, result) {
+    if (err) {
+      res.status(500).send(err);
+    } 
+    else if (result.length != 0) {
+      result.finalizado = true;
+      result.save((err, result) => {
+        if(err) {
+          res.status(500).send(err)
+        }
+        else {
+          res.status(200).send(result);
+        }
+      });
+    }
+    else {
+      res.send("El partido que desea finalizar no existe");
+    }
+  });
+});
+
+//Get Partidos activos
+router.get('/activos', (req, res, next) => {
+  var today = new Date();
+  Partido.
+  where('fecha_hora').gt(today.getTime() - (6300000)).
+  lt(today.getTime() + (6300000)).
+  sort({fecha_hora: 'asc'}).
+  populate('equipo_local').
+  populate('equipo_visitante').
+  populate({
+    path: 'eventos',
+    populate: { path: 'equipo' }   
+  }).
+  populate({
+    path: 'eventos',
+    populate: { path: 'tipo_evento' }
+  })
+  .exec(function (err, partido) {
+    if (err) {
+      res.send(err);
+    }
+    else if(!partido) {
+      res.send("Ningún partido encontrado");
+    }
+    else {
+      res.json(partido);
+    }
+  });
+});
+
 //GET ALL
 router.get('/', (req, res, next) => {
   Partido.

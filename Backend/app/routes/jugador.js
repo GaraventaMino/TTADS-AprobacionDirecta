@@ -40,10 +40,12 @@ router.post('/', (req, res, next) => {
   let nombre=req.body.nombre;
   let edad=req.body.edad;
   let equipo=req.body.equipo;
+  let imagen=req.body.imagen;
   var jugadorNuevo = new Tipo_evento({
       nombre: nombre,
       edad: edad,
-      equipo: equipo
+      equipo: equipo,
+      imagen: imagen
   })
   jugadorNuevo.save((err, result) => {
     if(err){
@@ -65,6 +67,7 @@ router.put('/:id', (req, res, next) => {
       result.nombre = req.body.nombre || result.nombre;
       result.edad = req.body.edad || result.edad;
       result.equipo = req.body.equipo || result.equipo;
+      result.imagen = req.body.imagen || result.imagen;
       result.save((err, resultado) => {
         if(err) {
           res.status(500).send(err)

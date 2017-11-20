@@ -45,10 +45,12 @@ router.post('/', (req, res, next) => {
         let nombreNuevo=req.body.nombre;
         let direccionNuevo=req.body.direccion;
         let equipoNuevo=req.body.equipo;
+        let imagen=req.body.imagen;
         var estadioNuevo = new Estadio({
             nombre: nombreNuevo,
             direccion: direccionNuevo,
-            equipo: equipoNuevo
+            equipo: equipoNuevo,
+            imagen: imagen
         })
         estadioNuevo.save((err) => {
             if(err){
@@ -75,6 +77,7 @@ router.put('/:id', (req, res, next) => {
       result.nombre = req.body.nombre || result.nombre;
       result.direccion = req.body.direccion || result.direccion;
       result.equipo = req.body.equipo || result.equipo;
+      result.imagen = req.body.imagen || result.imagen;
       result.save((err, result) => {
         if(err) {
           res.status(500).send(err)
