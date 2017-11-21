@@ -15,11 +15,11 @@ router.get('/', (req, res, next) => {
       if (err) {
         res.send(err);
       }
-      else if(!evento) {
-        res.send("Ningún evento encontrado");
+      else if(evento.length != 0) {
+        res.json(evento);
       }
       else {
-        res.json(evento);
+        res.send("Ningún evento encontrado");
       }
     });
 });
@@ -36,11 +36,11 @@ router.get('/:id', (req, res, next) => {
       if (err) {
         res.send(err);
       }
-      else if(!evento) {
-        res.send("Ningún evento encontrado");
+      else if(evento.length != 0) {
+        res.json(evento);
       }
       else {
-        res.json(evento);
+        res.send("Ningún evento encontrado");
       }
     });
 });
