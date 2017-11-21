@@ -62,7 +62,7 @@ router.get('/:id/goleadores', (req, res, next) => {
       }),
       populate: ({
         path: 'jugador',
-        select: '_id nombre',
+        select: '_id nombre goles',
       })
     }),
   }).
@@ -101,6 +101,139 @@ router.get('/:id/goleadores', (req, res, next) => {
   });
 });
 
+//Get Tabla de amonestados de un torneo
+router.get('/:id/amonestados', (req, res, next) => {
+    Jugador.find(function (err, resultado) {
+      if (err) {
+        res.status(500).send(err);
+      }
+      else if (resultado.length != 0) {
+        for(var k = 0; k < resultado.length; k++) {
+          resultado[k].amarillas = 0;
+        }
+      }
+      else {
+        res.send("No existe ningún Jugador aún");
+      }
+    });   
+  Torneo.find({_id: req.params.id}, 'partidos').
+  populate({
+    path: 'partidos',
+    select: 'eventos',
+    populate: ({ 
+      path: 'eventos',
+      select: 'tipo_evento jugador',
+      populate: ({
+        path: 'tipo_evento',
+        select: 'nombre',
+      }),
+      populate: ({
+        path: 'jugador',
+        select: '_id nombre amarillas',
+      })
+    }),
+  }).
+  exec(function (err, result) {
+    if (err) {
+      res.status(500).send(err);
+    }
+    else {
+      for(var i = 0; i < result.partidos.length; i++) {
+        for(var j = 0; j < result.partidos[i].eventos.length; j++) {
+          if(result.partidos[i].eventos[j].tipo_evento.nombre == "Tarjeta amarilla") {
+            result.partidos[i].eventos[j].jugador.amarillas += 1;
+            result.save((err, correcto) => {
+              if(err){
+                res.send(err);
+              }
+            });
+          }
+        }
+      }
+      Jugador.find().
+      sort({amarillas: 'des'}).
+      populate({
+        path: 'equipo',
+        select: '_id nombre escudo'
+      }).
+      exec(function (err, amonestados) {
+        if(err) {
+          res.send(err);
+        }
+        else {
+          res.send(amonestados);
+        }
+      });
+    }
+  });
+});
+
+//Get Tabla de expulsados de un torneo
+router.get('/:id/expulsados', (req, res, next) => {
+    Jugador.find(function (err, resultado) {
+      if (err) {
+        res.status(500).send(err);
+      }
+      else if (resultado.length != 0) {
+        for(var k = 0; k < resultado.length; k++) {
+          resultado[k].rojas = 0;
+        }
+      }
+      else {
+        res.send("No existe ningún Jugador aún");
+      }
+    });   
+  Torneo.find({_id: req.params.id}, 'partidos').
+  populate({
+    path: 'partidos',
+    select: 'eventos',
+    populate: ({ 
+      path: 'eventos',
+      select: 'tipo_evento jugador',
+      populate: ({
+        path: 'tipo_evento',
+        select: 'nombre',
+      }),
+      populate: ({
+        path: 'jugador',
+        select: '_id nombre rojas',
+      })
+    }),
+  }).
+  exec(function (err, result) {
+    if (err) {
+      res.status(500).send(err);
+    }
+    else {
+      for(var i = 0; i < result.partidos.length; i++) {
+        for(var j = 0; j < result.partidos[i].eventos.length; j++) {
+          if(result.partidos[i].eventos[j].tipo_evento.nombre == "Tarjeta roja") {
+            result.partidos[i].eventos[j].jugador.rojas += 1;
+            result.save((err, correcto) => {
+              if(err){
+                res.send(err);
+              }
+            });
+          }
+        }
+      }
+      Jugador.find().
+      sort({amarillas: 'des'}).
+      populate({
+        path: 'equipo',
+        select: '_id nombre escudo'
+      }).
+      exec(function (err, expulsados) {
+        if(err) {
+          res.send(err);
+        }
+        else {
+          res.send(expulsados);
+        }
+      });
+    }
+  });
+});
 
 //GET ALL
 router.get('/', (req, res, next) => {

@@ -9,11 +9,17 @@ router.get('/:id/posiciones')
 //Get Tabla de goleadores de un torneo				NO PROBADO
 router.get('/:id/goleadores')
 
+//Get Tabla de amonestados de un torneo				NO PROBADO
+router.get('/:id/amonestados')
+
+//Get Tabla de expulsados de un torneo				NO PROBADO
+router.get('/:id/expulsados')
+
 
 En PARTIDO
 
 //Finalizar partido						NO PROBADO
-router.put('/:id')
+router.put('/:id/finalizar')
 
 //Get Partidos planificados (ni activos ni finalizados)		NO PROBADO
 router.get('/planificados')

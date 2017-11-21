@@ -8,7 +8,7 @@ router.get('/', (req, res, next) => {
     if (err) {
       res.status(500).send(err);
     }
-    else if (result) {
+    else if (result.length != 0) {
       res.json(result);
     }
     else {
@@ -23,9 +23,10 @@ router.get('/:id', (req, res, next) => {
     if (err) {
       res.status(500).send(err);
     } 
-    if(result) {
+    if(result.length != 0) {
       res.json(result);
-    } else {
+    } 
+    else {
       res.send("No existe el árbitro buscado");
     } 
   });

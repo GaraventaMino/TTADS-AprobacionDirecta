@@ -3,7 +3,7 @@ var Partido = mongoose.model('partido');
 var router=require('express').Router()
 
 //Finalizar partido
-router.put('/:id', (req, res, next) => {
+router.put('/:id/finalizar', (req, res, next) => {
   Partido.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
       res.status(500).send(err);
@@ -46,11 +46,11 @@ router.get('/activos', (req, res, next) => {
     if (err) {
       res.send(err);
     }
-    else if(!partido) {
-      res.send("Ningún partido encontrado");
+    else if(partido.length != 0) {
+      res.json(partido);
     }
     else {
-      res.json(partido);
+      res.send("Ningún partido encontrado");
     }
   });
 });
@@ -79,11 +79,11 @@ router.get('/planificados', (req, res, next) => {
     if (err) {
       res.send(err);
     }
-    else if(!partido) {
-      res.send("Ningún partido encontrado");
+    else if(partido.length != 0) {
+      res.json(partido);
     }
     else {
-      res.json(partido);
+      res.send("Ningún partido encontrado");
     }
   });
 });
@@ -109,11 +109,11 @@ router.get('/', (req, res, next) => {
     if (err) {
       res.send(err);
     }
-    else if(!partido) {
-      res.send("Ningún partido encontrado");
+    else if(partido.length != 0) {
+      res.json(partido);
     }
     else {
-      res.json(partido);
+      res.send("Ningún partido encontrado");
     }
   });
 });
@@ -142,11 +142,11 @@ router.get('/:id', (req, res, next) => {
       if (err) {
         res.send(err);
       }
-      else if(!partido) {
-        res.send("Ningún partido encontrado");
+      else if(partido.length != 0) {
+        res.json(partido);
       }
       else {
-        res.json(partido);
+        res.send("Ningún partido encontrado");
       }
     });
 });
