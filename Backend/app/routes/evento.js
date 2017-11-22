@@ -45,7 +45,7 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
-//CREATE
+//Create
 router.post('/', (req, res, next) => {
   Partido.findOne({_id: req.body.partido}, function(err, correcto){
     if(err){
@@ -53,26 +53,30 @@ router.post('/', (req, res, next) => {
     }
     else if (correcto) {
       if(req.body.tiempo_ocurrencia <= 90 && req.body.tiempo_ocurrencia >= 0) {
-        let tiempo_ocurrenciaNuevo = req.body.tiempo_ocurrencia;
-        let partidoNuevo = req.body.partido;
-        let tipo_eventoNuevo = req.body.tipo_evento;
-        let equipoNuevo = req.body.equipo;
-        let jugadorNuevo = req.body.jugador;
-        var eventoNuevo = new Evento({
-          tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
-          partido: partidoNuevo,
-          tipo_evento: tipo_eventoNuevo,
-          equipo: equipoNuevo,
-          jugador: jugadorNuevo
-        });
-        eventoNuevo.save((err, eventoCreado)=> {
-          if(err){
-            res.send(err);
-          }
-          else {
-
-          }
-        });
+        var today = new Date();
+        if (correcto.fecha_hora > (today.getTime() - (6300000)) &&
+        correcto.finalizado == false) {
+          let tiempo_ocurrenciaNuevo = req.body.tiempo_ocurrencia;
+          let partidoNuevo = req.body.partido;
+          let tipo_eventoNuevo = req.body.tipo_evento;
+          let equipoNuevo = req.body.equipo;
+          let jugadorNuevo = req.body.jugador;
+          var eventoNuevo = new Evento({
+            tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
+            partido: partidoNuevo,
+            tipo_evento: tipo_eventoNuevo,
+            equipo: equipoNuevo,
+            jugador: jugadorNuevo
+          });
+          eventoNuevo.save((err, eventoCreado)=> {
+            if(err){
+              res.send(err);
+            }
+            else {
+              res.send("Evento creado");
+            }
+          });
+        } 
       }
     }
     else {
