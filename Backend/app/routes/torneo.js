@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
 var Torneo = mongoose.model('torneo');
 var Jugador = mongoose.model('jugador');
+var Equipo = mongoose.model('equipo');
 var router=require('express').Router()
 
 
 //Get Presentacion de todos los torneos
-router.get('/', (req, res, next) => {
+router.get('/presentacion', (req, res, next) => {
   Torneo.find({}, '_id nombre logo imagen_trofeo', function (err, result) {
     if (err) {
       res.status(500).send(err);
@@ -21,16 +22,100 @@ router.get('/', (req, res, next) => {
 
 //Get Tabla de posiciones de un torneo
 router.get('/:id/posiciones', (req, res, next) => {
-  Torneo.find({_id: req.params.id}, 'equipos').
-  populate('equipos', 'nombre puntaje').
-  sort('-puntaje').
-  exec(function (err, result) {
+  Equipo.find(function (err, equipos) {
     if (err) {
       res.status(500).send(err);
     }
-    else {
-      res.json(result);
-    }
+    else if (equipos.length != 0) {
+      for(var k = 0; k < equipos.length; k++) {
+        equipos[k].puntaje = 0;
+      }
+      Torneo.find({_id: req.params.id}, 'partidos').
+      populate({
+        path: 'partidos',
+        select: 'eventos equipo_local equipo_visitante',
+        populate: ({
+          path: 'equipo_local',
+          select: 'nombre'
+        }),
+        populate: ({
+          path: 'equipo_visitante',
+          select: 'nombre'
+        }),
+        populate: ({ 
+          path: 'eventos',
+          select: 'tipo_evento equipo',
+          populate: ({
+            path: 'tipo_evento',
+            select: 'nombre',
+          }),
+          populate: ({
+            path: 'equipo',
+            select: '_id nombre',
+          })
+        }),
+      }).
+      exec(function (err, result) {
+        if (err) {
+          res.status(500).send(err);
+        }
+        else {
+          for(var i = 0; i < result.partidos.length; i++) {
+            var golesLocal = 0;
+            var golesVisitante = 0;
+            var local;
+            var visitante;
+            for(var w = 0; w < equipos.length; w++){
+              if(equipos[w]._id == result.partido[i].equipo_local._id) {
+                local = w;
+              }
+              if(equipos[w]._id == result.partido[i].equipo_visitante._id) {
+                visitante = w;
+              }
+            }
+            for(var j = 0; j < result.partidos[i].eventos.length; j++) {
+              if(result.partidos[i].eventos[j].tipo_evento.nombre == "Gol" &&
+              result.partidos[i].eventos[j].equipo.nombre == result.partidos[i].equipo_local.nomnbre) {
+                golesLocal++;
+              }
+              else if (result.partidos[i].eventos[j].tipo_evento.nombre == "Gol" &&
+              result.partidos[i].eventos[j].equipo.nombre == result.partidos[i].equipo_visitante.nombre){
+                golesVisitante++;
+              }
+            }
+            if (golesLocal == golesVisitante) {
+              equipos[local].puntaje++;
+              equipos[visitante].puntaje++;
+            }
+            else if (golesLocal > golesVisitante) {
+              equipos[local].puntaje += 3;
+            }
+            else {
+              equipos[visitante].puntaje += 3;
+            }
+            equipos.save((err, correcto) => {
+              if(err){
+                res.send(err);
+              }
+            });
+          }
+        Torneo.find({_id: req.params.id}, 'equipos').
+          populate('equipos', 'nombre puntaje').
+          sort('-puntaje').
+          exec(function (err, posiciones) {
+            if (err) {
+              res.status(500).send(err);
+            }
+            else if (posiciones.length != 0) {
+              res.json(posiciones);
+            }
+            else {
+              res.send("No hay equipos para armar la tabla de posiciones");
+            }
+          });
+        }
+      });
+    };
   });
 });
 
