@@ -15,7 +15,7 @@ router.put('/:id/finalizar', (req, res, next) => {
           res.status(500).send(err)
         }
         else {
-          res.status(200).send(result);
+          res.status(200).send("¡Partido finalizado con éxito!");
         }
       });
     }
@@ -30,7 +30,8 @@ router.get('/activos', (req, res, next) => {
   var today = new Date();
   Partido.
   where('fecha_hora').gt(today.getTime() - (6300000)).
-  lt(today.getTime() + (6300000)).
+  //lt(today.getTime() + (6300000)).
+  where('finalizado' == false).
   sort({fecha_hora: 'asc'}).
   populate('equipo_local').
   populate('equipo_visitante').

@@ -1,7 +1,7 @@
 En TORNEO
 
-//Get Presentacion de todos los torneos
-router.get('/')
+//Get Presentacion de todos los torneos				NO PROBADO
+router.get('/presentacion')
 
 //Get Tabla de posiciones de un torneo				NO PROBADO
 router.get('/:id/posiciones')
