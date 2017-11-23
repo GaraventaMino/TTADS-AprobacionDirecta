@@ -7,13 +7,11 @@ var router=require('express').Router()
 router.post('/prueba', (req, res, next) => {
   let nombreNuevo=req.body.nombre;
   let direccionNuevo=req.body.direccion;
-  //let equipoNuevo=req.body.equipo;
-  //let imagen=req.body.imagen;
+  let imagen=req.body.imagen;
   var estadioNuevo = new Estadio({
       nombre: nombreNuevo,
       direccion: direccionNuevo,
-      //equipo: equipoNuevo,
-      //imagen: imagen
+      imagen: imagen
   })
   estadioNuevo.save((err, guardado) => {
       if(err){
