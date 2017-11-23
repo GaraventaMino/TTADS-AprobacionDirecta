@@ -93,7 +93,7 @@ router.post('/', (req, res, next) => {
                   res.send(err);
                 }
                 else {
-                  torn.equipo = equipoGuardado._id;
+                  torn.equipos.push(equipoGuardado._id);
                   torn.save((err, correcto) => {
                     if(err){
                       res.send(err);
@@ -117,10 +117,15 @@ router.post('/', (req, res, next) => {
     }
   }); 
 });
-/////////////////ACA
+
+
 //UPDATE
 router.put('/:id', (req, res, next) => {
-  Equipo.findOne({_id: req.params.id}, function (err, result) {
+  var a = 0;
+  var b = 0;
+  Equipo.findOne({_id: req.params.id}).
+  populate('torneos').
+  exec(function (err, result) {
     if (err) {
       res.status(500).send(err);
     } 
@@ -128,12 +133,83 @@ router.put('/:id', (req, res, next) => {
       result.nombre = req.body.nombre || result.nombre;
       result.tecnico = req.body.tecnico || result.tecnico;
       result.escudo = req.body.escudo || result.escudo;
-      result.save((err, result) => {
+      if (result.torneos.length == 0) {
+        if (req.body.torneos.length != 0) {
+          result.torneos.push(req.body.torneos);
+        }
+      }
+      else if (req.body.torneos.length != 0) {
+        for(var i = 0; i < result.torneos.length; i++) {
+            if (result.torneos[i] == req.body.torneos) {
+              a = 1;
+            }
+            else {
+              a = 2;
+            }
+          }
+          if (a == 2) {
+            result.torneos.push(req.body.torneos);
+          }
+      }
+      if (result.estadios.length == 0) {
+        if (req.body.estadios.length != 0) {
+          result.estadios.push(req.body.estadios);
+        }
+      }
+      if (req.body.estadios.length != 0) {
+        for(var j = 0; j < result.estadios.length; j++) {
+          if (result.estadios[j] == req.body.estadios) {
+            b = 1
+          }
+          else {
+            b = 2;
+          }
+        }
+        if (b == 2) {
+          result.estadios.push(req.body.estadios);
+        }
+      }
+      result.save((err, guardado) => {
         if(err) {
-          res.status(500).send(err)
+          res.status(500).send(err);
         }
         else {
-          res.status(200).send(result);
+          if (guardado.torneos.length != 0 && a == 2) {
+            Torneo.findOne({_id: req.body.torneos}, (err, t) => {
+              if (err) {
+                res.send(err);
+              }
+              else {
+                t.equipos.push(equipoGuardado._id);
+                t.save((err) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                });
+              }
+            });
+          }
+          setTimeout(() => {
+            if (guardado.estadios.length != 0 && a == 2) {
+              Estadio.findOne({_id: req.body.estadios}, (err, e) => {
+                if (err) {
+                  res.send(err);
+                }
+                else {
+                  e.equipo = equipoGuardado._id;
+                  e.save((err) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else {
+                      res.send("Equipo modificado con éxito");
+                    }
+                  });
+                }
+              });
+            }
+          }, 3000);
+          res.send("Equipo modificado con éxito");
         }
       });
     }
