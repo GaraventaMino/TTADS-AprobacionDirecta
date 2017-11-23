@@ -3,6 +3,24 @@ var Evento = mongoose.model('evento');
 var Partido = mongoose.model('partido');
 var router=require('express').Router()
 
+//Crear prueba
+router.post('/prueba', (req, res, next) => {
+  let equipoNuevo = req.body.equipo;
+  let tiempo_ocurrenciaNuevo = req.body.tiempo;
+  var eventoNuevo = new Evento({
+    equipo: equipoNuevo,
+    tiempo_ocurrencia: tiempo_ocurrenciaNuevo
+  });
+  eventoNuevo.save((err, eventoCreado)=> {
+    if(err){
+      res.send(err);
+    }
+    else {
+      res.send("Evento creado");
+    }
+  });
+});
+
 //GET ALL
 router.get('/', (req, res, next) => {
   Evento.

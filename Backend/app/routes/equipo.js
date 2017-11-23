@@ -244,30 +244,43 @@ router.delete('/:id', (req, res, next) => {
             if(eventos[i].equipo._id == result._id) {
               res.send("No se puede borrar el equipo porque se utiliza en un evento");
             }
+          }
+          Partido.find({}, 'equipo_local equipo_visitante').
+          populate('equipo_local').
+          populate('equipo_visitante').
+          exec((err, partidos) => {
+            if(err){
+              res.send(err);
+            }
+            else if (partidos.length != 0) {
+              for(var j = 0; j < partidos.length; j++) {
+                if(partidos[j].equipo_local._id == result._id || 
+                partidos[j].equipo_visitante._id == result._id) {
+                  res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                }
+                else {
+                  result.remove((err) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else {
+                      res.send("Equipo eliminado correctamente");
+                    }
+                  });
+                }
+              }
+            }
             else {
-              Partido.find({}, 'equipo_local equipo_visitante').
-              populate('equipo_local').
-              populate('equipo_visitante').
-              exec((err, partidos) => {
-                for(var j = 0; j < partidos.length; j++) {
-                  if(partidos[j].equipo_local._id == result._id || 
-                  partidos[j].equipo_visitante._id == result._id) {
-                    res.send("No se puede borrar el equipo porque se utiliza en un partido");
-                  }
-                  else {
-                    result.remove((err) => {
-                      if(err) {
-                        res.send(err);
-                      }
-                      else {
-                        res.send("Equipo eliminado correctamente");
-                      }
-                    });
-                  }
+              result.remove((err) => {
+                if(err) {
+                  res.send(err);
+                }
+                else {
+                  res.send("Equipo eliminado correctamente");
                 }
               });
             }
-          }
+          });
         }
       });
     }
