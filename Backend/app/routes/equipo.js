@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 var Equipo = mongoose.model('equipo');
 var Estadio = mongoose.model('estadio');
 var Torneo = mongoose.model('torneo');
+var Evento = mongoose.model('evento');
+var Partido = mongoose.model('partido');
 var router=require('express').Router()
 
 
@@ -222,55 +224,58 @@ router.put('/:id', (req, res, next) => {
 //DELETE ONE
 router.delete('/:id', (req, res, next) => {
   Equipo.findOne({_id: req.params.id}).
-  populate({
-    path: 'torneos',
-    select: '_id'
-  }).
+  populate('torneos').
+  populate('estadios').
+  populate('jugadores').
   exec(function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
-    else if(result) {
-      result.remove((err) => {
-        if(err) {
-          res.status(500).send(err);
+    else if(result.torneos.length == 0 && 
+    result.estadios.length == 0 && result.jugadores.length == 0) {
+      Evento.find({}, 'equipo').
+      populate('equipo').
+      exec((err, eventos) => {
+        if(err){
+          res.send(err);
         }
         else {
-          for (var i = 0; i < result.torneos.length; i++) {
-            Torneo.findOne({_id: result.torneos[i]._id}).
-            populate({
-              path: 'equipos',
-              select: '_id'
-            }).
-            exec((err, corr) => {
-              for (var j = 0; j < corr.equipos.length; j++) {
-                if(corr.equipos[j]._id == result._id) {
-                  delete corr.equipos[j];
-                  corr.save((err) => {
-                    if (err) {
-                      res.send(err);
-                    }
-                    else {
-                      res.send("Borrado realizado");
-                    }
-                  });
+          for(var i = 0; i < eventos.length; i++) {
+            if(eventos[i].equipo._id == result._id) {
+              res.send("No se puede borrar el equipo porque se utiliza en un evento");
+            }
+            else {
+              Partido.find({}, 'equipo_local equipo_visitante').
+              populate('equipo_local').
+              populate('equipo_visitante').
+              exec((err, partidos) => {
+                for(var j = 0; j < partidos.length; j++) {
+                  if(partidos[j].equipo_local._id == result._id || 
+                  partidos[j].equipo_visitante._id == result._id) {
+                    res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                  }
+                  else {
+                    result.remove((err) => {
+                      if(err) {
+                        res.send(err);
+                      }
+                      else {
+                        res.send("Equipo eliminado correctamente");
+                      }
+                    });
+                  }
                 }
-                else {
-                  res.send("Borrado realizado");
-                }
-              }
-            });
-            //FALTA ELIMINARLE EL EQUIPO A LOS PARTIDOS,JUGADOR,ESTADIO,EVENTO
+              });
+            }
           }
-          
-          res.send("Equipo eliminado correctamente");
         }
-      })
+      });
     }
     else {
-      res.send("No existe ese equipo");
+      res.send("No se puede borrar el equipo porque se utiliza en otro lado");
     }
   });
 });
+      
 
 module.exports=router;
