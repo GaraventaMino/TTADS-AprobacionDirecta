@@ -60,6 +60,9 @@ router.get('/:id', (req, res, next) => {
 /* 
 En este método se dice cual es el estadio y el torneo de mi nuevo equipo y el método
 mismo se encarga de guardar en el modelo "Estadio" y en el modelo "Torneo" este nuevo equipo.
+
+IMPORTANTE:
+Para crear un equipo, es obligatorio que se le asigne un estadio y un torneo.
 */
 router.post('/', (req, res, next) => {
   Estadio.findOne({_id: req.body.estadios}, (error, estad) => {

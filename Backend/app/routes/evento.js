@@ -1,25 +1,10 @@
 var mongoose = require('mongoose');
 var Evento = mongoose.model('evento');
 var Partido = mongoose.model('partido');
+var Tipo_evento = mongoose.model('tipo_evento');
+var Jugador = mongoose.model('jugador');
+var Equipo = mongoose.model('equipo');
 var router=require('express').Router()
-
-//Crear prueba
-router.post('/prueba', (req, res, next) => {
-  let equipoNuevo = req.body.equipo;
-  let tiempo_ocurrenciaNuevo = req.body.tiempo;
-  var eventoNuevo = new Evento({
-    equipo: equipoNuevo,
-    tiempo_ocurrencia: tiempo_ocurrenciaNuevo
-  });
-  eventoNuevo.save((err, eventoCreado)=> {
-    if(err){
-      res.send(err);
-    }
-    else {
-      res.send("Evento creado");
-    }
-  });
-});
 
 //GET ALL
 router.get('/', (req, res, next) => {
@@ -64,6 +49,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 //Create
+//PROBAR VALIDACIONES IF(JU)
 router.post('/', (req, res, next) => {
   Partido.findOne({_id: req.body.partido}, function(err, correcto){
     if(err){
@@ -76,9 +62,57 @@ router.post('/', (req, res, next) => {
         correcto.finalizado == false) {
           let tiempo_ocurrenciaNuevo = req.body.tiempo_ocurrencia;
           let partidoNuevo = req.body.partido;
-          let tipo_eventoNuevo = req.body.tipo_evento;
-          let equipoNuevo = req.body.equipo;
-          let jugadorNuevo = req.body.jugador;
+          Tipo_evento.findOne({_id: req.body.tipo_evento}, (err, te) => {
+            if(err) {
+              res.send(err);
+            }
+            else if(te) {
+              let tipo_eventoNuevo = req.body.tipo_evento;
+              if(req.body.equipo.length != 0) {
+                Equipo.findOne({_id: req.body.equipo}, (err, eq) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                  else if(eq) {
+                    if(req.body.jugador.length != 0) {
+                      Jugador.findOne({_id: req.body.jugador}, (err, ju) => {
+                        if(err) {
+                          res.send(err);
+                        }
+                        else if(ju) {
+                          let equipoNuevo = req.body.equipo;
+                          let jugadorNuevo = req.body.jugador;
+                        }
+                        else {
+                          res.send("No existe ese jugador");
+                        }
+                      });
+                    }
+                    else {
+                      res.send("Un evento que pertenece a un equipo, también debe pertenecer a un jugador");
+                    }
+                  }
+                  else {
+                    res.send("No existe ese Equipo");
+                  }
+                });
+              }
+              else {
+                var eventoNuevo = new Evento({
+                  tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
+                  partido: partidoNuevo,
+                  tipo_evento: tipo_eventoNuevo
+                });
+              }
+              
+            }
+            else {
+              res.send("No existe ese tipo de evento");
+            }
+          })
+          
+          
+          
           var eventoNuevo = new Evento({
             tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
             partido: partidoNuevo,
@@ -95,6 +129,9 @@ router.post('/', (req, res, next) => {
             }
           });
         } 
+        else {
+          res.send("El partido no está en curso, por lo tanto no se le pueden crear eventos");
+        }
       }
     }
     else {
