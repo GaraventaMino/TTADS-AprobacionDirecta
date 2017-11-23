@@ -221,16 +221,50 @@ router.put('/:id', (req, res, next) => {
 
 //DELETE ONE
 router.delete('/:id', (req, res, next) => {
-  Equipo.findOne({_id: req.params.id}, function (err, result) {
+  Equipo.findOne({_id: req.params.id}).
+  populate({
+    path: 'torneos',
+    select: '_id'
+  }).
+  exec(function (err, result) {
     if (err) {
       res.status(500).send(err);
     }
     else if(result) {
-      result.remove((err, deleteEquipo) => {
+      result.remove((err) => {
         if(err) {
           res.status(500).send(err);
         }
-        res.status(200).send(deleteEquipo);
+        else {
+          for (var i = 0; i < result.torneos.length; i++) {
+            Torneo.findOne({_id: result.torneos[i]._id}).
+            populate({
+              path: 'equipos',
+              select: '_id'
+            }).
+            exec((err, corr) => {
+              for (var j = 0; j < corr.equipos.length; j++) {
+                if(corr.equipos[j]._id == result._id) {
+                  delete corr.equipos[j];
+                  corr.save((err) => {
+                    if (err) {
+                      res.send(err);
+                    }
+                    else {
+                      res.send("Borrado realizado");
+                    }
+                  });
+                }
+                else {
+                  res.send("Borrado realizado");
+                }
+              }
+            });
+            //FALTA ELIMINARLE EL EQUIPO A LOS PARTIDOS,JUGADOR,ESTADIO,EVENTO
+          }
+          
+          res.send("Equipo eliminado correctamente");
+        }
       })
     }
     else {
