@@ -3,10 +3,35 @@ var Estadio = mongoose.model('estadio');
 var Equipo = mongoose.model('equipo');
 var router=require('express').Router()
 
+//Crear Prueba
+router.post('/prueba', (req, res, next) => {
+  let nombreNuevo=req.body.nombre;
+  let direccionNuevo=req.body.direccion;
+  //let equipoNuevo=req.body.equipo;
+  //let imagen=req.body.imagen;
+  var estadioNuevo = new Estadio({
+      nombre: nombreNuevo,
+      direccion: direccionNuevo,
+      //equipo: equipoNuevo,
+      //imagen: imagen
+  })
+  estadioNuevo.save((err, guardado) => {
+      if(err){
+        res.send(err);
+      }
+      else {
+        res.send(guardado);
+      }
+  });
+});
+
+
 //GET ALL
 router.get('/', (req, res, next) => {
   Estadio.find().
-  populate('equipo').
+  populate({
+    path: 'equipo',
+    select: 'nombre tecnico'}).
   exec(function (err, result) {
     if (err) {
       res.status(500).send(err);
