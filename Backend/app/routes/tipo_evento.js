@@ -22,8 +22,8 @@ router.get('/:id', (req, res, next) => {
   Tipo_evento.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
       res.status(500).send(err);
-    } 
-    if(result.length != 0) {
+    }
+    else if(result != null) {
       res.json(result);
     } 
     else {
