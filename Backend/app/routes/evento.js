@@ -50,7 +50,6 @@ router.get('/:id', (req, res, next) => {
 });
 
 //Create
-//PROBAR VALIDACIONES IF(JU)
 router.post('/', (req, res, next) => {
   Partido.findOne({_id: req.body.partido}, function(err, correcto){
     if(err){
@@ -82,7 +81,30 @@ router.post('/', (req, res, next) => {
                         }
                         else if(ju != null) {
                           let equipoNuevo = req.body.equipo;
-                          let jugadorNuevo = req.body.jugador; //acá
+                          let jugadorNuevo = req.body.jugador;
+                          var eventoNuevo = new Evento({
+                            tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
+                            partido: partidoNuevo,
+                            tipo_evento: tipo_eventoNuevo,
+                            equipo: equipoNuevo,
+                            jugador: jugadorNuevo
+                          });
+                          eventoNuevo.save((err, eventoCreado) => {
+                            if(err) {
+                              res.send(err);
+                            }
+                            else {
+                              correcto.eventos.push(eventoCreado._id);
+                              correcto.save((err, partidoGuardado) => {
+                                if(err) {
+                                  res.send(err);
+                                }
+                                else {
+                                  res.send("Evento creado correctamente");
+                                }
+                              });
+                            }
+                          });
                         }
                         else {
                           res.send("No existe ese jugador");
@@ -109,18 +131,15 @@ router.post('/', (req, res, next) => {
                     res.send(err);
                   }
                   else {
-                    Partido.findOne({_id: req.body.partido}, (err, corr) => {
+                    correcto.eventos.push(eventoCreado._id);
+                    correcto.save((err, partidoGuardado) => {
                       if(err) {
                         res.send(err);
                       }
-                      else if (corr != null) {
-                        corr.eventos.push(eventoCreado._id);
-                      }
                       else {
-                        res.send("Error al cargar el partido en su modelo");
+                        res.send("Evento sin equipo ni jugador creado correctamente");
                       }
-                    })
-                    res.send("Evento sin equipo ni jugador creado correctamente");
+                    });
                   }
                 });
               }
@@ -128,11 +147,14 @@ router.post('/', (req, res, next) => {
             else {
               res.send("No existe ese tipo de evento");
             }
-          })
-        } 
+          });
+        }
         else {
           res.send("El partido no está en curso, por lo tanto no se le pueden crear eventos");
         }
+      }
+      else {
+        res.send("El tiempo de ocurrencia debe ser entre 0 y 90");
       }
     }
     else {
@@ -140,23 +162,6 @@ router.post('/', (req, res, next) => {
     }
   });
 });
-          
-          
-/*           var eventoNuevo = new Evento({
-            tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
-            partido: partidoNuevo,
-            tipo_evento: tipo_eventoNuevo,
-            equipo: equipoNuevo,
-            jugador: jugadorNuevo
-          });
-          eventoNuevo.save((err, eventoCreado)=> {
-            if(err){
-              res.send(err);
-            }
-            else {
-              res.send("Evento creado");
-            }
-          }); */
         
 
 //UPDATE
