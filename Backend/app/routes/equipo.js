@@ -50,7 +50,8 @@ router.get('/:id', (req, res, next) => {
     } 
     if(result.length != 0) {
       res.json(result);
-    } else {
+    } 
+    else {
       res.send("No existe el equipo buscado");
     } 
   });

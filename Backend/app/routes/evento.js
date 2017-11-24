@@ -6,6 +6,7 @@ var Jugador = mongoose.model('jugador');
 var Equipo = mongoose.model('equipo');
 var router=require('express').Router()
 
+
 //GET ALL
 router.get('/', (req, res, next) => {
   Evento.
@@ -55,7 +56,7 @@ router.post('/', (req, res, next) => {
     if(err){
       res.send(err);
     }
-    else if (correcto) {
+    else if (correcto != null) {
       if(req.body.tiempo_ocurrencia <= 90 && req.body.tiempo_ocurrencia >= 0) {
         var today = new Date();
         if (correcto.fecha_hora > (today.getTime() - (6300000)) &&
@@ -66,22 +67,22 @@ router.post('/', (req, res, next) => {
             if(err) {
               res.send(err);
             }
-            else if(te) {
+            else if(te != null) {
               let tipo_eventoNuevo = req.body.tipo_evento;
               if(req.body.equipo.length != 0) {
                 Equipo.findOne({_id: req.body.equipo}, (err, eq) => {
                   if(err) {
                     res.send(err);
                   }
-                  else if(eq) {
+                  else if(eq != null) {
                     if(req.body.jugador.length != 0) {
                       Jugador.findOne({_id: req.body.jugador}, (err, ju) => {
                         if(err) {
                           res.send(err);
                         }
-                        else if(ju) {
+                        else if(ju != null) {
                           let equipoNuevo = req.body.equipo;
-                          let jugadorNuevo = req.body.jugador;
+                          let jugadorNuevo = req.body.jugador; //acá
                         }
                         else {
                           res.send("No existe ese jugador");
@@ -103,17 +104,45 @@ router.post('/', (req, res, next) => {
                   partido: partidoNuevo,
                   tipo_evento: tipo_eventoNuevo
                 });
+                eventoNuevo.save((err, eventoCreado) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                  else {
+                    Partido.findOne({_id: req.body.partido}, (err, corr) => {
+                      if(err) {
+                        res.send(err);
+                      }
+                      else if (corr != null) {
+                        corr.eventos.push(eventoCreado._id);
+                      }
+                      else {
+                        res.send("Error al cargar el partido en su modelo");
+                      }
+                    })
+                    res.send("Evento sin equipo ni jugador creado correctamente");
+                  }
+                });
               }
-              
             }
             else {
               res.send("No existe ese tipo de evento");
             }
           })
+        } 
+        else {
+          res.send("El partido no está en curso, por lo tanto no se le pueden crear eventos");
+        }
+      }
+    }
+    else {
+      res.send("No existe ese partido");
+    }
+  });
+});
           
           
-          
-          var eventoNuevo = new Evento({
+/*           var eventoNuevo = new Evento({
             tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
             partido: partidoNuevo,
             tipo_evento: tipo_eventoNuevo,
@@ -127,18 +156,8 @@ router.post('/', (req, res, next) => {
             else {
               res.send("Evento creado");
             }
-          });
-        } 
-        else {
-          res.send("El partido no está en curso, por lo tanto no se le pueden crear eventos");
-        }
-      }
-    }
-    else {
-      res.send("No existe ese partido");
-    }
-  });
-});
+          }); */
+        
 
 //UPDATE
 router.put('/:id', (req, res, next) =>{
