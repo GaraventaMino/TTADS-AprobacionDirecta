@@ -135,7 +135,7 @@ router.put('/:id', (req, res, next) => {
     if (err) {
       res.status(500).send(err);
     } 
-    else if (result) {
+    else if (result != null) {
       result.nombre = req.body.nombre || result.nombre;
       result.tecnico = req.body.tecnico || result.tecnico;
       result.escudo = req.body.escudo || result.escudo;
@@ -180,7 +180,7 @@ router.put('/:id', (req, res, next) => {
           res.status(500).send(err);
         }
         else {
-          if (guardado.torneos.length != 0 && a == 2) {
+          /* if (guardado.torneos.length != 0 && a == 2) {
             Torneo.findOne({_id: req.body.torneos}, (err, t) => {
               if (err) {
                 res.send(err);
@@ -214,7 +214,7 @@ router.put('/:id', (req, res, next) => {
                 }
               });
             }
-          }, 3000);
+          }, 3000); */
           res.send("Equipo modificado con éxito");
         }
       });
