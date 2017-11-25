@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Arbitro = mongoose.model('arbitro');
+var Partido = mongoose.model('partido');
 var router=require('express').Router()
 
 //GET ALL
@@ -39,15 +40,15 @@ router.post('/', (req, res, next) => {
     var arbitroNuevo = new Arbitro({
         nombre: nombreNuevo,
         edad: edadNuevo
-    })
+    });
     arbitroNuevo.save((err) => {
-        if(err){
-        res.send(err);
+        if(err) {
+          res.send(err);
         }
         else {
-        res.send(arbitroNuevo);
+          res.send("Árbitro creado correctamente");
         }
-    })
+    });
 });
 
 //UPDATE
@@ -56,15 +57,15 @@ router.put('/:id', (req, res, next) => {
     if (err) {
       res.status(500).send(err);
     } 
-    else if (result) {
+    else if (result != null) {
       result.nombre = req.body.nombre || result.nombre;
       result.edad = req.body.edad || result.edad;
       result.save((err, result) => {
         if(err) {
-          res.status(500).send(err)
+          res.send(err);
         }
         else {
-          res.status(200).send(result);
+          res.send("Árbitro modificado con éxito");
         }
       });
     }
@@ -80,13 +81,29 @@ router.delete('/:id', (req, res, next) => {
     if (err) {
       res.status(500).send(err);
     }
-    else if(result) {
-      result.remove((err, deleteArbitro) => {
+    else if(result != null) {
+      Partido.find().
+      populate('arbitro').
+      exec((err, pa) => {
         if(err) {
-          res.status(500).send(err);
+          res.send(err);
         }
-        res.status(200).send(deleteArbitro);
-      })
+        else if (pa.length != 0) {
+          for(var i = 0; i < pa.length; i++) {
+            if(pa[i].arbitro._id == result._id) {
+              res.send("No se puede eliminar el árbitro porque participa en algún partido");
+            } 
+          }
+        }
+        result.remove((err, deleteArbitro) => {
+          if(err) {
+            res.send(err);
+          }
+          else {
+            res.send("Árbitro eliminado con éxito");
+          }
+        });
+      });
     }
     else {
       res.send("No existe ese árbitro");

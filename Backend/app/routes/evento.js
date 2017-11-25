@@ -165,14 +165,17 @@ router.post('/', (req, res, next) => {
         
 
 //UPDATE
-router.put('/:id', (req, res, next) =>{
+/* 
+Se puede modificar todo de un evento, menos el partido en el que ocurrió, 
+ya que no tendría sentido.
+*/
+router.put('/:id', (req, res, next) => {
     Evento.findOne({_id: req.params.id},function(err, result){
       if (err) {
         res.status(500).send(err);
       } 
-      else if (result) {
+      else if (result != null) {
         result.tiempo_ocurrencia = req.body.tiempo_ocurrencia || result.tiempo_ocurrencia;
-        result.partido = req.body.partido || result.partido;
         result.tipo_evento = req.body.tipo_evento || result.tipo_evento;
         result.equipo = req.body.equipo || result.equipo;
         result.jugador = req.body.jugador || result.jugador;
@@ -181,7 +184,7 @@ router.put('/:id', (req, res, next) =>{
             res.status(500).send(err)
           }
           else {
-            res.status(200).send(resultado);
+            res.send("Evento modificado correctamente");
           }
         });
       }
@@ -193,21 +196,53 @@ router.put('/:id', (req, res, next) =>{
 
 
 //DELETE ONE
+/*   
+El método se encarga de borrar el evento deseado, 
+y de borrar dicho evento del arreglo de eventos del partido.
+*/
 router.delete('/:id', (req, res, next) => {
-  Evento.findOne({_id: req.params.id}, function (err, result) {
+  Evento.findOne({_id: req.params.id}).
+  populate('partido').
+  exec(function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
-    else if(result) {                                                                                               
+    else if(result != null) {                                                                                               
       result.remove((err, deleteEvento) => {
         if(err) {
           res.status(500).send(err);
         }
-        res.status(200).send(deleteEvento);
+        else {
+          Partido.findOne({_id: result.partido._id}).
+          populate('eventos').
+          exec((err, pa) => {
+            if(err) {
+              res.send(err);
+            }
+            else if (pa != null) {
+              for(var i = 0; i < pa.eventos.length; i++) {
+                if(pa.eventos[i]._id == result._id) {
+                  var removed = pa.eventos.splice(i,1);
+                  pa.save((err, guardado) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else {
+                      res.send("Evento eliminado con éxito");
+                    }
+                  });                                                 
+                }                                                                          
+              }
+            }
+            else {
+              "No existe el partido al que pertenece el evento que desea eliminar";
+            }
+          })
+        }
       })
     }
     else {
-      res.send("No existe ese Evento");
+      res.send("No existe el Evento que desea eliminar");
     }
   });
 });
