@@ -165,14 +165,17 @@ router.post('/', (req, res, next) => {
         
 
 //UPDATE
-router.put('/:id', (req, res, next) =>{
+/* 
+Se puede modificar todo de un evento, menos el partido en el que ocurrió, 
+ya que no tendría sentido.
+*/
+router.put('/:id', (req, res, next) => {
     Evento.findOne({_id: req.params.id},function(err, result){
       if (err) {
         res.status(500).send(err);
       } 
-      else if (result) {
+      else if (result != null) {
         result.tiempo_ocurrencia = req.body.tiempo_ocurrencia || result.tiempo_ocurrencia;
-        result.partido = req.body.partido || result.partido;
         result.tipo_evento = req.body.tipo_evento || result.tipo_evento;
         result.equipo = req.body.equipo || result.equipo;
         result.jugador = req.body.jugador || result.jugador;
@@ -181,7 +184,7 @@ router.put('/:id', (req, res, next) =>{
             res.status(500).send(err)
           }
           else {
-            res.status(200).send(resultado);
+            res.send("Evento modificado correctamente");
           }
         });
       }
