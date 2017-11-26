@@ -262,28 +262,16 @@ router.delete('/:id', (req, res, next) => {
                 partidos[j].equipo_visitante._id == result._id) {
                   res.send("No se puede borrar el equipo porque se utiliza en un partido");
                 }
-                else {
-                  result.remove((err) => {
-                    if(err) {
-                      res.send(err);
-                    }
-                    else {
-                      res.send("Equipo eliminado correctamente");
-                    }
-                  });
-                }
               }
             }
-            else {
-              result.remove((err) => {
-                if(err) {
-                  res.send(err);
-                }
-                else {
-                  res.send("Equipo eliminado correctamente");
-                }
-              });
-            }
+            result.remove((err) => {
+              if(err) {
+                res.send(err);
+              }
+              else {
+                res.send("Equipo eliminado correctamente");
+              }
+            });
           });
         }
       });

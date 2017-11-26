@@ -6,7 +6,7 @@ var router=require('express').Router()
 router.get('/', (req, res, next) => {
   Tipo_evento.find(function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if (result.length != 0) {
       res.json(result);
@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   Tipo_evento.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if(result != null) {
       res.json(result);
@@ -45,7 +45,7 @@ router.post('/', (req, res, next) => {
       res.send(err);
     }
     else {
-      res.send(result);
+      res.send("Tipo de evento creado correctamente");
     }
   })
 });
@@ -54,17 +54,17 @@ router.post('/', (req, res, next) => {
 router.put('/:id', (req, res, next) => {
   Tipo_evento.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
-    else if (result) {
+    else if (result != null) {
       result.nombre = req.body.nombre || result.nombre;
       result.icono = req.body.icono || result.icono;
       result.save((err, resultado) => {
         if(err) {
-          res.status(500).send(err)
+          res.send(err)
         }
         else {
-          res.status(200).send(resultado);
+          res.send("Tipo de evento modificado con éxito");
         }
       });
     }
@@ -78,15 +78,31 @@ router.put('/:id', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
   Tipo_evento.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
-    else if(result) {
-      result.remove((err, deleteTipo_evento) => {
+    else if(result != null) {
+      Evento.find().
+      populate('tipo_evento').
+      exec((err, ev) => {
         if(err) {
-          res.status(500).send(err);
+          res.send(err);
         }
-        res.status(200).send(deleteTipo_evento);
-      })
+        else if (ev.length != 0) {
+          for(var j = 0; j < ev.length; j++) {
+            if(ev[j].tipo_evento._id == result._id) {
+              res.send("No se puede eliminar el tipo de evento porque ya ha sido utilizado en algún partido");
+            }
+          }
+        }
+        result.remove((err) => {
+          if(err) {
+            res.send(err);
+          }
+          else {
+            res.send("Tipo de evento eliminado correctamente");
+          }
+        });
+      });
     }
     else {
       res.send("No existe ese tipo de evento");
