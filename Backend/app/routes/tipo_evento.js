@@ -98,7 +98,7 @@ router.delete('/:id', (req, res, next) => {
             res.send(deleteTipo_evento);
           });
         }
-      });
+      }); 
     }
     else {
       res.send("No existe ese tipo de evento");
