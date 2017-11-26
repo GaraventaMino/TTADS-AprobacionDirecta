@@ -88,17 +88,21 @@ router.delete('/:id', (req, res, next) => {
           res.send(err);
         }
         else if (ev.length != 0) {
-          res.send("No se puede eliminar el tipo de evento porque ya ha sido utilizado en algún partido");
-        }
-        else {
-          result.remove((err, deleteTipo_evento) => {
-            if(err) {
-              res.send(err);
+          for(var j = 0; j < ev.length; j++) {
+            if(ev[j].tipo_evento._id == result._id) {
+              res.send("No se puede eliminar el tipo de evento porque ya ha sido utilizado en algún partido");
             }
-            res.send(deleteTipo_evento);
-          });
+          }
         }
-      }); 
+        result.remove((err) => {
+          if(err) {
+            res.send(err);
+          }
+          else {
+            res.send("Tipo de evento eliminado correctamente");
+          }
+        });
+      });
     }
     else {
       res.send("No existe ese tipo de evento");
