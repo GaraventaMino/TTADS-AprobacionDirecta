@@ -86,19 +86,43 @@ router.post('/', (req, res, next) => {
 router.put('/:id', (req, res, next) => {
   Jugador.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
-    else if (result) {
+    else if (result != null) {
       result.nombre = req.body.nombre || result.nombre;
       result.edad = req.body.edad || result.edad;
-      result.equipo = req.body.equipo || result.equipo;
       result.imagen = req.body.imagen || result.imagen;
+      if(req.body.equipo.length != 0) {
+        Equipo.findOne({_id: result.equipo}).
+        populate('jugadores').
+        exec((err, eq) => {
+          if(err) {
+            res.send(err);
+          }
+          else if (eq != null) {
+            for(var i = 0; i < eq.jugadores.length; i++) {
+              if(eq.jugadores[i]._id == result.equipo._id) {
+                var removed = eq.jugadores.splice(i, 1);
+                eq.save((err) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                });
+              }
+            }
+            result.equipo = req.body.equipo;
+          }
+          else {
+            res.send("Error al intentar localizar el equipo actual del jugador");
+          }
+        });
+      }
       result.save((err, resultado) => {
         if(err) {
-          res.status(500).send(err)
+          res.send(err);
         }
         else {
-          res.status(200).send(resultado);
+          res.send("Jugador modificado con éxito");
         }
       });
     }
