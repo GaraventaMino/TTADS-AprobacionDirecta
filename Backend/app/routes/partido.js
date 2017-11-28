@@ -12,10 +12,10 @@ router.put('/:id/finalizar', (req, res, next) => {
       result.finalizado = true;
       result.save((err, result) => {
         if(err) {
-          res.status(500).send(err)
+          res.send(err)
         }
         else {
-          res.status(200).send("¡Partido finalizado con éxito!");
+          res.send("¡Partido finalizado con éxito!");
         }
       });
     }

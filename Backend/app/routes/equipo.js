@@ -133,7 +133,7 @@ router.put('/:id', (req, res, next) => {
   populate('torneos').
   exec(function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
     else if (result != null) {
       result.nombre = req.body.nombre || result.nombre;
@@ -175,9 +175,9 @@ router.put('/:id', (req, res, next) => {
           result.estadios.push(req.body.estadios);
         }
       }
-      result.save((err, guardado) => {
+      result.save((err) => {
         if(err) {
-          res.status(500).send(err);
+          res.send(err);
         }
         else {
           /* if (guardado.torneos.length != 0 && a == 2) {
