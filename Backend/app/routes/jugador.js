@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Jugador = mongoose.model('jugador');
 var Equipo = mongoose.model('equipo');
+var Evento = mongoose.model('evento');
 var router=require('express').Router()
 
 //GET ALL
@@ -134,20 +135,57 @@ router.put('/:id', (req, res, next) => {
 
 //DELETE ONE
 router.delete('/:id', (req, res, next) => {
-  Jugador.findOne({_id: req.params.id}, function (err, result) {
-    if (err) {
-      res.status(500).send(err);
+  Evento.find().
+  populate('jugador').
+  exec((err, ev) => {
+    if(err) {
+      res.send(err);
     }
-    else if(result) {
-      result.remove((err, deleteJugador) => {
-        if(err) {
-          res.status(500).send(err);
+    else if(ev.length != 0) {
+      for(var i = 0; i < ev.length; i++) {
+        if(ev[i].jugador._id == req.params.id) {
+          res.send("El jugador no se puede eliminar, pues ya disputó partidos y fue partícipe de algún evento");
         }
-        res.status(200).send(deleteJugador);
-      })
+      }
+    }
+  });
+  Jugador.findOne({_id: req.params.id}).
+  populate('equipo').
+  exec((err, ju) => {
+    if (err) {
+      res.send(err);
+    }
+    else if(result != null) {
+      Equipo.findOne({_id: ju.equipo._id}).
+      populate('jugadores').
+      exec((err, eq) => {
+        if(err) {
+          res.send(err);
+        }
+        else if (eq != null) {
+          for(var i = 0; i < eq.jugadores.length; i++) {
+            if(eq.jugadores[i]._id == ju._id) {
+              var removed = eq.jugadores.splice(i, 1);
+              eq.save((err) => {
+                if(err) {
+                  res.send(err);
+                }
+              });
+            }
+          }
+        }
+        ju.remove((err) => {
+            if(err) {
+              res.send(err);
+            }
+            else {
+              res.send("Jugador borrado con éxito");
+            }
+        });
+      });
     }
     else {
-      res.send("No existe ese Jugador");
+      res.send("No existe el Jugador que desea eliminar");
     }
   });
 });
