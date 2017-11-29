@@ -31,7 +31,7 @@ router.get('/:id/posiciones', (req, res, next) => {
         equipos[k].puntaje = 0;
         equipos[k].partidos_jugados = 0;
       }
-      Torneo.findOne({_id: req.params.id}, 'partidos').
+      Torneo.findOne({_id: req.params.id}).
       populate({
         path: 'partidos',
         select: 'eventos equipo_local equipo_visitante',
@@ -102,7 +102,7 @@ router.get('/:id/posiciones', (req, res, next) => {
               }
             });
           }
-          Torneo.find({_id: req.params.id}, 'equipos').
+          Torneo.findOne({_id: req.params.id}).
           populate('equipos', 'nombre puntaje partidos_jugados').
           sort('-puntaje').
           exec(function (err, posiciones) {
@@ -138,7 +138,7 @@ router.get('/:id/goleadores', (req, res, next) => {
       for(var k = 0; k < jugadores.length; k++) {
         jugadores[k].goles = 0;
       }
-      Torneo.find({_id: req.params.id}, 'partidos').
+      Torneo.findOne({_id: req.params.id}).
       populate({
         path: 'partidos',
         select: '_id eventos',
@@ -206,24 +206,24 @@ router.get('/:id/goleadores', (req, res, next) => {
 
 //Get Tabla de amonestados de un torneo
 router.get('/:id/amonestados', (req, res, next) => {
-  Jugador.find(function (err, jugadores) {
+  Jugador.find((err, jugadores) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if (jugadores.length != 0) {
       for(var k = 0; k < jugadores.length; k++) {
         jugadores[k].amarillas = 0;
       }
-      Torneo.find({_id: req.params.id}, 'partidos').
+      Torneo.findOne({_id: req.params.id}).
       populate({
         path: 'partidos',
-        select: 'eventos',
+        select: '_id eventos',
         populate: ({ 
           path: 'eventos',
-          select: 'tipo_evento jugador',
+          select: '_id tipo_evento jugador',
           populate: ({
             path: 'tipo_evento',
-            select: 'nombre',
+            select: '_id nombre',
           }),
           populate: ({
             path: 'jugador',
@@ -231,11 +231,11 @@ router.get('/:id/amonestados', (req, res, next) => {
           })
         }),
       }).
-      exec(function (err, result) {
+      exec((err, result) => {
         if (err) {
-          res.status(500).send(err);
+          res.send(err);
         }
-        else {
+        else if (result != null) {
           for(var i = 0; i < result.partidos.length; i++) {
             for(var j = 0; j < result.partidos[i].eventos.length; j++) {
               var autor;
@@ -245,8 +245,8 @@ router.get('/:id/amonestados', (req, res, next) => {
                 }
               }
               if(result.partidos[i].eventos[j].tipo_evento.nombre == "Tarjeta amarilla") {
-                jugadores[autor].amarillas += 1;
-                result.save((err, correcto) => {
+                jugadores[autor].amarillas++;
+                result.save((err) => {
                   if(err){
                     res.send(err);
                   }
@@ -260,7 +260,7 @@ router.get('/:id/amonestados', (req, res, next) => {
             path: 'equipo',
             select: '_id nombre escudo'
           }).
-          exec(function (err, amonestados) {
+          exec((err, amonestados) => {
             if(err) {
               res.send(err);
             }
@@ -268,6 +268,9 @@ router.get('/:id/amonestados', (req, res, next) => {
               res.send(amonestados);
             }
           });
+        }
+        else {
+          res.send("El torneo del que desea saber su tabla de amonestados no existe");
         }
       });
     }
