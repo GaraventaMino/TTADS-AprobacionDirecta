@@ -249,25 +249,37 @@ router.post('/', (req, res, next) => {
 });
 
 //UPDATE
+/* 
+A un partido solo se le puede modificar:
+- fecha_hora
+- arbitro
+- estadio
+
+No tiene sentido modificarle los equipos o el torneo (en dicho caso es más lógico crear un nuevo partido)
+
+Los eventos del partido se manejan desde "/app/routes/evento.js"
+*/
 router.put('/:id', (req, res, next) => {
-  Partido.findOne({_id: req.params.id}, function (err, result) {
+  Partido.findOne({_id: req.params.id}, function (err, pa) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
-    else if (result) {
-      result.fecha_hora = req.body.fecha_hora || result.fecha_hora;
-      result.equipo_local = req.body.equipo_local || result.equipo_local;
-      result.equipo_visitante = req.body.equipo_visitante || result.equipo_visitante;
-      result.arbitro = req.body.arbitro || result.arbitro;
-      result.estadio = req.body.estadio || result.estadio;
-      result.save((err, result) => {
-        if(err) {
-          res.status(500).send(err)
-        }
-        else {
-          res.status(200).send(result);
-        }
-      });
+    else if (pa) {
+      var today = new Date();
+      //Quizá falle la validación de la fecha (CHEQUEAR)
+      if(pa.fecha_hora > today.getTime()) {
+        pa.fecha_hora = req.body.fecha_hora || pa.fecha_hora;
+        pa.arbitro = req.body.arbitro || pa.arbitro;
+        pa.estadio = req.body.estadio || pa.estadio;
+        pa.save((err) => {
+          if(err) {
+            res.send(err)
+          }
+          else {
+            res.send("Partido modificado con éxito");
+          }
+        });
+      }
     }
     else {
       res.send("El partido que desea modificar no existe");

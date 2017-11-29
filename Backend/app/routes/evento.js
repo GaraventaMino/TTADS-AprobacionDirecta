@@ -181,7 +181,7 @@ router.put('/:id', (req, res, next) => {
         result.jugador = req.body.jugador || result.jugador;
         result.save((err, resultado) => {
           if(err) {
-            res.status(500).send(err)
+            res.send(err)
           }
           else {
             res.send("Evento modificado correctamente");
@@ -210,7 +210,7 @@ router.delete('/:id', (req, res, next) => {
     else if(result != null) {                                                                                               
       result.remove((err, deleteEvento) => {
         if(err) {
-          res.status(500).send(err);
+          res.send(err);
         }
         else {
           Partido.findOne({_id: result.partido._id}).
@@ -223,7 +223,7 @@ router.delete('/:id', (req, res, next) => {
               for(var i = 0; i < pa.eventos.length; i++) {
                 if(pa.eventos[i]._id == result._id) {
                   var removed = pa.eventos.splice(i,1);
-                  pa.save((err, guardado) => {
+                  pa.save((err) => {
                     if(err) {
                       res.send(err);
                     }
