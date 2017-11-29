@@ -7,9 +7,9 @@ var router=require('express').Router()
 
 //Get Presentacion de todos los torneos
 router.get('/presentacion', (req, res, next) => {
-  Torneo.find({}, '_id nombre logo imagen_trofeo', function (err, result) {
+  Torneo.find({}, '_id nombre logo imagen_trofeo', (err, result) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if (result.length != 0) {
       res.json(result);
@@ -22,32 +22,33 @@ router.get('/presentacion', (req, res, next) => {
 
 //Get Tabla de posiciones de un torneo
 router.get('/:id/posiciones', (req, res, next) => {
-  Equipo.find(function (err, equipos) {
+  Equipo.find((err, equipos) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if (equipos.length != 0) {
       for(var k = 0; k < equipos.length; k++) {
         equipos[k].puntaje = 0;
+        equipos[k].partidos_jugados = 0;
       }
-      Torneo.find({_id: req.params.id}, 'partidos').
+      Torneo.findOne({_id: req.params.id}, 'partidos').
       populate({
         path: 'partidos',
         select: 'eventos equipo_local equipo_visitante',
         populate: ({
           path: 'equipo_local',
-          select: 'nombre'
+          select: '_id nombre'
         }),
         populate: ({
           path: 'equipo_visitante',
-          select: 'nombre'
+          select: '_id nombre'
         }),
         populate: ({ 
           path: 'eventos',
-          select: 'tipo_evento equipo',
+          select: '_id tipo_evento equipo',
           populate: ({
             path: 'tipo_evento',
-            select: 'nombre',
+            select: '_id nombre',
           }),
           populate: ({
             path: 'equipo',
@@ -55,17 +56,17 @@ router.get('/:id/posiciones', (req, res, next) => {
           })
         }),
       }).
-      exec(function (err, result) {
+      exec((err, result) => {
         if (err) {
-          res.status(500).send(err);
+          res.send(err);
         }
-        else {
+        else if(result != null) {
           for(var i = 0; i < result.partidos.length; i++) {
             var golesLocal = 0;
             var golesVisitante = 0;
             var local;
             var visitante;
-            for(var w = 0; w < equipos.length; w++){
+            for(var w = 0; w < equipos.length; w++) {
               if(equipos[w]._id == result.partidos[i].equipo_local._id) {
                 local = w;
               }
@@ -93,18 +94,20 @@ router.get('/:id/posiciones', (req, res, next) => {
             else {
               equipos[visitante].puntaje += 3;
             }
-            equipos.save((err, correcto) => {
+            equipos[local].partidos_jugados++;
+            equipos[visitante].partidos_jugados++;
+            equipos.save((err) => {
               if(err){
                 res.send(err);
               }
             });
           }
-        Torneo.find({_id: req.params.id}, 'equipos').
-          populate('equipos', 'nombre puntaje').
+          Torneo.find({_id: req.params.id}, 'equipos').
+          populate('equipos', 'nombre puntaje partidos_jugados').
           sort('-puntaje').
           exec(function (err, posiciones) {
             if (err) {
-              res.status(500).send(err);
+              res.send(err);
             }
             else if (posiciones.length != 0) {
               res.json(posiciones);
@@ -114,8 +117,14 @@ router.get('/:id/posiciones', (req, res, next) => {
             }
           });
         }
+        else {
+          res.send("No existe el torneo del que busca la tabla de posiciones");
+        }
       });
-    };
+    }
+    else {
+      res.send("No hay ningún equipo en este torneo");
+    }
   });
 });
 
