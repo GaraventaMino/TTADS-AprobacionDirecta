@@ -273,12 +273,15 @@ router.put('/:id', (req, res, next) => {
         pa.estadio = req.body.estadio || pa.estadio;
         pa.save((err) => {
           if(err) {
-            res.send(err)
+            res.send(err);
           }
           else {
             res.send("Partido modificado con éxito");
           }
         });
+      }
+      else {
+        res.send("No se puede modificar un partido que ya comenzó o finalizó");
       }
     }
     else {
@@ -288,18 +291,59 @@ router.put('/:id', (req, res, next) => {
 });
 
 //DELETE ONE
+/* 
+Solo se pueden eliminar partidos que no hayan comenzado aún.
+
+El método se encarga de borrarle el partido al torneo también.
+*/
 router.delete('/:id', (req, res, next) => {
-  Partido.findOne({_id: req.params.id}, function (err, result) {
+  Partido.findOne({_id: req.params.id}).
+  populate('torneo').
+  exec((err, pa) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
-    else if(result) {
-      result.remove((err, deletePartido) => {
-        if(err) {
-          res.status(500).send(err);
-        }
-        res.status(200).send(deletePartido);
-      })
+    else if(pa != null) {
+      var today = new Date();
+      //Quizá falle la validación de la fecha (CHEQUEAR)
+      if(pa.fecha_hora > today.getTime()) {
+        Torneo.findOne({_id: pa.torneo._id}).
+        populate('partidos').
+        exec((err, to) => {
+          if(err) {
+            res.send(err);
+          }
+          else if(to != null) {
+            pa.remove((err) => {
+              if(err) {
+                res.send(err);
+              }
+              else {
+                for(var i = 0; i < to.partidos.length; i++) {
+                  if(to.partidos[i]._id == pa._id) {
+                    var removed = to.partidos.splice(i, 1);
+                    to.save((err) => {
+                      if(err) {
+                        res.send(err);
+                      }
+                      else {
+                        res.send("Partido eliminado con éxito");               
+                      }
+                    });
+                  }
+                }
+              }
+            });
+          }
+          else {
+            res.send("Error a buscar el torneo al que pertenece el partido");
+          }
+        });
+        res.send("Partido eliminado con éxito");
+      }
+      else {
+        res.send("No se puede eliminar un partido que ya comenzó o finalizó");
+      }
     }
     else {
       res.send("No existe ese Partido");
