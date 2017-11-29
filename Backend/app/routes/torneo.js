@@ -130,75 +130,78 @@ router.get('/:id/posiciones', (req, res, next) => {
 
 //Get Tabla de goleadores de un torneo
 router.get('/:id/goleadores', (req, res, next) => {
-  Jugador.find(function (err, jugadores) {
-      if (err) {
-        res.status(500).send(err);
+  Jugador.find((err, jugadores) => {
+    if (err) {
+      res.send(err);
+    }
+    else if (jugadores.length != 0) {
+      for(var k = 0; k < jugadores.length; k++) {
+        jugadores[k].goles = 0;
       }
-      else if (jugadores.length != 0) {
-        for(var k = 0; k < jugadores.length; k++) {
-          jugadores[k].goles = 0;
+      Torneo.find({_id: req.params.id}, 'partidos').
+      populate({
+        path: 'partidos',
+        select: '_id eventos',
+        populate: ({ 
+          path: 'eventos',
+          select: '_id tipo_evento jugador',
+          populate: ({
+            path: 'tipo_evento',
+            select: '_id nombre',
+          }),
+          populate: ({
+            path: 'jugador',
+            select: '_id nombre goles',
+          })
+        }),
+      }).
+      exec((err, result) => {
+        if (err) {
+          res.send(err);
         }
-        Torneo.find({_id: req.params.id}, 'partidos').
-          populate({
-            path: 'partidos',
-            select: 'eventos',
-            populate: ({ 
-              path: 'eventos',
-              select: 'tipo_evento jugador',
-              populate: ({
-                path: 'tipo_evento',
-                select: 'nombre',
-              }),
-              populate: ({
-                path: 'jugador',
-                select: '_id nombre goles',
-              })
-            }),
-          }).
-          exec(function (err, result) {
-            if (err) {
-              res.status(500).send(err);
-            }
-            else {
-              for(var i = 0; i < result.partidos.length; i++) {
-                for(var j = 0; j < result.partidos[i].eventos.length; j++) {
-                  var autorGol;
-                  for(var w = 0; w < jugadores.length; w++){
-                    if(jugadores[w]._id == result.partidos[i].eventos[j].jugador._id) {
-                      autorGol = w;
-                    }
-                  }
-                  if(result.partidos[i].eventos[j].tipo_evento.nombre == "Gol") {
-                    jugadores[autorGol].goles += 1;
-                    jugadores.save((err, correcto) => {
-                      if(err){
-                        res.send(err);
-                      }
-                    });
-                  }
+        else if(result != null) {
+          for(var i = 0; i < result.partidos.length; i++) {
+            for(var j = 0; j < result.partidos[i].eventos.length; j++) {
+              var autorGol;
+              for(var w = 0; w < jugadores.length; w++){
+                if(jugadores[w]._id == result.partidos[i].eventos[j].jugador._id) {
+                  autorGol = w;
                 }
               }
-              Jugador.find().
-              sort({goles: 'des'}).
-              populate({
-                path: 'equipo',
-                select: '_id nombre escudo'
-              }).
-              exec(function (err, goleadores) {
-                if(err) {
-                  res.send(err);
-                }
-                else {
-                  res.send(goleadores);
-                }
-              });
+              if(result.partidos[i].eventos[j].tipo_evento.nombre == "Gol") {
+                jugadores[autorGol].goles++;
+                jugadores.save((err) => {
+                  if(err){
+                    res.send(err);
+                  }
+                });
+              }
             }
-        });
-      }
-      else {
-        res.send("No existe ningún Jugador aún");
-      }
-    });  
+          }
+          Jugador.find().
+          sort({goles: 'des'}).
+          populate({
+            path: 'equipo',
+            select: '_id nombre escudo'
+          }).
+          exec((err, goleadores) => {
+            if(err) {
+              res.send(err);
+            }
+            else {
+              res.send(goleadores);
+            }
+          });
+        }
+        else {
+          res.send("No existe el torneo del que desea obtener la tabla de goleadores");
+        }
+      });
+    }
+    else {
+      res.send("No existe ningún Jugador aún");
+    }
+  });  
 });
 
 //Get Tabla de amonestados de un torneo
