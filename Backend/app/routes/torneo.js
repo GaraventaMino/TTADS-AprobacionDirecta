@@ -282,24 +282,24 @@ router.get('/:id/amonestados', (req, res, next) => {
 
 //Get Tabla de expulsados de un torneo
 router.get('/:id/expulsados', (req, res, next) => {
-  Jugador.find(function (err, resultado) {
+  Jugador.find((err, resultado) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if (resultado.length != 0) {
       for(var k = 0; k < resultado.length; k++) {
         resultado[k].rojas = 0;
       }
-      Torneo.find({_id: req.params.id}, 'partidos').
+      Torneo.findOne({_id: req.params.id}).
       populate({
         path: 'partidos',
-        select: 'eventos',
+        select: '_id eventos',
         populate: ({ 
           path: 'eventos',
-          select: 'tipo_evento jugador',
+          select: '_id tipo_evento jugador',
           populate: ({
             path: 'tipo_evento',
-            select: 'nombre',
+            select: '_id nombre',
           }),
           populate: ({
             path: 'jugador',
@@ -307,11 +307,11 @@ router.get('/:id/expulsados', (req, res, next) => {
           })
         }),
       }).
-      exec(function (err, result) {
+      exec((err, result) => {
         if (err) {
-          res.status(500).send(err);
+          res.send(err);
         }
-        else {
+        else if(result != null) {
           for(var i = 0; i < result.partidos.length; i++) {
             for(var j = 0; j < result.partidos[i].eventos.length; j++) {
               var autor;
@@ -321,8 +321,8 @@ router.get('/:id/expulsados', (req, res, next) => {
                 }
               }
               if(result.partidos[i].eventos[j].tipo_evento.nombre == "Tarjeta roja") {
-                jugadores[autor].rojas += 1;
-                result.save((err, correcto) => {
+                jugadores[autor].rojas++;
+                result.save((err) => {
                   if(err){
                     res.send(err);
                   }
@@ -336,7 +336,7 @@ router.get('/:id/expulsados', (req, res, next) => {
             path: 'equipo',
             select: '_id nombre escudo'
           }).
-          exec(function (err, expulsados) {
+          exec((err, expulsados) => {
             if(err) {
               res.send(err);
             }
@@ -344,6 +344,9 @@ router.get('/:id/expulsados', (req, res, next) => {
               res.send(expulsados);
             }
           });
+        }
+        else {
+          res.send("El torneo del que quiere saber la tabla de expulsados no existe");
         }
       });
     }
