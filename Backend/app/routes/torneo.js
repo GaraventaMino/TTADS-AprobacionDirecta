@@ -358,9 +358,9 @@ router.get('/:id/expulsados', (req, res, next) => {
 
 //GET ALL
 router.get('/', (req, res, next) => {
-  Torneo.find(function (err, result) {
+  Torneo.find((err, result) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if (result.length != 0) {
       res.json(result);
@@ -373,13 +373,14 @@ router.get('/', (req, res, next) => {
 
 //GET ONE
 router.get('/:id', (req, res, next) => {
-  Torneo.findOne({_id: req.params.id}, function (err, result) {
+  Torneo.findOne({_id: req.params.id}, (err, result) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
-    if(result.length != 0) {
+    else if(result != null) {
       res.json(result);
-    } else {
+    } 
+    else {
       res.send("Ningún Torneo Encontrado");
     } 
   });
