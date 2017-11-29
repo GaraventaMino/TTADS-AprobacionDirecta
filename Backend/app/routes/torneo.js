@@ -396,32 +396,32 @@ router.post('/', (req, res, next) => {
       logo: logo,
       imagen_trofeo: imagen_trofeo
   })
-  torneoNuevo.save((err, result) => {
+  torneoNuevo.save((err) => {
     if(err){
       res.send(err);
     }
     else {
-      res.send(result);
+      res.send("Torneo creado con éxito");
     }
-  })
+  });
 });
 
 //UPDATE
 router.put('/:id', (req, res, next) => {
-  Torneo.findOne({_id: req.params.id}, function (err, result) {
+  Torneo.findOne({_id: req.params.id}, (err, result) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
-    else if (result) {
+    else if (result != null) {
       result.nombre = req.body.nombre || result.nombre;
       result.logo = req.body.logo || result.logo;
       result.imagen_trofeo = req.body.imagen_trofeo || result.imagen_trofeo;
-      result.save((err, resultado) => {
+      result.save((err) => {
         if(err) {
-          res.status(500).send(err)
+          res.send(err)
         }
         else {
-          res.status(200).send(resultado);
+          res.send("Torneo modificado con éxito");
         }
       });
     }
@@ -432,18 +432,28 @@ router.put('/:id', (req, res, next) => {
 });
 
 //DELETE ONE
+/* 
+Solo se puede eliminar un torneo si no tiene partidos ni equipos asignados
+*/
 router.delete('/:id', (req, res, next) => {
-  Torneo.findOne({_id: req.params.id}, function (err, result) {
+  Torneo.findOne({_id: req.params.id}, (err, to) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
-    else if(result) {
-      result.remove((err, deleteTorneo) => {
-        if(err) {
-          res.status(500).send(err);
-        }
-        res.status(200).send(deleteTorneo);
-      })
+    else if(to != null) {
+      if(to.equipos.length == 0 && to.partidos.length == 0) {
+        to.remove((err) => {
+          if(err) {
+            res.send(err);
+          }
+          else {
+            res.send("Torneo eliminado con éxito");
+          }
+        });
+      }
+      else {
+        res.send("No se puede eliminar el torneo porque tiene partidos y/o equipos asignados");
+      }
     }
     else {
       res.send("No existe ese torneo");
