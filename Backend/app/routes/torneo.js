@@ -282,24 +282,24 @@ router.get('/:id/amonestados', (req, res, next) => {
 
 //Get Tabla de expulsados de un torneo
 router.get('/:id/expulsados', (req, res, next) => {
-  Jugador.find(function (err, resultado) {
+  Jugador.find((err, resultado) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if (resultado.length != 0) {
       for(var k = 0; k < resultado.length; k++) {
         resultado[k].rojas = 0;
       }
-      Torneo.find({_id: req.params.id}, 'partidos').
+      Torneo.findOne({_id: req.params.id}).
       populate({
         path: 'partidos',
-        select: 'eventos',
+        select: '_id eventos',
         populate: ({ 
           path: 'eventos',
-          select: 'tipo_evento jugador',
+          select: '_id tipo_evento jugador',
           populate: ({
             path: 'tipo_evento',
-            select: 'nombre',
+            select: '_id nombre',
           }),
           populate: ({
             path: 'jugador',
@@ -307,11 +307,11 @@ router.get('/:id/expulsados', (req, res, next) => {
           })
         }),
       }).
-      exec(function (err, result) {
+      exec((err, result) => {
         if (err) {
-          res.status(500).send(err);
+          res.send(err);
         }
-        else {
+        else if(result != null) {
           for(var i = 0; i < result.partidos.length; i++) {
             for(var j = 0; j < result.partidos[i].eventos.length; j++) {
               var autor;
@@ -321,8 +321,8 @@ router.get('/:id/expulsados', (req, res, next) => {
                 }
               }
               if(result.partidos[i].eventos[j].tipo_evento.nombre == "Tarjeta roja") {
-                jugadores[autor].rojas += 1;
-                result.save((err, correcto) => {
+                jugadores[autor].rojas++;
+                result.save((err) => {
                   if(err){
                     res.send(err);
                   }
@@ -336,7 +336,7 @@ router.get('/:id/expulsados', (req, res, next) => {
             path: 'equipo',
             select: '_id nombre escudo'
           }).
-          exec(function (err, expulsados) {
+          exec((err, expulsados) => {
             if(err) {
               res.send(err);
             }
@@ -344,6 +344,9 @@ router.get('/:id/expulsados', (req, res, next) => {
               res.send(expulsados);
             }
           });
+        }
+        else {
+          res.send("El torneo del que quiere saber la tabla de expulsados no existe");
         }
       });
     }
@@ -355,9 +358,9 @@ router.get('/:id/expulsados', (req, res, next) => {
 
 //GET ALL
 router.get('/', (req, res, next) => {
-  Torneo.find(function (err, result) {
+  Torneo.find((err, result) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
     else if (result.length != 0) {
       res.json(result);
@@ -370,13 +373,14 @@ router.get('/', (req, res, next) => {
 
 //GET ONE
 router.get('/:id', (req, res, next) => {
-  Torneo.findOne({_id: req.params.id}, function (err, result) {
+  Torneo.findOne({_id: req.params.id}, (err, result) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
-    if(result.length != 0) {
+    else if(result != null) {
       res.json(result);
-    } else {
+    } 
+    else {
       res.send("Ningún Torneo Encontrado");
     } 
   });
@@ -392,32 +396,32 @@ router.post('/', (req, res, next) => {
       logo: logo,
       imagen_trofeo: imagen_trofeo
   })
-  torneoNuevo.save((err, result) => {
+  torneoNuevo.save((err) => {
     if(err){
       res.send(err);
     }
     else {
-      res.send(result);
+      res.send("Torneo creado con éxito");
     }
-  })
+  });
 });
 
 //UPDATE
 router.put('/:id', (req, res, next) => {
-  Torneo.findOne({_id: req.params.id}, function (err, result) {
+  Torneo.findOne({_id: req.params.id}, (err, result) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
-    else if (result) {
+    else if (result != null) {
       result.nombre = req.body.nombre || result.nombre;
       result.logo = req.body.logo || result.logo;
       result.imagen_trofeo = req.body.imagen_trofeo || result.imagen_trofeo;
-      result.save((err, resultado) => {
+      result.save((err) => {
         if(err) {
-          res.status(500).send(err)
+          res.send(err)
         }
         else {
-          res.status(200).send(resultado);
+          res.send("Torneo modificado con éxito");
         }
       });
     }
@@ -428,18 +432,28 @@ router.put('/:id', (req, res, next) => {
 });
 
 //DELETE ONE
+/* 
+Solo se puede eliminar un torneo si no tiene partidos ni equipos asignados
+*/
 router.delete('/:id', (req, res, next) => {
-  Torneo.findOne({_id: req.params.id}, function (err, result) {
+  Torneo.findOne({_id: req.params.id}, (err, to) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     }
-    else if(result) {
-      result.remove((err, deleteTorneo) => {
-        if(err) {
-          res.status(500).send(err);
-        }
-        res.status(200).send(deleteTorneo);
-      })
+    else if(to != null) {
+      if(to.equipos.length == 0 && to.partidos.length == 0) {
+        to.remove((err) => {
+          if(err) {
+            res.send(err);
+          }
+          else {
+            res.send("Torneo eliminado con éxito");
+          }
+        });
+      }
+      else {
+        res.send("No se puede eliminar el torneo porque tiene partidos y/o equipos asignados");
+      }
     }
     else {
       res.send("No existe ese torneo");
