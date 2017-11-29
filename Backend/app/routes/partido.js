@@ -1,16 +1,19 @@
 var mongoose = require('mongoose');
 var Partido = mongoose.model('partido');
+var Arbitro = mongoose.model('arbitro');
+var Estadio = mongoose.model('estadio');
+var Equipo = mongoose.model('equipo');
 var router=require('express').Router()
 
 //Finalizar partido
 router.put('/:id/finalizar', (req, res, next) => {
   Partido.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } 
-    else if (result.length != 0) {
+    else if (result != null) {
       result.finalizado = true;
-      result.save((err, result) => {
+      result.save((err) => {
         if(err) {
           res.send(err)
         }
@@ -35,6 +38,8 @@ router.get('/activos', (req, res, next) => {
   sort({fecha_hora: 'asc'}).
   populate('equipo_local').
   populate('equipo_visitante').
+  populate('arbitro').
+  populate('estadio').
   populate({
     path: 'eventos',
     populate: { path: 'equipo' }   
@@ -51,7 +56,7 @@ router.get('/activos', (req, res, next) => {
       res.json(partido);
     }
     else {
-      res.send("Ningún partido encontrado");
+      res.send("Ningún partido en curso");
     }
   });
 });
@@ -65,6 +70,8 @@ router.get('/planificados', (req, res, next) => {
   sort({fecha_hora: 'asc'}).
   populate('equipo_local').
   populate('equipo_visitante').
+  populate('arbitro').
+  populate('estadio').
   populate({
     path: 'eventos',
     populate: { path: 'equipo' },
@@ -84,7 +91,7 @@ router.get('/planificados', (req, res, next) => {
       res.json(partido);
     }
     else {
-      res.send("Ningún partido encontrado");
+      res.send("Ningún partido planificado");
     }
   });
 });
@@ -154,26 +161,66 @@ router.get('/:id', (req, res, next) => {
 
 //CREATE
 router.post('/', (req, res, next) => {
-  let fecha_hora=req.body.fecha_hora;
-  let equipo_local =req.body.equipo_local;
-  let equipo_visitante = req.body.equipo_visitante;
-  let arbitro = req.body.arbitro;
-  let estadio = req.body.estadio;
-  var partidoNuevo = new Partido({
-      fecha_hora: fecha_hora,
-      equipo_local: equipo_local,
-      equipo_visitante: equipo_visitante,
-      arbitro: arbitro,
-      estadio: estadio
-  })
-  partidoNuevo.save((err, resultado) => {
-    if(err){
+  Estadio.findOne({_id: req.body.estadio}, (err, es) => {
+    if(err) {
       res.send(err);
     }
-    else {
-      res.send(resultado);
+    else if (es != null) {
+      Equipo.findOne({_id: req.body.equipo_local}, (err, eql) => {
+        if(err) {
+          res.send(err);
+        }
+        else if (eql != null) {
+          Equipo.findOne({_id: req.body.equipo_visitante}, (err, eqv) => {
+            if(err) {
+              res.send(err);
+            }
+            else if (eqv != null) {
+              Arbitro.findOne({_id: req.body.arbitro}, (err, ar) => {
+                if(err) {
+                  res.send(err);
+                }
+                else if(ar != null) {
+                  let fecha_hora=req.body.fecha_hora;
+                  let equipo_local =req.body.equipo_local;
+                  let equipo_visitante = req.body.equipo_visitante;
+                  let arbitro = req.body.arbitro;
+                  let estadio = req.body.estadio;
+                  var partidoNuevo = new Partido({
+                      fecha_hora: fecha_hora,
+                      equipo_local: equipo_local,
+                      equipo_visitante: equipo_visitante,
+                      arbitro: arbitro,
+                      estadio: estadio
+                  })
+                  partidoNuevo.save((err) => {
+                    if(err){
+                      res.send(err);
+                    }
+                    else {
+                      
+                    }
+                  });
+                }
+                else {
+                  res.send("No existe el árbitro que se eligió");
+                }
+              })
+            }
+            else {
+              res.send("No existe el equipo visitante que se eligió");
+            }
+          })
+        }
+        else {
+          res.send("No existe el equipo local que se eligió");
+        }
+      })
     }
-  })
+    else {
+      res.send("No existe el estadio que se eligió");
+    }
+  });
 });
 
 //UPDATE
