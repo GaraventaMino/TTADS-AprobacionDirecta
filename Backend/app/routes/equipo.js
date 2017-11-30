@@ -87,7 +87,7 @@ router.post('/', (req, res, next) => {
               estadios: estadioNuevo,
               escudo: escudoNuevo,
               torneos: torneosNuevo
-          })
+          });
           equipoNuevo.save((err, equipoGuardado) => {
             if(err){
               res.send(err);
@@ -180,41 +180,6 @@ router.put('/:id', (req, res, next) => {
           res.send(err);
         }
         else {
-          /* if (guardado.torneos.length != 0 && a == 2) {
-            Torneo.findOne({_id: req.body.torneos}, (err, t) => {
-              if (err) {
-                res.send(err);
-              }
-              else {
-                t.equipos.push(equipoGuardado._id);
-                t.save((err) => {
-                  if(err) {
-                    res.send(err);
-                  }
-                });
-              }
-            });
-          }
-          setTimeout(() => {
-            if (guardado.estadios.length != 0 && a == 2) {
-              Estadio.findOne({_id: req.body.estadios}, (err, e) => {
-                if (err) {
-                  res.send(err);
-                }
-                else {
-                  e.equipo = equipoGuardado._id;
-                  e.save((err) => {
-                    if(err) {
-                      res.send(err);
-                    }
-                    else {
-                      res.send("Equipo modificado con éxito");
-                    }
-                  });
-                }
-              });
-            }
-          }, 3000); */
           res.send("Equipo modificado con éxito");
         }
       });
