@@ -61,6 +61,7 @@ router.post('/', (req, res, next) => {
   let tecnicoNuevo=req.body.tecnico;
   let escudoNuevo=req.body.escudo;
   if(req.body.estadios) {
+    var continuar1=1;
     let estadiosNuevo=[];
     req.body.estadios = JSON.parse(req.body.estadios);
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
@@ -77,6 +78,118 @@ router.post('/', (req, res, next) => {
           }
           else {
             estadiosNuevo.push(estad._id);
+            if(continuar1 == req.body.estadios.estadios.length) {
+              if(req.body.torneos) {
+                var continuar = 1;
+                let torneosNuevo=[];
+                req.body.torneos = JSON.parse(req.body.torneos);
+                for(var w = 0; w < req.body.torneos.torneos.length; w++) {
+                  req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
+                }
+                for(var w = 0; w < req.body.torneos.torneos.length; w++) {
+                  Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
+                    if (error) {
+                      res.send(error);
+                    }
+                    else if (torn != null) {
+                      torneosNuevo.push(torn._id);
+                      if(continuar == req.body.torneos.torneos.length) {
+                        var equipoNuevo = new Equipo({
+                          nombre: nombreNuevo,
+                          tecnico: tecnicoNuevo,
+                          estadios: estadiosNuevo,
+                          escudo: escudoNuevo,
+                          torneos: torneosNuevo
+                        });
+                        equipoNuevo.save((err, equipoGuardado) => {
+                          if(err){
+                            res.send(err);
+                          }
+                          else {
+                            for(var w = 0; w < req.body.estadios.estadios.length; w++) {
+                              Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
+                                if (error) {
+                                  res.send(error);
+                                }
+                                else if (estad != null) {
+                                  estad.equipo = equipoGuardado._id;
+                                  estad.save((err, correcto) => {
+                                    if(err){
+                                      res.send(err);
+                                    }
+                                  });
+                                }
+                              });
+                            }
+                            for(var w = 0; w < req.body.torneos.torneos.length; w++) {
+                              Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
+                                if (error) {
+                                  res.send(error);
+                                }
+                                else if (torn != null) {
+                                  torn.equipos.push(equipoGuardado._id);
+                                  torn.save((err, correcto) => {
+                                    if(err){
+                                      res.send(err);
+                                    }
+                                  });
+                                }
+                              });
+                            }
+                            res.send("Equipo creado correctamente con estadios y torneos");
+                          }
+                        });
+                      }
+                      else {
+                        continuar++;
+                      }
+                    }
+                    else {
+                      res.send("Algún torneo seleccionado no existe");
+                    }
+                  });
+                }
+              }
+              else {
+                var equipoNuevo = new Equipo({
+                  nombre: nombreNuevo,
+                  tecnico: tecnicoNuevo,
+                  estadios: estadiosNuevo,
+                  escudo: escudoNuevo
+                });
+                equipoNuevo.save((err, equipoGuardado) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                  else {
+                    for(var w = 0; w < req.body.estadios.estadios.length; w++) {
+                      Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
+                        if (error) {
+                          res.send(error);
+                        }
+                        else if (estad != null) {
+                          estad.equipo = equipoGuardado._id;
+                          estad.save((err, correcto) => {
+                            if(err){
+                              res.send(err);
+                            }
+                            else {
+                              res.send("Equipo creado correctamente sin torneos pero con estadios");
+                            }
+                          });
+                        }
+                        else {
+                          res.send("Alguno de los estadios que se ingresaron, no existen");
+                        }
+                      });
+                    }
+                  }
+                });
+              }
+            }
+            else {
+              continuar++;
+            }
           }
         }
         else {
@@ -84,108 +197,9 @@ router.post('/', (req, res, next) => {
         }
       });
     }
-    if(req.body.torneos) {
-      let torneosNuevo=[];
-      req.body.torneos = JSON.parse(req.body.torneos);
-      for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-        req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
-      }
-      for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-        Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
-          if (error) {
-            res.send(error);
-          }
-          else if (torn != null) {
-            torneosNuevo.push(torn._id);
-          }
-          else {
-            res.send("Algún torneo seleccionado no existe");
-          }
-        });
-      }
-      var equipoNuevo = new Equipo({
-        nombre: nombreNuevo,
-        tecnico: tecnicoNuevo,
-        estadios: estadiosNuevo,
-        escudo: escudoNuevo,
-        torneos: torneosNuevo
-      });
-      equipoNuevo.save((err, equipoGuardado) => {
-        if(err){
-          res.send(err);
-        }
-        else {
-          for(var w = 0; w < req.body.estadios.estadios.length; w++) {
-            Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
-              if (error) {
-                res.send(error);
-              }
-              else if (estad != null) {
-                estad.equipo = equipoGuardado._id;
-                estad.save((err, correcto) => {
-                  if(err){
-                    res.send(err);
-                  }
-                });
-              }
-            });
-          }
-          for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-            Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
-              if (error) {
-                res.send(error);
-              }
-              else if (torn != null) {
-                torn.equipos.push(equipoGuardado._id);
-                torn.save((err, correcto) => {
-                  if(err){
-                    res.send(err);
-                  }
-                });
-              }
-            });
-          }
-          res.send("Equipo creado correctamente con estadios y torneos");
-        }
-      });
-    }
-    else {
-      var equipoNuevo = new Equipo({
-        nombre: nombreNuevo,
-        tecnico: tecnicoNuevo,
-        estadios: estadiosNuevo,
-        escudo: escudoNuevo
-      });
-      equipoNuevo.save((err, equipoGuardado) => {
-        if(err) {
-          res.send(err);
-        }
-        else {
-          console.log(equipoGuardado);
-          for(var w = 0; w < req.body.estadios.estadios.length; w++) {
-            Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
-              if (error) {
-                res.send(error);
-              }
-              else if (estad != null) {
-                estad.equipo = equipoGuardado._id;
-                estad.save((err, correcto) => {
-                  if(err){
-                    res.send(err);
-                  }
-                  else {
-                    res.send("Equipo creado correctamente sin torneos pero con estadios");
-                  }
-                });
-              }
-            });
-          }
-        }
-      });
-    }
   }
-  else if(req.body.torneos) {
-    var continuar = 0;
+  if(req.body.torneos) {
+    var continuar = 1;
     let torneosNuevo=[];
     req.body.torneos = JSON.parse(req.body.torneos);
     for(var w = 0; w < req.body.torneos.torneos.length; w++) {
@@ -198,48 +212,48 @@ router.post('/', (req, res, next) => {
         }
         else if (torn != null) {
           torneosNuevo.push(torn._id);
+          if(continuar == req.body.torneos.torneos.length) {
+            var equipoNuevo = new Equipo({
+              nombre: nombreNuevo,
+              tecnico: tecnicoNuevo,
+              escudo: escudoNuevo,
+              torneos: torneosNuevo
+            });
+            console.log(equipoNuevo.torneos);
+            console.log(torneosNuevo);
+            equipoNuevo.save((err, equipoGuardado) => {
+              if(err){
+                res.send(err);
+              }
+              else {
+                for(var k = 0; k < req.body.torneos.torneos.length; k++) {
+                  Torneo.findOne({_id: req.body.torneos.torneos[k]}, (error, torn) => {
+                    if (error) {
+                      res.send(error);
+                    }
+                    else if (torn != null) {
+                      torn.equipos.push(equipoGuardado._id);
+                      torn.save((err, correcto) => {
+                        if(err){
+                          res.send(err);
+                        }
+                      });
+                    }
+                  });
+                }
+                res.send("Equipo creado correctamente con torneos pero sin estadios");
+              }
+            });
+          }
+          else {
+            continuar++;
+          }
         }
         else {
           res.send("Algún torneo seleccionado no existe");
         }
       });
-      continuar++;
     }
-    //FIJARME ACA. NO LE ESTOY DANDO TIEMPO POR EL TEMA DE ASINCRONICO
-    if(continuar != w) {
-      console.log(continuar);    
-    }
-    var equipoNuevo = new Equipo({
-      nombre: nombreNuevo,
-      tecnico: tecnicoNuevo,
-      escudo: escudoNuevo,
-      torneos: torneosNuevo
-    });
-    console.log(equipoNuevo.torneos);
-    console.log(torneosNuevo);
-    equipoNuevo.save((err, equipoGuardado) => {
-      if(err){
-        res.send(err);
-      }
-      else {
-        for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-          Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
-            if (error) {
-              res.send(error);
-            }
-            else if (torn != null) {
-              torn.equipos.push(equipoGuardado._id);
-              torn.save((err, correcto) => {
-                if(err){
-                  res.send(err);
-                }
-              });
-            }
-          });
-        }
-        res.send("Equipo creado correctamente con torneos pero sin estadios");
-      }
-    });
   }
   else {
     var equipoNuevo = new Equipo({
