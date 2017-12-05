@@ -219,8 +219,6 @@ router.post('/', (req, res, next) => {
               escudo: escudoNuevo,
               torneos: torneosNuevo
             });
-            console.log(equipoNuevo.torneos);
-            console.log(torneosNuevo);
             equipoNuevo.save((err, equipoGuardado) => {
               if(err){
                 res.send(err);
@@ -277,8 +275,6 @@ router.post('/', (req, res, next) => {
 router.put('/:id', (req, res, next) => {
   var a;
   var b;
-  //var hayTorneos = true;
-  //var hayEstadios = true;
   Equipo.findOne({_id: req.params.id}).
   populate('torneos').
   populate('estadios').
@@ -291,55 +287,36 @@ router.put('/:id', (req, res, next) => {
       result.tecnico = req.body.tecnico || result.tecnico;
       result.escudo = req.body.escudo || result.escudo;
       if (req.body.torneos) {
-        for(var i = 0; i < result.torneos.length; i++) {
-          a = 2;
-          for(var w = 0; w < req.body.torneos.length; w++) {
-            if (result.torneos[i]._id == req.body.torneos[w]) {
-              a = 1;
-            }
-          }
-          if (a == 2) {
-            Torneo.findOne({_id: result.torneos[i]._id}).
-            populate('equipos').
-            exec((err, to) => {
-              if(err) {
-                res.send(err);
-              }
-              else if (to != null) {
-                var removed = result.torneos.splice(i, 1);
-                for(var j = 0; j < to.equipos.length; j++) {
-                  if(to.equipos[j]._id == result._id) {
-                    to.equipos.splice(j, 1);
-                  }  
-                }
-                to.save((err) => {
-                  if(err) {
-                    res.send(err);
-                  }
-                });
-              }
-              else {
-                res.send("Algún torneo que eligió no existe");
-              }
-            });
-          }
-          for(var i = 0; i < req.body.torneos.length; i++) {
+        //Vinieron torneos en el post
+        req.body.torneos = JSON.parse(req.body.torneos);
+        for(var w = 0; w < req.body.torneos.torneos.length; w++) {
+          req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
+        }
+
+        if(result.torneos.length != 0) {
+          //Comparo cada torneo existente en el equipo con todos los que vinieron
+          //y elimino los que se desean eliminar
+          for(var i = 0; i < result.torneos.length; i++) {
             a = 2;
-            for(var w = 0; w < result.torneos.length; w++) {
-              if (result.torneos[w]._id == req.body.torneos[i]) {
+            for(var w = 0; w < req.body.torneos.torneos.length; w++) {
+              if (result.torneos[i]._id == req.body.torneos.torneos[w]) {
                 a = 1;
               }
             }
             if (a == 2) {
-              Torneo.findOne({_id: req.body.torneos[i]}).
+              Torneo.findOne({_id: result.torneos[i]._id}).
               populate('equipos').
               exec((err, to) => {
                 if(err) {
                   res.send(err);
                 }
                 else if (to != null) {
-                  result.torneos.push(to._id);
-                  to.equipos.push(result._id);
+                  var removed = result.torneos.splice(i, 1);
+                  for(var j = 0; j < to.equipos.length; j++) {
+                    if(to.equipos[j]._id == result._id) {
+                      to.equipos.splice(j, 1);
+                    }  
+                  }
                   to.save((err) => {
                     if(err) {
                       res.send(err);
@@ -351,14 +328,114 @@ router.put('/:id', (req, res, next) => {
                 }
               });
             }
+
+            //Comparo cada torneo que vino con todos los torneos existentes
+            //y agrego los que se desean
+            for(var i = 0; i < req.body.torneos.torneos.length; i++) {
+              a = 2;
+              for(var w = 0; w < result.torneos.length; w++) {
+                if (result.torneos[w]._id == req.body.torneos.torneos[i]) {
+                  a = 1;
+                }
+              }
+              if (a == 2) {
+                Torneo.findOne({_id: req.body.torneos[i]}).
+                populate('equipos').
+                exec((err, to) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                  else if (to != null) {
+                    result.torneos.push(to._id);
+                    to.equipos.push(result._id);
+                    to.save((err) => {
+                      if(err) {
+                        res.send(err);
+                      }
+                    });
+                  }
+                  else {
+                    res.send("Algún torneo que eligió no existe");
+                  }
+                });
+              }
+            }
+          }
+        }
+        else {
+          //Como no tengo torneos aun, agrego todos los que vinieron
+          for(var i = 0; i < req.body.torneos.torneos.length; i++) {
+            Torneo.findOne({_id: req.body.torneos.torneos[i]}).
+            populate('equipos').
+            exec((err, to) => {
+              if(err) {
+                res.send(err);
+              }
+              else if (to != null) {
+                result.torneos.push(to._id);
+                to.equipos.push(result._id);
+                to.save((err) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                });
+              }
+              else {
+                res.send("Algún torneo que eligió no existe");
+              }
+            });
           }
         }
       }
-      if (req.body.estadios != null) {
+      else {
+        //caso en que hay que borrar todos los torneos
+        Torneo.find().
+        populate('equipos').
+        exec((err, to) => {
+          if(err) {
+            res.send(err);
+          }
+          else if (to.length != 0) {
+            for(var j = 0; j < to.length; j++) {
+              for(var k = 0; k < to[j].equipos.length; k++) {
+                if(to[j].equipos[k]._id == result._id) {
+                  var removed = to[j].equipos.splice(k, 1);
+                  to.save((err) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                  });
+                }
+              }
+            }
+            var continuar3 = 1;
+            for(var j = 0; j < result.torneos.length; j++) {
+              var removed = result.torneos.splice(j, 1);
+               result.save((err) => {
+                if(err) {
+                  res.send(err);
+                }
+              }); 
+            }
+          }
+          else {
+            console.log("No hay ningun torneo creado aún. No debería pasar esto");
+          }
+        });
+      }
+      if (req.body.estadios) {
+        //Vinieron estadios en el post
+        req.body.estadios = JSON.parse(req.body.estadios);
+        for(var w = 0; w < req.body.estadios.estadios.length; w++) {
+          req.body.estadios.estadios[w] = mongoose.Types.ObjectId(req.body.estadios.estadios[w]);
+        }
+
+        //Comparo cada estadio que tiene el equipo con todos los que vinieron
+        //Si alguno no está, se elimina
         for(var i = 0; i < result.estadios.length; i++) {
           b = 2;
-          for(var w = 0; w < req.body.estadios.length; w++) {
-            if (result.estadios[i]._id == req.body.estadios[w]) {
+          for(var w = 0; w < req.body.estadios.estadios.length; w++) {
+            if (result.estadios[i]._id == req.body.estadios.estadios[w]) {
               b = 1;
             }
           }
@@ -383,15 +460,18 @@ router.put('/:id', (req, res, next) => {
               }
             });
           }
-          for(var i = 0; i < req.body.estadios.length; i++) {
+
+          var continuar3 = 1;
+          for(var i = 0; i < req.body.estadios.estadios.length; i++) {
             b = 2;
+            var continuar4 = 1;
             for(var w = 0; w < result.estadios.length; w++) {
-              if (result.estadios[w]._id == req.body.estadios[i]) {
+              if (result.estadios[w]._id == req.body.estadios.estadios[i]) {
                 b = 1;
               }
             }
             if (b == 2) {
-              Estadio.findOne({_id: req.body.estadios[i]}).
+              Estadio.findOne({_id: req.body.estadios.estadios[i]}).
               populate('equipo').
               exec((err, es) => {
                 if(err) {
@@ -405,6 +485,20 @@ router.put('/:id', (req, res, next) => {
                       res.send(err);
                     }
                   });
+                  if(continuar3 == req.body.estadios.estadios.length && 
+                  continuar4 == result.estadios.length) {
+                    result.save((err) => {
+                      if(err) {
+                        res.send(err);
+                      }
+                      else {
+                        res.send("Equipo modificado con éxito");
+                      }
+                    });
+                  }
+                  else {
+                    continuar3++;
+                  }
                 }
                 else {
                   res.send("Algún estadio que eligió no existe");
@@ -414,14 +508,16 @@ router.put('/:id', (req, res, next) => {
           }
         }
       }
-      result.save((err) => {
-        if(err) {
-          res.send(err);
-        }
-        else {
-          res.send("Equipo modificado con éxito");
-        }
-      });
+      else {
+        result.save((err) => {
+          if(err) {
+            res.send(err);
+          }
+          else {
+            res.send("Equipo modificado con éxito");
+          }
+        });
+      }
     }
     else {
       res.send("El equipo que quiere modificar no existe");
