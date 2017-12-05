@@ -80,6 +80,7 @@ router.post('/', (req, res, next) => {
             estadiosNuevo.push(estad._id);
             if(continuar1 == req.body.estadios.estadios.length) {
               if(req.body.torneos) {
+                //Se agregan torneos y estadios
                 var continuar = 1;
                 let torneosNuevo=[];
                 req.body.torneos = JSON.parse(req.body.torneos);
@@ -151,6 +152,7 @@ router.post('/', (req, res, next) => {
                 }
               }
               else {
+                //Solo se le agregan estadios pero no torneos
                 var equipoNuevo = new Equipo({
                   nombre: nombreNuevo,
                   tecnico: tecnicoNuevo,
@@ -199,6 +201,7 @@ router.post('/', (req, res, next) => {
     }
   }
   if(req.body.torneos) {
+    //Se agregan torneos pero no estadios
     var continuar = 1;
     let torneosNuevo=[];
     req.body.torneos = JSON.parse(req.body.torneos);
@@ -254,6 +257,7 @@ router.post('/', (req, res, next) => {
     }
   }
   else {
+    //No se agregan estadios ni torneos
     var equipoNuevo = new Equipo({
       nombre: nombreNuevo,
       tecnico: tecnicoNuevo,
@@ -294,8 +298,10 @@ router.put('/:id', (req, res, next) => {
         }
 
         if(result.torneos.length != 0) {
+          //Ya tiene torneos el equipo, entonces:
           //Comparo cada torneo existente en el equipo con todos los que vinieron
           //y elimino los que se desean eliminar
+          var continuar1 = 0;
           for(var i = 0; i < result.torneos.length; i++) {
             a = 2;
             for(var w = 0; w < req.body.torneos.torneos.length; w++) {
@@ -303,6 +309,7 @@ router.put('/:id', (req, res, next) => {
                 a = 1;
               }
             }
+            continuar++;
             if (a == 2) {
               Torneo.findOne({_id: result.torneos[i]._id}).
               populate('equipos').
@@ -321,6 +328,39 @@ router.put('/:id', (req, res, next) => {
                     if(err) {
                       res.send(err);
                     }
+                    else if(continuar1 == result.torneos.length) {
+                      //Comparo cada torneo que vino con todos los torneos existentes
+                      //y agrego los que se desean
+                      for(var i = 0; i < req.body.torneos.torneos.length; i++) {
+                        a = 2;
+                        for(var w = 0; w < result.torneos.length; w++) {
+                          if (result.torneos[w]._id == req.body.torneos.torneos[i]) {
+                            a = 1;
+                          }
+                        }
+                        if (a == 2) {
+                          Torneo.findOne({_id: req.body.torneos.torneos[i]}).
+                          populate('equipos').
+                          exec((err, to) => {
+                            if(err) {
+                              res.send(err);
+                            }
+                            else if (to != null) {
+                              result.torneos.push(to._id);
+                              to.equipos.push(result._id);
+                              to.save((err) => {
+                                if(err) {
+                                  res.send(err);
+                                }
+                              });
+                            }
+                            else {
+                              res.send("Algún torneo que eligió no existe");
+                            }
+                          });
+                        }
+                      }
+                    }
                   });
                 }
                 else {
@@ -328,39 +368,41 @@ router.put('/:id', (req, res, next) => {
                 }
               });
             }
-
-            //Comparo cada torneo que vino con todos los torneos existentes
-            //y agrego los que se desean
-            for(var i = 0; i < req.body.torneos.torneos.length; i++) {
-              a = 2;
-              for(var w = 0; w < result.torneos.length; w++) {
-                if (result.torneos[w]._id == req.body.torneos.torneos[i]) {
-                  a = 1;
+            else if(continuar1 == result.torneos.length) {
+              //Comparo cada torneo que vino con todos los torneos existentes
+              //y agrego los que se desean
+              for(var i = 0; i < req.body.torneos.torneos.length; i++) {
+                a = 2;
+                for(var w = 0; w < result.torneos.length; w++) {
+                  if (result.torneos[w]._id == req.body.torneos.torneos[i]) {
+                    a = 1;
+                  }
                 }
-              }
-              if (a == 2) {
-                Torneo.findOne({_id: req.body.torneos[i]}).
-                populate('equipos').
-                exec((err, to) => {
-                  if(err) {
-                    res.send(err);
-                  }
-                  else if (to != null) {
-                    result.torneos.push(to._id);
-                    to.equipos.push(result._id);
-                    to.save((err) => {
-                      if(err) {
-                        res.send(err);
-                      }
-                    });
-                  }
-                  else {
-                    res.send("Algún torneo que eligió no existe");
-                  }
-                });
+                if (a == 2) {
+                  Torneo.findOne({_id: req.body.torneos.torneos[i]}).
+                  populate('equipos').
+                  exec((err, to) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else if (to != null) {
+                      result.torneos.push(to._id);
+                      to.equipos.push(result._id);
+                      to.save((err) => {
+                        if(err) {
+                          res.send(err);
+                        }
+                      });
+                    }
+                    else {
+                      res.send("Algún torneo que eligió no existe");
+                    }
+                  });
+                }
               }
             }
           }
+          
         }
         else {
           //Como no tengo torneos aun, agrego todos los que vinieron
