@@ -42,7 +42,7 @@ router.get('/:id', (req, res, next) => {
     if (err) {
       res.send(err);
     } 
-    if(result.length != 0) {
+    else if(result != null) {
       res.json(result);
     } 
     else {
@@ -61,29 +61,35 @@ router.post('/', (req, res, next) => {
   let tecnicoNuevo=req.body.tecnico;
   let escudoNuevo=req.body.escudo;
   if(req.body.estadios) {
-    var continuar1=1;
+    var continuar1=0;
     let estadiosNuevo=[];
+
+    console.log("estadios" + typeof(req.body.estadios));
     req.body.estadios = JSON.parse(req.body.estadios);
+    console.log("estadios-parseado" + typeof(req.body.estadios));
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
       req.body.estadios.estadios[w] = mongoose.Types.ObjectId(req.body.estadios.estadios[w]);
     }
+
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
+      continuar1++;
       Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
         if (error) {
           res.send(error);
         }
         else if (estad != null) {
-          if(estad.equipo) {
+          if(estad.equipo != null) {
             res.send("Algún estadio de los que se eligieron, ya pertenece a un equipo");
           }
           else {
             estadiosNuevo.push(estad._id);
             if(continuar1 == req.body.estadios.estadios.length) {
               if(req.body.torneos) {
-                //Se agregan torneos y estadios
+                //Se agregan torneos y estadios                
                 var continuar = 1;
                 let torneosNuevo=[];
-                req.body.torneos = JSON.parse(req.body.torneos);
+                console.log(typeof(req.body.torneos));
+                req.body.torneos = JSON.parse(req.body.torneos);                
                 for(var w = 0; w < req.body.torneos.torneos.length; w++) {
                   req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
                 }
@@ -141,9 +147,6 @@ router.post('/', (req, res, next) => {
                           }
                         });
                       }
-                      else {
-                        continuar++;
-                      }
                     }
                     else {
                       res.send("Algún torneo seleccionado no existe");
@@ -188,9 +191,6 @@ router.post('/', (req, res, next) => {
                   }
                 });
               }
-            }
-            else {
-              continuar++;
             }
           }
         }
@@ -2117,50 +2117,55 @@ router.delete('/:id', (req, res, next) => {
     if (err) {
       res.send(err);
     }
-    else if(result.torneos.length == 0 && 
-    result.estadios.length == 0 && result.jugadores.length == 0) {
-      Evento.find({}, 'equipo').
-      populate('equipo').
-      exec((err, eventos) => {
-        if(err){
-          res.send(err);
-        }
-        else {
-          for(var i = 0; i < eventos.length; i++) {
-            if(eventos[i].equipo._id == result._id) {
-              res.send("No se puede borrar el equipo porque se utiliza en un evento");
-            }
+    else if(result != null) {
+      if(result.torneos.length == 0 && 
+      result.estadios.length == 0 && result.jugadores.length == 0) {
+        Evento.find({}, 'equipo').
+        populate('equipo').
+        exec((err, eventos) => {
+          if(err){
+            res.send(err);
           }
-          Partido.find({}, 'equipo_local equipo_visitante').
-          populate('equipo_local').
-          populate('equipo_visitante').
-          exec((err, partidos) => {
-            if(err){
-              res.send(err);
-            }
-            else if (partidos.length != 0) {
-              for(var j = 0; j < partidos.length; j++) {
-                if(partidos[j].equipo_local._id == result._id || 
-                partidos[j].equipo_visitante._id == result._id) {
-                  res.send("No se puede borrar el equipo porque se utiliza en un partido");
-                }
+          else {
+            for(var i = 0; i < eventos.length; i++) {
+              if(eventos[i].equipo._id == result._id) {
+                res.send("No se puede borrar el equipo porque se utiliza en un evento");
               }
             }
-            result.remove((err) => {
-              if(err) {
+            Partido.find({}, 'equipo_local equipo_visitante').
+            populate('equipo_local').
+            populate('equipo_visitante').
+            exec((err, partidos) => {
+              if(err){
                 res.send(err);
               }
-              else {
-                res.send("Equipo eliminado correctamente");
+              else if (partidos.length != 0) {
+                for(var j = 0; j < partidos.length; j++) {
+                  if(partidos[j].equipo_local._id == result._id || 
+                  partidos[j].equipo_visitante._id == result._id) {
+                    res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                  }
+                }
               }
+              result.remove((err) => {
+                if(err) {
+                  res.send(err);
+                }
+                else {
+                  res.send("Equipo eliminado correctamente");
+                }
+              });
             });
-          });
-        }
-      });
-    }
+          }
+        });
+      }
+      else {
+        res.send("No se puede borrar el equipo porque se utiliza en otro lado");
+      }
+    } 
     else {
-      res.send("No se puede borrar el equipo porque se utiliza en otro lado");
-    }
+      res.send("El equipo no existe");
+    }   
   });
 });
       
