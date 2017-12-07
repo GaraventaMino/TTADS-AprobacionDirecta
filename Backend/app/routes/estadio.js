@@ -47,7 +47,7 @@ router.post('/', (req, res, next) => {
       nombre: nombreNuevo,
       direccion: direccionNuevo,
       imagen: imagen
-  })
+  });
   estadioNuevo.save((err, guardado) => {
       if(err){
         res.send(err);
