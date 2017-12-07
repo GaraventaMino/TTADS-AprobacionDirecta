@@ -68,7 +68,7 @@ router.post('/', (req, res, next) => {
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
       req.body.estadios.estadios[w] = mongoose.Types.ObjectId(req.body.estadios.estadios[w]);
     }
-    for(let w = 0; w < req.body.estadios.estadios.length; w++) {    
+    for(var w = 0; w < req.body.estadios.estadios.length; w++) {    
       Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
         if (error) {
           res.send(error);
