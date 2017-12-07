@@ -60,7 +60,7 @@ router.post('/', (req, res, next) => {
   let nombreNuevo=req.body.nombre;
   let tecnicoNuevo=req.body.tecnico;
   let escudoNuevo=req.body.escudo;
-  if(typeof(req.body.estadios) == 'string' && req.body.estadios.length != 0) {
+  if(req.body.estadios) {
     var continuar1=0;
     let estadiosNuevo=[];
 
@@ -68,26 +68,22 @@ router.post('/', (req, res, next) => {
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
       req.body.estadios.estadios[w] = mongoose.Types.ObjectId(req.body.estadios.estadios[w]);
     }
-    for(var w = 0; w < req.body.estadios.estadios.length; w++) {
-      //PROBLEMA CON EL ASINCRONICO ACA
-      console.log("antes de sumarse" + continuar1)
-      continuar1++;
+    for(let w = 0; w < req.body.estadios.estadios.length; w++) {    
       Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
         if (error) {
           res.send(error);
         }
         else if (estad != null) {
-          console.log("primera" + continuar1)
+          continuar1++;
           if(estad.equipo == null) {
             res.send("Algún estadio de los que se eligieron, ya pertenece a un equipo");
           }
           else {            
-            console.log("segunda" + continuar1)
             estadiosNuevo.push(estad._id);
             if(continuar1 == req.body.estadios.estadios.length) {
               if(req.body.torneos) {
                 //Se agregan torneos y estadios                
-                var continuar = 1;
+                var continuar = 0;
                 let torneosNuevo=[];
 
                 if(typeof(req.body.torneos) != 'object') {
@@ -103,6 +99,7 @@ router.post('/', (req, res, next) => {
                       res.send(error);
                     }
                     else if (torn != null) {
+                      continuar++;
                       torneosNuevo.push(torn._id);
                       if(continuar == req.body.torneos.torneos.length) {
                         var equipoNuevo = new Equipo({
@@ -117,37 +114,45 @@ router.post('/', (req, res, next) => {
                             res.send(err);
                           }
                           else {
+                            var cont = 0;
                             for(var w = 0; w < req.body.estadios.estadios.length; w++) {
                               Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
                                 if (error) {
                                   res.send(error);
                                 }
                                 else if (estad != null) {
+                                  cont++;
                                   estad.equipo = equipoGuardado._id;
                                   estad.save((err, correcto) => {
                                     if(err){
                                       res.send(err);
                                     }
-                                  });
-                                }
-                              });
-                            }
-                            for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-                              Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
-                                if (error) {
-                                  res.send(error);
-                                }
-                                else if (torn != null) {
-                                  torn.equipos.push(equipoGuardado._id);
-                                  torn.save((err, correcto) => {
-                                    if(err){
-                                      res.send(err);
+                                    else if (cont == req.body.estadios.estadios.length) {
+                                      var cont2 = 0;
+                                      for(var w = 0; w < req.body.torneos.torneos.length; w++) {                                        
+                                        Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
+                                          if (error) {
+                                            res.send(error);
+                                          }
+                                          else if (torn != null) {
+                                            cont2++;
+                                            torn.equipos.push(equipoGuardado._id);
+                                            torn.save((err, correcto) => {
+                                              if(err){
+                                                res.send(err);
+                                              }
+                                              else if(cont2 == req.body.torneos.torneos.length) {
+                                                res.send("Equipo creado correctamente con estadios y torneos");
+                                              }
+                                            });
+                                          }
+                                        });
+                                      }
                                     }
                                   });
                                 }
                               });
                             }
-                            res.send("Equipo creado correctamente con estadios y torneos");
                           }
                         });
                       }
@@ -204,7 +209,7 @@ router.post('/', (req, res, next) => {
       });
     }
   }
-  if(req.body.torneos) {
+  else if(req.body.torneos) {
     //Se agregan torneos pero no estadios
     var continuar = 1;
     let torneosNuevo=[];
