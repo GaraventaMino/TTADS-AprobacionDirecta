@@ -60,36 +60,40 @@ router.post('/', (req, res, next) => {
   let nombreNuevo=req.body.nombre;
   let tecnicoNuevo=req.body.tecnico;
   let escudoNuevo=req.body.escudo;
-  if(req.body.estadios) {
+  if(typeof(req.body.estadios) == 'string' && req.body.estadios.length != 0) {
     var continuar1=0;
     let estadiosNuevo=[];
 
-    console.log("estadios" + typeof(req.body.estadios));
     req.body.estadios = JSON.parse(req.body.estadios);
-    console.log("estadios-parseado" + typeof(req.body.estadios));
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
       req.body.estadios.estadios[w] = mongoose.Types.ObjectId(req.body.estadios.estadios[w]);
     }
-
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
+      //PROBLEMA CON EL ASINCRONICO ACA
+      console.log("antes de sumarse" + continuar1)
       continuar1++;
       Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
         if (error) {
           res.send(error);
         }
         else if (estad != null) {
-          if(estad.equipo != null) {
+          console.log("primera" + continuar1)
+          if(estad.equipo == null) {
             res.send("Algún estadio de los que se eligieron, ya pertenece a un equipo");
           }
-          else {
+          else {            
+            console.log("segunda" + continuar1)
             estadiosNuevo.push(estad._id);
             if(continuar1 == req.body.estadios.estadios.length) {
               if(req.body.torneos) {
                 //Se agregan torneos y estadios                
                 var continuar = 1;
                 let torneosNuevo=[];
-                console.log(typeof(req.body.torneos));
-                req.body.torneos = JSON.parse(req.body.torneos);                
+
+                if(typeof(req.body.torneos) != 'object') {
+                  req.body.torneos = JSON.parse(req.body.torneos);
+                }
+                
                 for(var w = 0; w < req.body.torneos.torneos.length; w++) {
                   req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
                 }
