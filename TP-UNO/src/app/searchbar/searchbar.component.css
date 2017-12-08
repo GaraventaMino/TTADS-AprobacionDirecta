@@ -1,0 +1,31 @@
+.example{
+  width: 100%;
+  opacity: 1;
+  padding-left: 22px;
+  padding-right: 10px;
+  font-size: 15px;
+  padding-top: 4px;
+}
+.cont{
+    margin-top: 3%;    
+    opacity: 0.8;
+}
+.mini{
+    max-height: 65px;
+    border-radius: 5px;
+}
+.lista{
+    width: 100%;
+    border: 3px solid darkslategrey;
+    border-radius: 5px;
+    background-color: wheat;
+    padding: 15px;
+    position: absolute;
+    z-index: 2;
+    font-size: 14px;
+    font-weight: bold;
+}
+hr{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}

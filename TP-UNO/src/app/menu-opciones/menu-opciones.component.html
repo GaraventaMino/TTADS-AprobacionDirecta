@@ -1,0 +1,44 @@
+
+<div class="row top">
+    <div class="col-md-3 text-center">
+      
+      <button md-button [mdMenuTriggerFor]="torneos" class="button-styles">Torneos</button>
+      <mat-menu #torneos="mdMenu" panelClass="menu-styles">
+        <a md-menu-item routerLink="/nuevoTorneo" class="item-styles">Nuevo Torneo</a>
+        <a md-menu-item routerLink="/principal" class="item-styles">Listado Torneos</a>
+      </mat-menu>
+
+    </div>
+
+    <div class="col-md-3 text-center">
+      
+      <button md-button [mdMenuTriggerFor]="jugadores" class="button-styles">Jugadores</button>
+      <md-menu #jugadores="mdMenu">
+        <a md-menu-item routerLink="/principal" class="item-styles">Nuevo Jugador</a>
+        <a md-menu-item routerLink="/principal" class="item-styles">Listado Jugadores</a>
+      </md-menu>
+           
+    </div>
+        
+    <div class="col-md-3 text-center">
+            
+      <button md-button [mdMenuTriggerFor]="estadios" class="button-styles">Estadios</button>
+      <md-menu #estadios="mdMenu">
+        <a md-menu-item routerLink="/principal" class="item-styles">Nuevo Estadio</a>
+        <a md-menu-item routerLink="/principal" class="item-styles">Listado Estadios</a>
+      </md-menu>
+    
+    </div>
+
+    <div class="col-md-3 text-center">
+      
+      <button md-button [mdMenuTriggerFor]="arbitros" class="button-styles">Árbitros</button>
+      <md-menu #arbitros="mdMenu">
+        <a md-menu-item routerLink="/principal" class="item-styles">Nuevo Árbitro</a>
+        <a md-menu-item routerLink="/principal" class="item-styles">Listado Árbitros</a>
+      </md-menu>
+
+    </div> 
+
+</div>
+

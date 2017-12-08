@@ -1,0 +1,58 @@
+.overview {
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.poster_path {
+    height: 400px;
+    border: 3px solid black;
+}
+
+.btn-edited {
+    background-color: #FF7212;
+}
+.movie-title {
+    font-size: 20px;
+   
+}
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.title {
+    text-align: center;
+    color: #326295
+}
+.loading-title {
+    text-align: center;
+}
+
+.title-movie {
+    font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.caption{
+    max-height: 160.567px;
+}
+.thumbnail{
+    max-height: 560px;
+}
+.thumbpaging{
+    background-color: transparent;
+    border: none;
+}
+.btnpaging{
+    margin: 5px;
+    height: 260px;
+    width: 340px;
+    font-size: 80px;
+    color: lightsalmon;
+    background-color: #030312;
+    border: 8px solid #FF7212;
+    border-radius: 20px;
+}
