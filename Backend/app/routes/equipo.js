@@ -61,20 +61,20 @@ router.post('/', (req, res, next) => {
   let tecnicoNuevo=req.body.tecnico;
   let escudoNuevo=req.body.escudo;
   if(req.body.estadios) {
-    var continuar1=0;
+    var continuar1 = 1;
     let estadiosNuevo=[];
 
     req.body.estadios = JSON.parse(req.body.estadios);
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
       req.body.estadios.estadios[w] = mongoose.Types.ObjectId(req.body.estadios.estadios[w]);
     }
+
     for(var w = 0; w < req.body.estadios.estadios.length; w++) {    
       Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
         if (error) {
           res.send(error);
         }
         else if (estad != null) {
-          continuar1++;
           if(estad.equipo == null) {
             res.send("Algún estadio de los que se eligieron, ya pertenece a un equipo");
           }
@@ -83,7 +83,7 @@ router.post('/', (req, res, next) => {
             if(continuar1 == req.body.estadios.estadios.length) {
               if(req.body.torneos) {
                 //Se agregan torneos y estadios                
-                var continuar = 0;
+                var continuar = 1;
                 let torneosNuevo=[];
 
                 if(typeof(req.body.torneos) != 'object') {
@@ -99,7 +99,6 @@ router.post('/', (req, res, next) => {
                       res.send(error);
                     }
                     else if (torn != null) {
-                      continuar++;
                       torneosNuevo.push(torn._id);
                       if(continuar == req.body.torneos.torneos.length) {
                         var equipoNuevo = new Equipo({
@@ -114,28 +113,26 @@ router.post('/', (req, res, next) => {
                             res.send(err);
                           }
                           else {
-                            var cont = 0;
+                            var cont = 1;
                             for(var w = 0; w < req.body.estadios.estadios.length; w++) {
                               Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
                                 if (error) {
                                   res.send(error);
                                 }
                                 else if (estad != null) {
-                                  cont++;
                                   estad.equipo = equipoGuardado._id;
                                   estad.save((err, correcto) => {
                                     if(err){
                                       res.send(err);
                                     }
                                     else if (cont == req.body.estadios.estadios.length) {
-                                      var cont2 = 0;
+                                      var cont2 = 1;
                                       for(var w = 0; w < req.body.torneos.torneos.length; w++) {                                        
                                         Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
                                           if (error) {
                                             res.send(error);
                                           }
                                           else if (torn != null) {
-                                            cont2++;
                                             torn.equipos.push(equipoGuardado._id);
                                             torn.save((err, correcto) => {
                                               if(err){
@@ -144,10 +141,16 @@ router.post('/', (req, res, next) => {
                                               else if(cont2 == req.body.torneos.torneos.length) {
                                                 res.send("Equipo creado correctamente con estadios y torneos");
                                               }
+                                              else {
+                                                cont2++;
+                                              }
                                             });
                                           }
                                         });
                                       }
+                                    }
+                                    else {
+                                      cont++;
                                     }
                                   });
                                 }
@@ -155,6 +158,9 @@ router.post('/', (req, res, next) => {
                             }
                           }
                         });
+                      }
+                      else {
+                        continuar++;
                       }
                     }
                     else {
@@ -176,6 +182,7 @@ router.post('/', (req, res, next) => {
                     res.send(err);
                   }
                   else {
+                    var cont3 = 1;
                     for(var w = 0; w < req.body.estadios.estadios.length; w++) {
                       Estadio.findOne({_id: req.body.estadios.estadios[w]}, (error, estad) => {
                         if (error) {
@@ -187,8 +194,11 @@ router.post('/', (req, res, next) => {
                             if(err){
                               res.send(err);
                             }
+                            else if (cont3 == req.body.estadios.estadios.length) {
+                              res.send("Equipo creado correctamente con estadios pero sin torneos");
+                            }
                             else {
-                              res.send("Equipo creado correctamente sin torneos pero con estadios");
+                              cont3++;
                             }
                           });
                         }
@@ -200,6 +210,9 @@ router.post('/', (req, res, next) => {
                   }
                 });
               }
+            }
+            else {
+              continuar1++;
             }
           }
         }
@@ -217,6 +230,7 @@ router.post('/', (req, res, next) => {
     for(var w = 0; w < req.body.torneos.torneos.length; w++) {
       req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
     }
+
     for(var w = 0; w < req.body.torneos.torneos.length; w++) {
       Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
         if (error) {
