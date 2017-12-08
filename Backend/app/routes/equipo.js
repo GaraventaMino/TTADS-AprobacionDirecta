@@ -338,7 +338,6 @@ router.put('/:id', (req, res, next) => {
                 a = 1;
               }
             }
-            continuar1++;
             if (a == 2) {
               //Borro este torneo que existia (en Torneo.equipos y en Equipo.torneos)
               Torneo.findOne({_id: result.torneos[i]._id}).
@@ -862,6 +861,9 @@ router.put('/:id', (req, res, next) => {
                               }
                             }
                           }
+                          else {
+                            continuar1++;
+                          }
                         }
                       });
                     }
@@ -1370,13 +1372,15 @@ router.put('/:id', (req, res, next) => {
                 }
               }
             }
+            else {
+              continuar1++;
+            }
           }
         }
         else {
           //Como no tengo torneos aun, agrego todos los que vinieron
-          var continuar8 = 0;
+          var continuar8 = 1;
           for(var i = 0; i < req.body.torneos.torneos.length; i++) {
-            continuar8++;
             Torneo.findOne({_id: req.body.torneos.torneos[i]}).
             populate('equipos').
             exec((err, to) => {
@@ -1406,7 +1410,7 @@ router.put('/:id', (req, res, next) => {
                           if(result.estadios.length != 0) {
                             //Comparo cada estadio que tiene el equipo con todos los que vinieron
                             //Si alguno no coincide, se elimina
-                            var continuar3 = 0;
+                            var continuar3 = 1;
                             for(var i = 0; i < result.estadios.length; i++) {
                               b = 2;
                               for(var w = 0; w < req.body.estadios.estadios.length; w++) {
@@ -1414,7 +1418,6 @@ router.put('/:id', (req, res, next) => {
                                   b = 1;
                                 }
                               }      
-                              continuar3++;                  
                               if (b == 2) {
                                 Estadio.findOne({_id: result.estadios[i]._id}).
                                 populate('equipo').
@@ -1436,7 +1439,7 @@ router.put('/:id', (req, res, next) => {
                                           }
                                           else if (continuar3 == result.estadios.length) {   
                                             
-                                            var continuar4 = 0;
+                                            var continuar4 = 1;
                                             for(var i = 0; i < req.body.estadios.estadios.length; i++) {
                                               b = 2;
                                               for(var w = 0; w < result.estadios.length; w++) {
@@ -1444,7 +1447,6 @@ router.put('/:id', (req, res, next) => {
                                                   b = 1;
                                                 }
                                               }
-                                              continuar4++;
                                               if (b == 2) {
                                                 Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                                                 populate('equipo').
@@ -1467,6 +1469,9 @@ router.put('/:id', (req, res, next) => {
                                                           else if (continuar4 == req.body.estadios.estadios.length) {
                                                             res.send("Equipo modificado con éxito (estadios y torneos");
                                                           }
+                                                          else {
+                                                            continuar4++;
+                                                          }
                                                         });
                                                       }
                                                     });                                            
@@ -1479,7 +1484,13 @@ router.put('/:id', (req, res, next) => {
                                               else if(continuar4 == req.body.estadios.estadios.length) {
                                                 res.send("Equipo modificado con éxito (estadios y torneos");
                                               }
+                                              else {
+                                                continuar4++;
+                                              }
                                             }
+                                          }
+                                          else {
+                                            continuar3++;
                                           }
                                         });
                                       }
@@ -1491,7 +1502,7 @@ router.put('/:id', (req, res, next) => {
                                 });
                               }
                               else if (cotinuar3 == result.estadios.length) {
-                                var continuar4 = 0;
+                                var continuar4 = 1;
                                 for(var i = 0; i < req.body.estadios.estadios.length; i++) {
                                   b = 2;
                                   for(var w = 0; w < result.estadios.length; w++) {
@@ -1499,7 +1510,6 @@ router.put('/:id', (req, res, next) => {
                                       b = 1;
                                     }
                                   }
-                                  continuar4++;
                                   if (b == 2) {
                                     Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                                     populate('equipo').
@@ -1522,6 +1532,9 @@ router.put('/:id', (req, res, next) => {
                                               else if (continuar4 == req.body.estadios.estadios.length) {
                                                 res.send("Equipo modificado con éxito (estadios y torneos");
                                               }
+                                              else {
+                                                continuar4++;
+                                              }
                                             });
                                           }
                                         });                                            
@@ -1534,15 +1547,20 @@ router.put('/:id', (req, res, next) => {
                                   else if(continuar4 == req.body.estadios.estadios.length) {
                                     res.send("Equipo modificado con éxito (estadios y torneos");
                                   }
+                                  else {
+                                    continuar4++;
+                                  }
                                 }
+                              }
+                              else {
+                                continuar3++;
                               }
                             }
                           }
                           else {
                             //Como no tengo estadios aun, agrego todos los que vinieron
-                            var continuar6 = 0;
+                            var continuar6 = 1;
                             for(var i = 0; i < req.body.estadios.estadios.length; i++) {
-                              continuar6++;
                               Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                               populate('equipo').
                               exec((err, es) => {
@@ -1564,6 +1582,9 @@ router.put('/:id', (req, res, next) => {
                                         else if (continuar6 == req.body.estadios.estadios.length) {
                                           res.send("Equipo modificado con éxito (todos estadios nuevos, y algún cambio de torneos");
                                         }
+                                        else {
+                                          continuar6++;
+                                        }
                                       });
                                     }
                                   });
@@ -1577,7 +1598,7 @@ router.put('/:id', (req, res, next) => {
                         }
                         else {
                           //caso en que hay que borrar todos los estadios
-                          var continuar7 = 0;
+                          var continuar7 = 1;
                           Estadio.find().
                           populate('equipo').
                           exec((err, es) => {
@@ -1586,7 +1607,6 @@ router.put('/:id', (req, res, next) => {
                             }
                             else if (es.length != 0) {
                               for(var j = 0; j < es.length; j++) {    
-                                continuar7++;                                                
                                 if(es[j].equipo._id == result._id) {
                                   es[j].equipo = null;                                                      
                                   es.save((err) => {
@@ -1604,6 +1624,9 @@ router.put('/:id', (req, res, next) => {
                                             else if (continuar7 == es.length) {
                                               res.send("Equipo modificado con éxito (todos los estadios borrados, y cambios en torneos");
                                             }
+                                            else {
+                                              continuar7++;
+                                            }
                                           }); 
                                         }                                                            
                                       }
@@ -1612,7 +1635,10 @@ router.put('/:id', (req, res, next) => {
                                 }
                                 else if (continuar7 == es.length) {
                                   res.send("Equipo modificado con éxito (todos los estadios borrados, y cambios en torneos");
-                                }                                                    
+                                }    
+                                else {
+                                  continuar7++;
+                                }                                                
                               }                                                  
                             }
                             else {
@@ -1620,6 +1646,9 @@ router.put('/:id', (req, res, next) => {
                             }
                           });
                         }
+                      }
+                      else {
+                        continuar8++;
                       }
                     });
                   }
@@ -1632,9 +1661,9 @@ router.put('/:id', (req, res, next) => {
           }
         }
       }
-      else {
-        //caso en que hay que borrar todos los torneos
-        var continuar9 = 0;
+      else if (result.torneos.length != 0) {
+        //caso en que hay que borrar todos los torneos si es que habia
+        var continuar9 = 1;
         Torneo.find().
         populate('equipos').
         exec((err, to) => {
@@ -1643,7 +1672,6 @@ router.put('/:id', (req, res, next) => {
           }
           else if (to.length != 0) {
             for(var j = 0; j < to.length; j++) {
-              continuar9++;
               for(var k = 0; k < to[j].equipos.length; k++) {
                 if(to[j].equipos[k]._id == result._id) {
                   var removed = to[j].equipos.splice(k, 1);
@@ -1669,7 +1697,7 @@ router.put('/:id', (req, res, next) => {
                               if(result.estadios.length != 0) {
                                 //Comparo cada estadio que tiene el equipo con todos los que vinieron
                                 //Si alguno no coincide, se elimina
-                                var continuar3 = 0;
+                                var continuar3 = 1;
                                 for(var i = 0; i < result.estadios.length; i++) {
                                   b = 2;
                                   for(var w = 0; w < req.body.estadios.estadios.length; w++) {
@@ -1677,7 +1705,6 @@ router.put('/:id', (req, res, next) => {
                                       b = 1;
                                     }
                                   }      
-                                  continuar3++;                  
                                   if (b == 2) {
                                     Estadio.findOne({_id: result.estadios[i]._id}).
                                     populate('equipo').
@@ -1699,7 +1726,7 @@ router.put('/:id', (req, res, next) => {
                                               }
                                               else if (continuar3 == result.estadios.length) {   
                                                 
-                                                var continuar4 = 0;
+                                                var continuar4 = 1;
                                                 for(var i = 0; i < req.body.estadios.estadios.length; i++) {
                                                   b = 2;
                                                   for(var w = 0; w < result.estadios.length; w++) {
@@ -1707,7 +1734,6 @@ router.put('/:id', (req, res, next) => {
                                                       b = 1;
                                                     }
                                                   }
-                                                  continuar4++;
                                                   if (b == 2) {
                                                     Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                                                     populate('equipo').
@@ -1730,6 +1756,9 @@ router.put('/:id', (req, res, next) => {
                                                               else if (continuar4 == req.body.estadios.estadios.length) {
                                                                 res.send("Equipo modificado con éxito (estadios y torneos");
                                                               }
+                                                              else {
+                                                                continuar4++;
+                                                              }
                                                             });
                                                           }
                                                         });                                            
@@ -1742,7 +1771,13 @@ router.put('/:id', (req, res, next) => {
                                                   else if(continuar4 == req.body.estadios.estadios.length) {
                                                     res.send("Equipo modificado con éxito (estadios y torneos");
                                                   }
+                                                  else {
+                                                    continuar4++;
+                                                  }
                                                 }
+                                              }
+                                              else {
+                                                continuar3++;
                                               }
                                             });
                                           }
@@ -1754,7 +1789,7 @@ router.put('/:id', (req, res, next) => {
                                     });
                                   }
                                   else if (cotinuar3 == result.estadios.length) {
-                                    var continuar4 = 0;
+                                    var continuar4 = 1;
                                     for(var i = 0; i < req.body.estadios.estadios.length; i++) {
                                       b = 2;
                                       for(var w = 0; w < result.estadios.length; w++) {
@@ -1762,7 +1797,6 @@ router.put('/:id', (req, res, next) => {
                                           b = 1;
                                         }
                                       }
-                                      continuar4++;
                                       if (b == 2) {
                                         Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                                         populate('equipo').
@@ -1785,6 +1819,9 @@ router.put('/:id', (req, res, next) => {
                                                   else if (continuar4 == req.body.estadios.estadios.length) {
                                                     res.send("Equipo modificado con éxito (estadios y torneos");
                                                   }
+                                                  else {
+                                                    continuar4++;
+                                                  }
                                                 });
                                               }
                                             });                                            
@@ -1797,15 +1834,20 @@ router.put('/:id', (req, res, next) => {
                                       else if(continuar4 == req.body.estadios.estadios.length) {
                                         res.send("Equipo modificado con éxito (estadios y torneos");
                                       }
+                                      else {
+                                        continuar4++;
+                                      }
                                     }
+                                  }
+                                  else {
+                                    continuar3++;
                                   }
                                 }
                               }
                               else {
                                 //Como no tengo estadios aun, agrego todos los que vinieron
-                                var continuar6 = 0;
+                                var continuar6 = 1;
                                 for(var i = 0; i < req.body.estadios.estadios.length; i++) {
-                                  continuar6++;
                                   Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                                   populate('equipo').
                                   exec((err, es) => {
@@ -1827,6 +1869,9 @@ router.put('/:id', (req, res, next) => {
                                             else if (continuar6 == req.body.estadios.estadios.length) {
                                               res.send("Equipo modificado con éxito (todos estadios nuevos, y algún cambio de torneos");
                                             }
+                                            else {
+                                              continuar6++;
+                                            }
                                           });
                                         }
                                       });
@@ -1838,9 +1883,9 @@ router.put('/:id', (req, res, next) => {
                                 }
                               }
                             }
-                            else {
-                              //caso en que hay que borrar todos los estadios
-                              var continuar7 = 0;
+                            else if(result.estadios.length != 0) {
+                              //caso en que hay que borrar todos los estadios si es que habia
+                              var continuar7 = 1;
                               Estadio.find().
                               populate('equipo').
                               exec((err, es) => {
@@ -1849,7 +1894,6 @@ router.put('/:id', (req, res, next) => {
                                 }
                                 else if (es.length != 0) {
                                   for(var j = 0; j < es.length; j++) {    
-                                    continuar7++;                                                
                                     if(es[j].equipo._id == result._id) {
                                       es[j].equipo = null;                                                      
                                       es.save((err) => {
@@ -1867,6 +1911,9 @@ router.put('/:id', (req, res, next) => {
                                                 else if (continuar7 == es.length) {
                                                   res.send("Equipo modificado con éxito (todos los estadios borrados, y cambios en torneos");
                                                 }
+                                                else {
+                                                  continuar7++;
+                                                }
                                               }); 
                                             }                                                            
                                           }
@@ -1875,6 +1922,9 @@ router.put('/:id', (req, res, next) => {
                                     }
                                     else if (continuar7 == es.length) {
                                       res.send("Equipo modificado con éxito (todos los estadios borrados, y cambios en torneos");
+                                    }
+                                    else {
+                                      continuar7++;
                                     }                                                    
                                   }                                                  
                                 }
@@ -1883,6 +1933,12 @@ router.put('/:id', (req, res, next) => {
                                 }
                               });
                             }
+                            else {
+                              res.send("Equipo modificado. Habia torneos y se borraron todos. No habia estadios, por ende quedó vacio");
+                            }
+                          }
+                          else {
+                            continuar9++;
                           }
                         }); 
                       }
@@ -1900,7 +1956,7 @@ router.put('/:id', (req, res, next) => {
                     if(result.estadios.length != 0) {
                       //Comparo cada estadio que tiene el equipo con todos los que vinieron
                       //Si alguno no coincide, se elimina
-                      var continuar3 = 0;
+                      var continuar3 = 1;
                       for(var i = 0; i < result.estadios.length; i++) {
                         b = 2;
                         for(var w = 0; w < req.body.estadios.estadios.length; w++) {
@@ -1908,7 +1964,6 @@ router.put('/:id', (req, res, next) => {
                             b = 1;
                           }
                         }      
-                        continuar3++;                  
                         if (b == 2) {
                           Estadio.findOne({_id: result.estadios[i]._id}).
                           populate('equipo').
@@ -1930,7 +1985,7 @@ router.put('/:id', (req, res, next) => {
                                     }
                                     else if (continuar3 == result.estadios.length) {   
                                       
-                                      var continuar4 = 0;
+                                      var continuar4 = 1;
                                       for(var i = 0; i < req.body.estadios.estadios.length; i++) {
                                         b = 2;
                                         for(var w = 0; w < result.estadios.length; w++) {
@@ -1938,7 +1993,6 @@ router.put('/:id', (req, res, next) => {
                                             b = 1;
                                           }
                                         }
-                                        continuar4++;
                                         if (b == 2) {
                                           Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                                           populate('equipo').
@@ -1961,6 +2015,9 @@ router.put('/:id', (req, res, next) => {
                                                     else if (continuar4 == req.body.estadios.estadios.length) {
                                                       res.send("Equipo modificado con éxito (estadios y torneos");
                                                     }
+                                                    else {
+                                                      continuar4++;
+                                                    }
                                                   });
                                                 }
                                               });                                            
@@ -1973,7 +2030,13 @@ router.put('/:id', (req, res, next) => {
                                         else if(continuar4 == req.body.estadios.estadios.length) {
                                           res.send("Equipo modificado con éxito (estadios y torneos");
                                         }
+                                        else {
+                                          continuar4++;
+                                        }
                                       }
+                                    }
+                                    else {
+                                      continuar3++;
                                     }
                                   });
                                 }
@@ -1985,7 +2048,7 @@ router.put('/:id', (req, res, next) => {
                           });
                         }
                         else if (cotinuar3 == result.estadios.length) {
-                          var continuar4 = 0;
+                          var continuar4 = 1;
                           for(var i = 0; i < req.body.estadios.estadios.length; i++) {
                             b = 2;
                             for(var w = 0; w < result.estadios.length; w++) {
@@ -1993,7 +2056,6 @@ router.put('/:id', (req, res, next) => {
                                 b = 1;
                               }
                             }
-                            continuar4++;
                             if (b == 2) {
                               Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                               populate('equipo').
@@ -2016,6 +2078,9 @@ router.put('/:id', (req, res, next) => {
                                         else if (continuar4 == req.body.estadios.estadios.length) {
                                           res.send("Equipo modificado con éxito (estadios y torneos");
                                         }
+                                        else {
+                                          continuar4++;
+                                        }
                                       });
                                     }
                                   });                                            
@@ -2028,15 +2093,20 @@ router.put('/:id', (req, res, next) => {
                             else if(continuar4 == req.body.estadios.estadios.length) {
                               res.send("Equipo modificado con éxito (estadios y torneos");
                             }
+                            else {
+                              continuar4++;
+                            }
                           }
+                        }
+                        else {
+                          continuar3++;
                         }
                       }
                     }
                     else {
                       //Como no tengo estadios aun, agrego todos los que vinieron
-                      var continuar6 = 0;
+                      var continuar6 = 1;
                       for(var i = 0; i < req.body.estadios.estadios.length; i++) {
-                        continuar6++;
                         Estadio.findOne({_id: req.body.estadios.estadios[i]}).
                         populate('equipo').
                         exec((err, es) => {
@@ -2058,6 +2128,9 @@ router.put('/:id', (req, res, next) => {
                                   else if (continuar6 == req.body.estadios.estadios.length) {
                                     res.send("Equipo modificado con éxito (todos estadios nuevos, y algún cambio de torneos");
                                   }
+                                  else {
+                                    continuar6++;
+                                  }
                                 });
                               }
                             });
@@ -2071,7 +2144,7 @@ router.put('/:id', (req, res, next) => {
                   }
                   else {
                     //caso en que hay que borrar todos los estadios
-                    var continuar7 = 0;
+                    var continuar7 = 1;
                     Estadio.find().
                     populate('equipo').
                     exec((err, es) => {
@@ -2080,7 +2153,6 @@ router.put('/:id', (req, res, next) => {
                       }
                       else if (es.length != 0) {
                         for(var j = 0; j < es.length; j++) {    
-                          continuar7++;                                                
                           if(es[j].equipo._id == result._id) {
                             es[j].equipo = null;                                                      
                             es.save((err) => {
@@ -2098,6 +2170,9 @@ router.put('/:id', (req, res, next) => {
                                       else if (continuar7 == es.length) {
                                         res.send("Equipo modificado con éxito (todos los estadios borrados, y cambios en torneos");
                                       }
+                                      else {
+                                        continuar7++;
+                                      }
                                     }); 
                                   }                                                            
                                 }
@@ -2106,7 +2181,10 @@ router.put('/:id', (req, res, next) => {
                           }
                           else if (continuar7 == es.length) {
                             res.send("Equipo modificado con éxito (todos los estadios borrados, y cambios en torneos");
-                          }                                                    
+                          }     
+                          else {
+                            continuar7++;
+                          }                                               
                         }                                                  
                       }
                       else {
@@ -2114,6 +2192,9 @@ router.put('/:id', (req, res, next) => {
                       }
                     });
                   }
+                }
+                else {
+                  continuar9++;
                 } 
               }
             }            
@@ -2122,6 +2203,16 @@ router.put('/:id', (req, res, next) => {
             console.log("No hay ningun torneo creado aún. No debería pasar esto");
           }
         });
+      }
+      else {
+        result.save((err) => {
+          if(err) {
+            res.send(err);
+          }
+          else {
+            res.send("Equipo modificado correctamente. No tenia torneos ni estadios y no se le agregaron");
+          }
+        })
       }      
     }
     else {
