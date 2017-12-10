@@ -5,11 +5,7 @@
 .altura-cont {
     min-height: 660px;
 }
-.escudo {
-    width: 35px;
-    height: 35px;
-}
-.cargando-equipo {
+.cargando-jugador {
     text-align: center;
   }
   
@@ -20,3 +16,8 @@
     margin-left: -25px;
     margin-bottom: 50px;
   }
+.logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}

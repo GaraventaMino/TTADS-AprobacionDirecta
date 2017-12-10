@@ -14,7 +14,8 @@ export class FormularioJugadoresComponent implements OnInit {
   jugador: any = {
     nombre: '',
     equipo: '',
-    imagen: ''
+    imagen: '',
+    edad: ''
   }
 
   constructor(

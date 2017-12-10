@@ -14,6 +14,7 @@ export class EquiposService {
 
     urlEquipos: string = 'http://localhost:3000/api/equipos';
     urlEquiposTorneo: string = 'http://localhost:3000/api/equipos/torneo/{id}';
+    urlEquipoById: string = 'http://localhost:3000/api/equipos/{id}';
     
     
     addEquipo(equipo: Object) :Observable<any> {
@@ -35,6 +36,15 @@ export class EquiposService {
     getAllEquiposByTorneo(id: any) : Observable<any> {
         // ...using get request
         return this.http.get(this.urlEquiposTorneo.replace('{id}', id))
+                        // ...and calling .json() on the response to return data
+                        .map((res:Response) => res.json()) 
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+
+    getEquipo(id: any) : Observable<any> {
+        // ...using get request
+        return this.http.get(this.urlEquipoById.replace('{id}', id))
                         // ...and calling .json() on the response to return data
                         .map((res:Response) => res.json()) 
                         //...errors if any

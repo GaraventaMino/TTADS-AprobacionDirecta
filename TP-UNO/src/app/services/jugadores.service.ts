@@ -13,6 +13,7 @@ export class JugadoresService {
     constructor (private http: Http) {}
 
     urlJugadores: string = 'http://localhost:3000/api/jugadores';
+    urlJugador: string = 'http://localhost:3000/api/jugadores/{id}';
     
     
     addJugador(jugador: Object) :Observable<any> {
@@ -22,12 +23,21 @@ export class JugadoresService {
 
         return this.http.post(this.urlJugadores, jugador, options)
                             .map((res:Response) => res.json())
-                            .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+                            .catch((error:any) => console.log(error) || 'Server error');
     }
 
     getAllJugadores() : Observable<any> {
         return this.http.get(this.urlJugadores)
                             .map((res:Response) => res.json())
                             .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+    
+    getJugador(id: any) : Observable<any> {
+        // ...using get request
+        return this.http.get(this.urlJugador.replace('{id}', id))
+                        // ...and calling .json() on the response to return data
+                        .map((res:Response) => res.json()) 
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
 }

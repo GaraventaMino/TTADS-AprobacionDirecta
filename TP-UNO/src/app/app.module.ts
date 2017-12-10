@@ -30,6 +30,12 @@ import { FormularioEquiposComponent } from './formulario-equipos/formulario-equi
 import { FormularioJugadoresComponent } from './formulario-jugadores/formulario-jugadores.component';
 import { FormularioPartidosComponent } from './formulario-partidos/formulario-partidos.component';
 import { EquiposComponent } from './equipos/equipos.component';
+import { PartidosComponent } from './partidos/partidos.component';
+import { PartidoDetalleComponent } from './partido-detalle/partido-detalle.component';
+import { PartidosActivosComponent } from './partidos-activos/partidos-activos.component';
+import { EquipoDetalleComponent } from './equipo-detalle/equipo-detalle.component';
+import { JugadoresComponent } from './jugadores/jugadores.component';
+import { JugadorDetalleComponent } from './jugador-detalle/jugador-detalle.component';
 
 @NgModule({
   imports: [
@@ -74,6 +80,10 @@ import { EquiposComponent } from './equipos/equipos.component';
         component: FormularioJugadoresComponent
       },
       {
+        path: 'editarJugador/:id',
+        component: FormularioJugadoresComponent
+      },
+      {
         path: 'nuevoEquipo',
         component: FormularioEquiposComponent
       },
@@ -88,7 +98,32 @@ import { EquiposComponent } from './equipos/equipos.component';
       {
         path: 'detalleTorneo/:id',
         component: TorneoDetalleComponent
+      },
+      {
+        path: 'listadoPartidos',
+        component: PartidosComponent
+      },
+      {
+        path: 'listadoPartidosActivos',
+        component: PartidosActivosComponent
+      },
+      {
+        path: 'detallePartido/:id',
+        component: PartidoDetalleComponent
+      },
+      {
+        path: 'detalleEquipo/:id',
+        component: EquipoDetalleComponent
+      },
+      {
+        path: 'listadoJugadores',
+        component: JugadoresComponent
+      },
+      {
+        path: 'detalleJugador/:id',
+        component: JugadorDetalleComponent
       }
+      
     ])
     
   ],
@@ -108,7 +143,13 @@ import { EquiposComponent } from './equipos/equipos.component';
     FormularioEquiposComponent,
     FormularioJugadoresComponent,
     FormularioPartidosComponent,
-    EquiposComponent
+    EquiposComponent,
+    PartidosComponent,
+    PartidoDetalleComponent,
+    PartidosActivosComponent,
+    EquipoDetalleComponent,
+    JugadoresComponent,
+    JugadorDetalleComponent
   ],
   providers: [ 
     PeliculasService,

@@ -82,26 +82,6 @@ export class TorneoDetalleComponent implements OnInit {
                console.log(err);
            });
     });
-
-    this.route.params.subscribe(params => {
-      this.equiposService.getAllEquiposByTorneo(params['id'])
-      .subscribe(
-          equipos => this.equipos = equipos, //Bind to view
-           err => {
-               // Log errors if any
-               console.log(err);
-           });
-    });
-
-    this.route.params.subscribe(params => {
-      this.partidosService.getAllPartidosByTorneo(params['id'])
-      .subscribe(
-          partidos => this.partidos = partidos, //Bind to view
-           err => {
-               // Log errors if any
-               console.log(err);
-           });
-    });
   }
 
 }

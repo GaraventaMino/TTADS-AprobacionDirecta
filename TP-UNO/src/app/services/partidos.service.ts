@@ -13,7 +13,9 @@ export class PartidosService {
     constructor (private http: Http) {}
 
     urlPartidos: string = 'http://localhost:3000/api/partidos';
+    urlPartidosActivos: string = 'http://localhost:3000/api/partidos/activos';
     urlPartidosTorneo: string = 'http://localhost:3000/api/partidos/torneo/{id}';
+    urlPartidoById: string = 'http://localhost:3000/api/partidos/{id}';
     
     
     addPartido(partido: Object) :Observable<any> {
@@ -32,9 +34,24 @@ export class PartidosService {
                             .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
 
+    getAllPartidosActivos() : Observable<any> {
+        return this.http.get(this.urlPartidosActivos)
+                            .map((res:Response) => res.json())
+                            .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+
     getAllPartidosByTorneo(id: any) : Observable<any> {
         // ...using get request
         return this.http.get(this.urlPartidos.replace('{id}', id))
+                        // ...and calling .json() on the response to return data
+                        .map((res:Response) => res.json()) 
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+
+    getPartido(id: any) : Observable<any> {
+        // ...using get request
+        return this.http.get(this.urlPartidoById.replace('{id}', id))
                         // ...and calling .json() on the response to return data
                         .map((res:Response) => res.json()) 
                         //...errors if any
