@@ -16,3 +16,8 @@
 .menu-styles {
   background: #326295;
 }
+.item-styles:hover {
+  text-decoration: none;
+  opacity: .4;
+  color: white;
+}

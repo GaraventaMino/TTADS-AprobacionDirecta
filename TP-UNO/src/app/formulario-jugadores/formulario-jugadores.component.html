@@ -1,0 +1,25 @@
+<hr>
+<h2 class="title">Nuevo Jugador</h2>
+<hr>
+<div class="container altura-cont">
+  <div class="row">
+    <div>
+        <form (ngSubmit)="altaTorneo()" name="altaTorneo" action="#">
+            <md-form-field class="form-inputs">
+                <input mdInput name="nombre" placeholder="Nombre del jugador" type="text" [(ngModel)]="jugador.nombre" required>
+            </md-form-field>
+            <md-form-field class="form-inputs">
+                <input mdInput name="logo" placeholder="URL Imagen del Jugador" type="text" [(ngModel)]="jugador.imagen">
+            </md-form-field>
+            <md-select [(ngModel)]="jugador.equipo" class="btn btn-primary select-form" placeholder="Equipo" name="equipo">
+              <md-option *ngFor="let equipo of equipos" [value]="equipo._id">
+                {{ equipo.nombre }}
+              </md-option>
+            </md-select>
+            <button md-button type="submit" class="submit-styles">
+                Crear
+            </button>
+        </form>
+    </div>
+  </div>
+</div>

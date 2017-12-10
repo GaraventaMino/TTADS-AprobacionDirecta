@@ -3,8 +3,9 @@
 /*imports*/
 @import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
 
-/*classes*/
-.juicyorange {
-        background: #ffffff;
-      
-        }
+.mat-menu-content {
+        background: #326295;
+}
+.mat-form-field {
+        border-color: black;
+}

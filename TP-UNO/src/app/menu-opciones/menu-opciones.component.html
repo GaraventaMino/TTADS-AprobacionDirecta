@@ -2,40 +2,40 @@
 <div class="row top">
     <div class="col-md-3 text-center">
       
-      <button md-button [mdMenuTriggerFor]="torneos" class="button-styles">Torneos</button>
-      <mat-menu #torneos="mdMenu" panelClass="menu-styles">
+      <button md-button [matMenuTriggerFor]="torneos" class="button-styles">Torneos</button>
+      <md-menu #torneos="mdMenu" [overlapTrigger]="false" panelClass=menu-styles>
         <a md-menu-item routerLink="/nuevoTorneo" class="item-styles">Nuevo Torneo</a>
-        <a md-menu-item routerLink="/principal" class="item-styles">Listado Torneos</a>
-      </mat-menu>
+        <a md-menu-item routerLink="/listadoTorneos" class="item-styles">Listado Torneos</a>
+      </md-menu>
 
     </div>
 
     <div class="col-md-3 text-center">
       
-      <button md-button [mdMenuTriggerFor]="jugadores" class="button-styles">Jugadores</button>
-      <md-menu #jugadores="mdMenu">
-        <a md-menu-item routerLink="/principal" class="item-styles">Nuevo Jugador</a>
-        <a md-menu-item routerLink="/principal" class="item-styles">Listado Jugadores</a>
+      <button md-button [matMenuTriggerFor]="equipos" class="button-styles">Equipos</button>
+      <md-menu #equipos="mdMenu" [overlapTrigger]="false" >
+        <a mat-menu-item routerLink="/nuevoEquipo" class="item-styles">Nuevo Equipo</a>
+        <a mat-menu-item routerLink="/listadoEquipos" class="item-styles">Listado Equipos</a>
       </md-menu>
            
     </div>
         
     <div class="col-md-3 text-center">
             
-      <button md-button [mdMenuTriggerFor]="estadios" class="button-styles">Estadios</button>
-      <md-menu #estadios="mdMenu">
-        <a md-menu-item routerLink="/principal" class="item-styles">Nuevo Estadio</a>
-        <a md-menu-item routerLink="/principal" class="item-styles">Listado Estadios</a>
+      <button md-button [matMenuTriggerFor]="jugadores" class="button-styles">Jugadores</button>
+      <md-menu #jugadores="mdMenu" [overlapTrigger]="false" >
+        <a mat-menu-item routerLink="/nuevoJugador" class="item-styles">Nuevo Jugador</a>
+        <a mat-menu-item routerLink="/principal" class="item-styles">Listado Jugadores</a>
       </md-menu>
     
     </div>
 
     <div class="col-md-3 text-center">
       
-      <button md-button [mdMenuTriggerFor]="arbitros" class="button-styles">Árbitros</button>
-      <md-menu #arbitros="mdMenu">
-        <a md-menu-item routerLink="/principal" class="item-styles">Nuevo Árbitro</a>
-        <a md-menu-item routerLink="/principal" class="item-styles">Listado Árbitros</a>
+      <button md-button [matMenuTriggerFor]="partidos" class="button-styles">Partidos</button>
+      <md-menu #partidos="mdMenu" [overlapTrigger]="false" >
+        <a mat-menu-item routerLink="/nuevoPartido" class="item-styles">Nuevo Partido</a>
+        <a mat-menu-item routerLink="/principal" class="item-styles">Listado Partidos</a>
       </md-menu>
 
     </div> 

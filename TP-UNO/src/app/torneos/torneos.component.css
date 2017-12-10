@@ -1,0 +1,20 @@
+.title {
+    text-align: center;
+    color: #326295
+}
+.altura-cont {
+    min-height: 660px;
+}
+.table-edited {
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+.th-edited {
+    text-align: center;
+}
+.logo {
+    width: 40px;
+    height: 40px;
+}

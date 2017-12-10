@@ -15,9 +15,10 @@
     margin-bottom: 1%;
   }
 
-  :host /deep/ .mat-input-placeholder {
+:host /deep/ .mat-input-placeholder {
     color: #326295;
  }
+
  
 :host /deep/ .mat-input  {
     border-color: black;
@@ -37,4 +38,10 @@
 }
 .altura-cont {
     min-height: 660px;
+}
+.select-form {
+    width: 25%;
+    border: 10px;
+    margin-left: 32%;
+    margin-bottom: 1%;
 }

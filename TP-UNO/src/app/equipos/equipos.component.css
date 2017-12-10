@@ -1,0 +1,28 @@
+.title {
+    text-align: center;
+    color: #326295
+}
+.altura-cont {
+    min-height: 660px;
+}
+.escudo {
+    width: 35px;
+    height: 35px;
+}
+.cargando-equipo {
+    text-align: center;
+  }
+  
+.cargando-imagen {
+    height: 50px;
+    position: relative;
+    left: 50%;
+    margin-left: -25px;
+    margin-bottom: 50px;
+  }
+  .especial-td {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}

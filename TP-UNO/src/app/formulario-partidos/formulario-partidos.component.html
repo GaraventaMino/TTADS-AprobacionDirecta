@@ -1,0 +1,49 @@
+<hr>
+<h2 class="title">Nuevo Partido</h2>
+<hr>
+<div class="container altura-cont">
+  <div class="row">
+    <div *ngIf="partido.torneo && seleccionado; else ElseBlock">
+        <form (ngSubmit)="altaPartido()" name="altaPartido" action="#">
+            <md-form-field class="form-inputs">
+                <input mdInput name="fechahora" placeholder="yyyy/mm/dd hh:mm" type="text" [(ngModel)]="partido.fecha_hora" required>
+            </md-form-field>
+            <md-select [(ngModel)]="partido.equipo_local" class="btn btn-primary select-form" placeholder="Equipo Local" name="equipo_local">
+              <md-option *ngFor="let equipo of equipos" [value]="equipo._id">
+                {{ equipo.nombre }}
+              </md-option>
+            </md-select>
+            <md-select [(ngModel)]="partido.equipo_visitante" class="btn btn-primary select-form" placeholder="Equipo Visitante" name="equipo_visitante">
+                <md-option *ngFor="let equipo of equipos" [value]="equipo._id">
+                  {{ equipo.nombre }}
+                </md-option>
+              </md-select>
+            <md-select [(ngModel)]="partido.estadio" class="btn btn-primary select-form" placeholder="Estadio" name="estadio">
+                <md-option *ngFor="let estadio of estadios" [value]="estadio._id">
+                  {{ estadio.nombre }}
+                </md-option>
+              </md-select>
+              <md-select [(ngModel)]="partido.arbitro" class="btn btn-primary select-form" placeholder="Arbitro" name="arbitro">
+                  <md-option *ngFor="let arbitro of arbitros" [value]="arbitro._id">
+                    {{ arbitro.nombre }}
+                  </md-option>
+                </md-select>
+            <button md-button type="submit" class="submit-styles">
+                Crear
+            </button>
+        </form>
+    </div>
+    <ng-template #ElseBlock>
+      <h3 class="title">
+        Seleccione un torneo
+      </h3>
+      <hr>
+      <md-select [(ngModel)]="partido.torneo" class="btn btn-primary select-form" placeholder="Torneo" name="torneo">
+        <md-option *ngFor="let torneo of torneos" [value]="torneo._id">
+          {{ torneo.nombre }}
+        </md-option>
+      </md-select>
+      <button md-button class="submit-styles" (click)="clicked()">Siguiente</button>
+    </ng-template>
+  </div>
+</div>

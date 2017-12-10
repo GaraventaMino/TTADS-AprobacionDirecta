@@ -9,17 +9,27 @@ import { Angular2FontawesomeModule } from 'angular2-fontawesome/angular2-fontawe
 import { LogoComponent } from './logo/logo.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MdListModule, MdSelectModule, MdCardModule, MdInputModule, MdSlideToggleModule, MdTooltipModule, MdMenuModule, MdButtonModule} from '@angular/material';
+import {MdListModule, MdSelectModule, MdCardModule, MdInputModule, MdSlideToggleModule, MdFormFieldModule, MdTooltipModule, MdMenuModule, MdButtonModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { RouterModule }   from '@angular/router';
 import { SearchbarComponent } from './searchbar/searchbar.component';
 import { PeliculasService } from "./peliculas.service";
+import { TorneosService } from "./services/torneos.service";
+import { JugadoresService } from "./services/jugadores.service";
+import { EquiposService } from "./services/equipos.service";
+import { EstadiosService } from "./services/estadios.service";
+import { ArbitrosService } from "./services/arbitros.service";
+import { PartidosService } from "./services/partidos.service";
 import {RatingModule} from "ngx-rating";
 import { MenuOpcionesComponent } from './menu-opciones/menu-opciones.component';
 import { BienvenidoComponent } from './bienvenido/bienvenido.component';
 import { TorneosComponent } from './torneos/torneos.component';
 import { FormularioTorneosComponent } from './formulario-torneos/formulario-torneos.component';
 import { TorneoDetalleComponent } from './torneo-detalle/torneo-detalle.component';
+import { FormularioEquiposComponent } from './formulario-equipos/formulario-equipos.component';
+import { FormularioJugadoresComponent } from './formulario-jugadores/formulario-jugadores.component';
+import { FormularioPartidosComponent } from './formulario-partidos/formulario-partidos.component';
+import { EquiposComponent } from './equipos/equipos.component';
 
 @NgModule({
   imports: [
@@ -39,6 +49,7 @@ import { TorneoDetalleComponent } from './torneo-detalle/torneo-detalle.componen
     MdTooltipModule,
     MdMenuModule,
     MdButtonModule,
+    MdFormFieldModule,
     NgbModule.forRoot(),
     RouterModule.forRoot([
       {
@@ -53,6 +64,30 @@ import { TorneoDetalleComponent } from './torneo-detalle/torneo-detalle.componen
       {
         path: 'principal',
         component: PrincipalComponent
+      },
+      {
+        path: 'listadoTorneos',
+        component: TorneosComponent
+      },
+      {
+        path: 'nuevoJugador',
+        component: FormularioJugadoresComponent
+      },
+      {
+        path: 'nuevoEquipo',
+        component: FormularioEquiposComponent
+      },
+      {
+        path: 'nuevoPartido',
+        component: FormularioPartidosComponent
+      },
+      {
+        path: 'listadoEquipos',
+        component: EquiposComponent
+      },
+      {
+        path: 'detalleTorneo/:id',
+        component: TorneoDetalleComponent
       }
     ])
     
@@ -69,9 +104,21 @@ import { TorneoDetalleComponent } from './torneo-detalle/torneo-detalle.componen
     BienvenidoComponent,
     TorneosComponent,
     FormularioTorneosComponent,
-    TorneoDetalleComponent
+    TorneoDetalleComponent,
+    FormularioEquiposComponent,
+    FormularioJugadoresComponent,
+    FormularioPartidosComponent,
+    EquiposComponent
   ],
-  providers: [ PeliculasService ],
+  providers: [ 
+    PeliculasService,
+    TorneosService,
+    JugadoresService ,
+    EquiposService,
+    EstadiosService,
+    ArbitrosService,
+    PartidosService
+],
   bootstrap: [AppComponent]
 })
 
