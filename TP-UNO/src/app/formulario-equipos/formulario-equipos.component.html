@@ -24,9 +24,9 @@
               {{ torneo.nombre }}
             </md-option>
           </md-select>
-            <button md-button type="submit" class="submit-styles">
+            <a md-button (click)="altaEquipo()" class="submit-styles" routerLink="/principal">
                 Crear
-            </button>
+            </a>
         </form>
     </div>
   </div>

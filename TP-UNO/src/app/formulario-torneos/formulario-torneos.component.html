@@ -14,9 +14,9 @@
             <md-form-field class="form-inputs">
                 <input mdInput name="trofeo" placeholder="URL Trofeo del torneo" type="text" [(ngModel)]="torneo.imagen_trofeo">
             </md-form-field>
-            <button md-button type="submit" class="submit-styles">
+            <a md-button (click)="altaTorneo()" class="submit-styles" routerLink="/principal">
                 Crear
-            </button>
+            </a>
         </form>
     </div>
   </div>

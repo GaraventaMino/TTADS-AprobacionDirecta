@@ -28,9 +28,9 @@
                     {{ arbitro.nombre }}
                   </md-option>
                 </md-select>
-            <button md-button type="submit" class="submit-styles">
-                Crear
-            </button>
+                <a md-button (click)="altaPartido()" class="submit-styles" routerLink="/principal">
+                  Crear
+              </a>
         </form>
     </div>
     <ng-template #ElseBlock>

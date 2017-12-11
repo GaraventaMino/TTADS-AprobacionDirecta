@@ -30,7 +30,8 @@ export class FormularioJugadoresComponent implements OnInit {
                             .subscribe(
                                 data => console.log("EXITO"),
                                 error => console.log(error)
-                              )
+                              );
+                              alert("Jugador creado con exito !")
     }
   }
 

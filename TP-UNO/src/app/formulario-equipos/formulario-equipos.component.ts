@@ -40,7 +40,8 @@ export class FormularioEquiposComponent implements OnInit {
                             .subscribe(
                                 data => console.log("EXITO"),
                                 error => console.log(error)
-                              )
+                              );
+                              alert("Equipo creado correctamente !");
     }
   }
 

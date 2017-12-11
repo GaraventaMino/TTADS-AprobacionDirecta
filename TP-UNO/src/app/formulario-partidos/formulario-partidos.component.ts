@@ -50,7 +50,8 @@ export class FormularioPartidosComponent implements OnInit {
                             .subscribe(
                                 data => console.log("EXITO"),
                                 error => console.log(error)
-                              )
+                              );
+                              alert("Partido creado con éxito !")
     }
   }
 
