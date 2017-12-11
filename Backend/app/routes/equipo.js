@@ -2511,12 +2511,50 @@ router.delete('/:id', (req, res, next) => {
           if(err){
             res.send(err);
           }
-          else {
+          else if (eventos.length != 0) {
+            var continuar = 1;
             for(var i = 0; i < eventos.length; i++) {
               if(eventos[i].equipo._id == result._id) {
-                res.send("No se puede borrar el equipo porque se utiliza en un evento");
+                res.send("No se puede borrar el equipo porque se utiliza en un eventode algun partido");
               }
-            }
+              else if(continuar == eventos.length) {
+                Partido.find({}, 'equipo_local equipo_visitante').
+                populate('equipo_local').
+                populate('equipo_visitante').
+                exec((err, partidos) => {
+                  if(err){
+                    res.send(err);
+                  }
+                  else if (partidos.length != 0) {
+                    var continuar2 = 1;
+                    for(var j = 0; j < partidos.length; j++) {
+                      if(partidos[j].equipo_local._id == result._id || 
+                      partidos[j].equipo_visitante._id == result._id) {
+                        res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                      }
+                      else if (continuar2 == partidos.length) {
+                        result.remove((err) => {
+                          if(err) {
+                            res.send(err);
+                          }
+                          else {
+                            res.send("Equipo eliminado correctamente");
+                          }
+                        });
+                      }
+                      else {
+                        continuar2++;
+                      }
+                    }
+                  }                  
+                });
+              }
+              else {
+                continuar++;
+              }
+            }            
+          }
+          else {
             Partido.find({}, 'equipo_local equipo_visitante').
             populate('equipo_local').
             populate('equipo_visitante').
@@ -2525,21 +2563,37 @@ router.delete('/:id', (req, res, next) => {
                 res.send(err);
               }
               else if (partidos.length != 0) {
+                var continuar2 = 1;
                 for(var j = 0; j < partidos.length; j++) {
                   if(partidos[j].equipo_local._id == result._id || 
                   partidos[j].equipo_visitante._id == result._id) {
                     res.send("No se puede borrar el equipo porque se utiliza en un partido");
                   }
+                  else if (continuar2 == partidos.length) {
+                    result.remove((err) => {
+                      if(err) {
+                        res.send(err);
+                      }
+                      else {
+                        res.send("Equipo eliminado correctamente");
+                      }
+                    });
+                  }
+                  else {
+                    continuar2++;
+                  }
                 }
               }
-              result.remove((err) => {
-                if(err) {
-                  res.send(err);
-                }
-                else {
-                  res.send("Equipo eliminado correctamente");
-                }
-              });
+              else {
+                result.remove((err) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                  else {
+                    res.send("Equipo eliminado correctamente");
+                  }
+                });
+              }                  
             });
           }
         });
