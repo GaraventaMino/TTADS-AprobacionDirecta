@@ -236,38 +236,121 @@ router.get('/:id/amonestados', (req, res, next) => {
           res.send(err);
         }
         else if (result != null) {
+          var continuar = 1;
           for(var i = 0; i < result.partidos.length; i++) {
-            for(var j = 0; j < result.partidos[i].eventos.length; j++) {
-              var autor;
-              for(var w = 0; w < jugadores.length; w++){
-                if(jugadores[w]._id == result.partidos[i].eventos[j].jugador._id) {
-                  autor = w;
+            var continuar1 = 1;
+            if(result.partidos[i].eventos.length != 0) {
+              for(var j = 0; j < result.partidos[i].eventos.length; j++) {
+                var continuar2 = 1;
+                var autor = 0;
+                for(var w = 0; w < jugadores.length; w++){
+                  if(result.partidos[i].eventos[j].jugador != undefined) {
+                    if(jugadores[w]._id.equals(result.partidos[i].eventos[j].jugador._id)) {
+                      autor = w;
+                    }
+                  }                
                 }
-              }
-              if(result.partidos[i].eventos[j].tipo_evento.nombre == "Tarjeta amarilla") {
-                jugadores[autor].amarillas++;
-                result.save((err) => {
-                  if(err){
-                    res.send(err);
+                if(autor != 0) {
+                  if(result.partidos[i].eventos[j].tipo_evento == "5a1f898ccb9c2409c16f433f") {
+                    jugadores[autor].amarillas += 1;
+                    result.save((err) => {
+                      if(err){
+                        res.send(err);
+                      }
+                      else if(continuar == result.partidos.length &&
+                      continuar1 == result.partidos[i].eventos.length && 
+                      continuar2 == jugadores.length) {
+                        Jugador.find().
+                        sort({amarillas: -1}).
+                        populate({
+                          path: 'equipo',
+                          select: '_id nombre escudo'
+                        }).
+                        exec((err, amonestados) => {
+                          if(err) {
+                            res.send(err);
+                          }
+                          else {
+                            res.send(amonestados);
+                          }
+                        });
+                      }
+                      else {
+                        continuar++;
+                        continuar1++;
+                        continuar2++;
+                      }
+                      /* }
+                      else if(continuar == result.partidos.length &&                     
+                      continuar2 == jugadores.length) {
+                        Jugador.find().
+                        sort({amarillas: -1}).
+                        populate({
+                          path: 'equipo',
+                          select: '_id nombre escudo'
+                        }).
+                        exec((err, amonestados) => {
+                          if(err) {
+                            res.send(err);
+                          }
+                          else {
+                            res.send(amonestados);
+                          }
+                        });
+                      }
+                      else {
+                        continuar++;
+                        continuar2++;
+                      } */
+                    });
                   }
-                });
+                }  
+                else if(continuar == result.partidos.length &&
+                continuar1 == result.partidos[i].eventos.length && 
+                continuar2 == jugadores.length) {
+                  console.log(continuar, continuar1, continuar2)
+                  Jugador.find().
+                  sort({amarillas: -1}).
+                  populate({
+                    path: 'equipo',
+                    select: '_id nombre escudo'
+                  }).
+                  exec((err, amonestados) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else {
+                      res.send(amonestados);
+                    }
+                  });
+                }
+                else {
+                  continuar++;
+                  continuar1++;
+                  continuar2++;
+                }           
               }
             }
-          }
-          Jugador.find().
-          sort({amarillas: 'des'}).
-          populate({
-            path: 'equipo',
-            select: '_id nombre escudo'
-          }).
-          exec((err, amonestados) => {
-            if(err) {
-              res.send(err);
+            else if(continuar == result.partidos.length) {
+              Jugador.find().
+              sort({amarillas: -1}).
+              populate({
+                path: 'equipo',
+                select: '_id nombre escudo'
+              }).
+              exec((err, amonestados) => {
+                if(err) {
+                  res.send(err);
+                }
+                else {
+                  res.send(amonestados);
+                }
+              });
             }
             else {
-              res.send(amonestados);
+              continuar++;
             }
-          });
+          }          
         }
         else {
           res.send("El torneo del que desea saber su tabla de amonestados no existe");
@@ -373,7 +456,9 @@ router.get('/', (req, res, next) => {
 
 //GET ONE
 router.get('/:id', (req, res, next) => {
-  Torneo.findOne({_id: req.params.id}, (err, result) => {
+  /* Torneo.findOne({_id: req.params.id}).
+  populate('partidos').
+  exec((err, result) => {
     if (err) {
       res.send(err);
     } 
@@ -383,6 +468,31 @@ router.get('/:id', (req, res, next) => {
     else {
       res.send("Ningún Torneo Encontrado");
     } 
+  }); */
+  Torneo.findOne({_id: req.params.id}).
+  populate({
+    path: 'partidos',
+    select: '_id eventos',
+    populate: ({ 
+      path: 'eventos',
+      select: '_id tipo_evento jugador',
+      populate: ({
+        path: 'tipo_evento',
+        select: '_id nombre',
+      }),
+      populate: ({
+        path: 'jugador',
+        select: '_id nombre amarillas',
+      })
+    }),
+  }).
+  exec((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else if (result != null) {
+      res.json(result);
+    }
   });
 });
 
