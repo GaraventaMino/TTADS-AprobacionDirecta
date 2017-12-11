@@ -7,7 +7,7 @@ var Torneo = mongoose.model('torneo');
 var router=require('express').Router()
 
 //Finalizar partido
-router.put('/:id/finalizar', (req, res, next) => {
+router.put('/:id/finalizar', (req, res) => {
   Partido.findOne({_id: req.params.id}, function (err, result) {
     if (err) {
       res.send(err);
@@ -30,12 +30,11 @@ router.put('/:id/finalizar', (req, res, next) => {
 });
 
 //Get Partidos activos
-router.get('/activos', (req, res, next) => {
+router.get('/activos', (req, res) => {
   var today = new Date();
   Partido.
   where('fecha_hora').gt(today.getTime() - (6300000)).
-  //lt(today.getTime() + (6300000)).
-  where('finalizado' == false).
+  lt(today.getTime()).
   sort({fecha_hora: 'asc'}).
   populate('equipo_local').
   populate('equipo_visitante').
@@ -64,7 +63,7 @@ router.get('/activos', (req, res, next) => {
 });
 
 //Get Partidos planificados (ni activos ni finalizados)
-router.get('/planificados', (req, res, next) => {
+router.get('/planificados', (req, res) => {
   var today = new Date();
   Partido.
   find().
