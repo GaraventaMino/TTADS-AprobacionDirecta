@@ -11,8 +11,8 @@ var router=require('express').Router()
 router.get('/', (req, res, next) => {
   Equipo.find().
   populate('jugadores').
-  populate('estadios').
-  populate('torneos').
+  populate('estadio').
+  populate('torneo').
   exec(function (err, result) {
     if (err) {
       res.send(err);
@@ -31,11 +31,11 @@ router.get('/:id', (req, res, next) => {
   Equipo.findOne({_id: req.params.id}).
   populate('jugadores').
   populate({
-    path: 'estadios',
+    path: 'estadio',
     select: 'nombre direccion'
   }).  
   populate({
-    path: 'torneos',
+    path: 'torneo',
     select: 'nombre logo imagen_trofeo'
   }).
   exec(function (err, result) {
@@ -51,27 +51,6 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
-
-
-
-router.post('/creacion', (req, res, next) => {
-  let nombreNuevo=req.body.nombre;
-  let tecnicoNuevo=req.body.tecnico;
-  let escudoNuevo=req.body.escudo;
-  var equipoNuevo = new Equipo({
-    nombre: nombreNuevo,
-    tecnico: tecnicoNuevo,
-    escudo: escudoNuevo,
-  });
-  equipoNuevo.save((err, equipoGuardado) => {
-    if(err){
-      res.send(err);
-    }
-    else {
-      res.send("Equipo creado correctamente sin estadios ni torneos");
-    }
-  });
-});
 //CREATE
 /* 
 En este método se puede asignar el estadio y el torneo de mi nuevo equipo y el método
@@ -233,37 +212,142 @@ router.post('/', (req, res, next) => {
 
 //UPDATE
 router.put('/:id', (req, res, next) => {
-  var a;
-  var b;
   Equipo.findOne({_id: req.params.id}).
-  populate('torneos').
-  populate('estadios').
-  exec(function (err, result) {
+  exec((err, result) => {
     if (err) {
       res.send(err);
     } 
     else if (result != null) {
       //Modifico nombre, tecnico y/o o escudo si se solicita
+
       result.nombre = req.body.nombre || result.nombre;
       result.tecnico = req.body.tecnico || result.tecnico;
       result.escudo = req.body.escudo || result.escudo;
-      if (req.body.torneos) {
-        //Vinieron torneos en el post (pueden ser los existentes o distintos)
+      if (req.body.torneo) {
+        //Vino un torneo en el post
+        
+        if(result.torneo != null) {
+          //Ya tiene torneo el equipo
 
-        //Transformo el tipo de dato de "req.body.torneos"
-        req.body.torneos = JSON.parse(req.body.torneos);
+          if(result.torneo.equals(req.body.torneo)) {
+            //Es el mismo que vino en el post. Proseguir con estadio
 
-        //A cada torneo de "req.body.torneos" lo parseo a tipo "ObjectId" de mongo
-        for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-          req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
+            if(req.body.estadio) {
+              if(result.estadio != null) {
+                if(result.estadio.equals(req.body.estadio)) {
+                  result.save((err) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else {
+                      res.send("Equipo modificado (no se modifico ni su estadio ni su torneo)")
+                    }
+                  });
+                }
+                else {
+                  Estadio.findOne({_id: result.estadio}, (err, es) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else if(es != null) {
+                      es.equipo = null;
+                      es.save((err) => {
+                        if(err) {
+                          res.send(err);
+                        }
+                        else {
+                          Estadio.findOne({_id: req.body.estadio}, (err, e) => {
+                            if(err) {
+                              res.send(err);
+                            }
+                            else if(e != null) {
+                              result.estadio = req.body.estadio;
+                              e.equipo = result._id;
+                              result.save((err) => {
+                                if(err) {
+                                  res.send(err);
+                                }
+                                else {
+                                  e.save((err) => {
+                                    if(err) {
+                                      res.send(err);
+                                    }
+                                    else {
+                                      res.send("Equipo modificado (El torneo sigue igual. Tenia un estadio pero ahora tiene otro)")
+                                    }
+                                  });
+                                }
+                              });
+                            }
+                            else {
+                              res.send("El estadio que se ingreso no existe");
+                            }
+                          });                          
+                        }
+                      });
+                    }
+                    else {
+                      res.send("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
+                    }
+                  });
+                }
+              }
+              else {
+                Estadio.findOne({_id: req.body.estadio}, (err, es) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                  else if(es != null) {
+                    result.estadio = req;
+                    es.equipo = result._id;
+                  }
+                  else {
+                    res.send("El estadio que se ingreso no existe");
+                  }
+                })
+              }
+
+            }
+            else {
+              //NO VINO ESTADIO.
+            }
+          }
+          else {
+            //Es un torneo nuevo. Borrar el torneo existente, agregar el nuevo y proseguir con estadio
+
+          }
         }
+        else {
+          //Hay que agregarle el torneo y proseguir con estadio
 
-        if(result.torneos.length != 0) {
-          //Ya tiene torneos el equipo, entonces:
+        }
+      }
+      else {
+        //No vino torneo en el post
 
-          //Comparo cada torneo existente en el equipo con todos los que vinieron
-          //y elimino los que se desean eliminar (no vinieron en el post)
-          var continuar1 = 0;
+        if(result.torneo != null) {
+          //Tiene torneo. Borrarselo y proseguir con estadio
+
+        }
+        else {
+          //No tiene torneo. Proseguir con estadio
+
+        }
+      } 
+    }
+    else {
+      res.send("El equipo que desea modificar no existe");
+    }
+  });
+});  
+      
+      
+
+
+
+
+
+
           for(var i = 0; i < result.torneos.length; i++) {
             a = 2;
             for(var w = 0; w < req.body.torneos.torneos.length; w++) {
@@ -2428,8 +2512,8 @@ router.put('/:id', (req, res, next) => {
 //DELETE ONE
 router.delete('/:id', (req, res, next) => {
   Equipo.findOne({_id: req.params.id}).
-  populate('torneos').
-  populate('estadios').
+  populate('torneo').
+  populate('estadio').
   populate('jugadores').
   exec(function (err, result) {
     if (err) {
