@@ -40,20 +40,22 @@ router.get('/:id', (req, res, next) => {
 
 //CREATE
 router.post('/', (req, res, next) => {
-  let nombreNuevo=req.body.nombre;
-  let direccionNuevo=req.body.direccion;
-  let imagen=req.body.imagen;
+  let nombreNuevo = req.body.nombre;
+  let direccionNuevo = req.body.direccion;
+  let imagenNuevo = req.body.imagen;
+  let equipoNuevo = null;
   var estadioNuevo = new Estadio({
       nombre: nombreNuevo,
       direccion: direccionNuevo,
-      imagen: imagen
+      imagen: imagenNuevo,
+      equipo: equipoNuevo
   });
   estadioNuevo.save((err, guardado) => {
       if(err){
         res.send(err);
       }
       else {
-        res.send(guardado);
+        res.send("Estadio creado con éxito");
       }
   });
 });
@@ -88,43 +90,40 @@ router.put('/:id', (req, res, next) => {
 El método se encarga de borrar el estadio y de borrarselo al equipo que lo contenga.
 */
 router.delete('/:id', (req, res, next) => {
-  Estadio.findOne({_id: req.params.id}, function (err, result) {
+  Estadio.findOne({_id: req.params.id}, (err, result) => {
     if (err) {
       res.send(err);
     }
     else if(result != null) {
-      Equipo.find().
-      populate('estadios').
-      exec((err, eq) => {
-        if(err) {
-          res.send(err);
-        }
-        else if (eq.length != 0) {
-          for(var i = 0; i < eq.length; i++) {
-            for(var j = 0; j < eq[i].estadios.length; j++) {
-              if(eq[i].estadios[j]._id == result._id) {
-                Equipo.findOne({_id: eq[i]._id}).
-                populate('estadios').
-                exec((err, eq1) => {
+      if(result.equipo != null) {
+        Equipo.findOne({_id: result.equipo}, (err, eq) => {
+          if(err) {
+            res.send(err);
+          }
+          else if (eq != null) {
+            eq.estadio = null;
+            eq.save((err) => {
+              if(err) {
+                res.send(err);                
+              }
+              else {
+                result.remove((err) => {
                   if(err) {
                     res.send(err);
                   }
-                  else if (eq1 != null) {
-                    var removed = eq1.estadios.splice(j, 1);
-                    eq1.save((err, guardado) => {
-                      if(err) {
-                        res.send(err);
-                      }
-                    });
-                  }
                   else {
-                    res.send("Error al buscar el Equipo que contiene a este estadio");
+                    res.send("Estadio borrado con éxito");
                   }
                 });
               }
-            }
+            });
           }
-        }
+          else {
+            res.send("El estadio tiene un equipo, pero no existe dicho equipo. NO DEBERIA PASAR ESTO");
+          }        
+        });
+      }
+      else {
         result.remove((err) => {
           if(err) {
             res.send(err);
@@ -133,7 +132,7 @@ router.delete('/:id', (req, res, next) => {
             res.send("Estadio borrado con éxito");
           }
         });
-      });
+      }      
     }
     else {
       res.send("No existe ese estadio");
