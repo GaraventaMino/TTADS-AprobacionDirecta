@@ -9,6 +9,7 @@ var router=require('express').Router()
 //Get Partidos activos
 router.get('/activos', (req, res) => {
   var today = new Date();
+  today.setHours(today.getHours() - 3);
   Partido.
   where('fecha_hora').gt(today.getTime() - (6300000)).
   lt(today.getTime()).
@@ -42,6 +43,7 @@ router.get('/activos', (req, res) => {
 //Get Partidos planificados (ni activos ni finalizados)
 router.get('/planificados', (req, res) => {
   var today = new Date();
+  today.setHours(today.getHours() - 3);
   Partido.
   find().
   where('fecha_hora').gt(today.getTime()).

@@ -63,6 +63,8 @@ router.post('/', (req, res, next) => {
         correcto.fecha_hora < today.getTime()) {
           let tiempo_ocurrenciaNuevo = req.body.tiempo_ocurrencia;
           let partidoNuevo = req.body.partido;
+          let equipoNuevo = null;
+          let jugadorNuevo = null;
           Tipo_evento.findOne({_id: req.body.tipo_evento}, (err, te) => {
             if(err) {
               res.send(err);
@@ -125,7 +127,9 @@ router.post('/', (req, res, next) => {
                 var eventoNuevo = new Evento({
                   tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
                   partido: partidoNuevo,
-                  tipo_evento: tipo_eventoNuevo
+                  tipo_evento: tipo_eventoNuevo,
+                  equipo: equipoNuevo,
+                  jugador: jugadorNuevo
                 });
                 eventoNuevo.save((err, eventoCreado) => {
                   if(err) {
