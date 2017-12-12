@@ -1,0 +1,40 @@
+.title {
+    text-align: center;
+    color: #326295
+}
+
+.form-inputs{
+    width: 40%;
+    opacity: 1;
+    padding-left: 22px;
+    padding-right: 10px;
+    font-size: 15px;
+    padding-top: 4px;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-bottom: 1%;
+  }
+
+  :host /deep/ .mat-input-placeholder {
+    color: #326295;
+ }
+ 
+:host /deep/ .mat-input  {
+    border-color: black;
+}
+:host /deep/ .mat-form-field-underline {
+    background: #326295;
+}
+.submit-styles {
+    font-size: 16px;
+    opacity: .8;
+    margin-left: 62%;
+    background: #326295;
+    color: white;
+}
+.submit-styles:hover {
+    opacity: 1;
+}
+.altura-cont {
+    min-height: 660px;
+}

@@ -1,0 +1,30 @@
+<hr>
+<h2 class="title">Listado Partidos Programados</h2>
+<hr>
+<div class="container altura-cont">
+  <div *ngIf="partidos; else ElseBlock">
+    <ul class="ul-style background-mid">
+          <li *ngFor="let p of partidos">
+            <div class="row">
+              <div class="col-sm-4">
+                <h4 class="equipo-cartel"><a routerLink="#"> {{p.equipo_local.nombre}}</a></h4>
+                <img src="{{p.equipo_local.escudo}}" alt="" class="escudo-equipo">
+              </div>
+              <div class="col-sm-4 versus-cartel">
+                <p>{{ p.fecha_hora | date : 'medium' : timezone}}</p>
+                <a routerLink="/detallePartido/{{p._id}}" class="btn btn-primary btn-versus">Ver Resumen</a>
+              </div>
+              <div class="col-sm-4">
+                  <h4 class="equipo-cartel"><a routerLink="#"> {{p.equipo_visitante.nombre}} </a></h4>
+                  <img src="{{p.equipo_visitante.escudo}}" alt="" class="escudo-equipo">
+              </div>
+            </div>
+            <hr>
+          </li>
+    </ul>
+  <div>
+</div>
+<ng-template #ElseBlock>
+		<h3 class="cargando-partidos">Cargando Partidos</h3>
+		<img class="cargando-imagen" src="../../assets/cargando.gif" alt="cargando">
+</ng-template>

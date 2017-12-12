@@ -1,0 +1,23 @@
+.title {
+    text-align: center;
+    color: #326295
+}
+.altura-cont {
+    min-height: 660px;
+}
+.cargando-jugador {
+    text-align: center;
+  }
+  
+.cargando-imagen {
+    height: 50px;
+    position: relative;
+    left: 50%;
+    margin-left: -25px;
+    margin-bottom: 50px;
+  }
+.logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}

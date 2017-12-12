@@ -1,0 +1,15 @@
+.jugador-card {
+    width: 30%;
+    height: 20%;
+    margin-bottom: 3%;
+    margin-left: 35%;
+  }
+.title {
+    text-align: center;
+    color: #326295;
+    font-style: italic;
+    font-size: 30px;
+}
+.altura-cont {
+  min-height: 660px;
+}

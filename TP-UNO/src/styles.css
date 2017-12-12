@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+
+/*imports*/
+@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
+
+.mat-menu-content {
+        background: #326295;
+}
+.mat-form-field {
+        border-color: black;
+}
+.mat-card {
+        background: #326295;
+}

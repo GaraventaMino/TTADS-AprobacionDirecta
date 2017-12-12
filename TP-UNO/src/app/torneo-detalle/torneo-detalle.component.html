@@ -1,0 +1,90 @@
+<div *ngIf="torneo && posiciones; else ElseBlock">
+  <hr>
+  <h2 class="title">{{torneo.nombre}}</h2>
+  <p class="title-imgs"><img src="{{torneo.logo}}" class="logo"/> - <img src="{{torneo.imagen_trofeo}}" class="trofeo" /></p>
+  <div class="container altura-cont">
+    <div class="row">
+      <hr>
+      <div class="col-md-6">
+        <h3 class="title-posiciones">
+          Tabla de Posiciones
+        </h3>  
+      <table class="table table-hover tabla-posiciones">
+          <thead>
+            <tr>
+              <th>Equipo</th>
+              <th>Puntaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let equipo of posiciones.equipos">
+              <td><img src="" class="escudo"/>{{equipo.nombre}}</td>
+              <td>ptos</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-6">
+          <h3 class="title-posiciones">
+            Tabla de Goleadores
+          </h3>  
+        <table class="table table-hover tabla-posiciones">
+            <thead>
+              <tr>
+                <th>Equipo</th>
+                <th>Puntaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let equipo of posiciones.equipos">
+                <td><img src="" class="escudo"/>{{equipo.nombre}}</td>
+                <td>ptos</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-6">
+            <h3 class="title-posiciones">
+              Tabla de Amonestados
+            </h3>  
+          <table class="table table-hover tabla-posiciones">
+              <thead>
+                <tr>
+                  <th>Equipo</th>
+                  <th>Puntaje</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let equipo of posiciones.equipos">
+                  <td><img src="" class="escudo"/>{{equipo.nombre}}</td>
+                  <td>ptos</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-6">
+              <h3 class="title-posiciones">
+                Tabla de Expulsados
+              </h3>  
+            <table class="table table-hover tabla-posiciones">
+                <thead>
+                  <tr>
+                    <th>Equipo</th>
+                    <th>Puntaje</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let equipo of posiciones.equipos">
+                    <td><img src="" class="escudo"/>{{equipo.nombre}}</td>
+                    <td>ptos</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+    </div>
+  </div>
+</div>
+<ng-template #ElseBlock>
+		<h3 class="cargando-torneo">Cargando Torneo</h3>
+		<img class="cargando-imagen" src="../../assets/cargando.gif" alt="cargando">
+</ng-template>

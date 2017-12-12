@@ -1,0 +1,19 @@
+<hr>
+<h2 class="title">Listado de Torneos</h2>
+<hr>
+<div class="container altura-cont">
+  <div class="row">
+      <table class="table table-hover table-edited">
+        <thead>
+          <tr>
+            <th class="th-edited">Torneo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let torneo of torneos">
+            <td><img src="{{torneo.logo}}" class="logo"/><a routerLink="/detalleTorneo/{{torneo._id}}">{{torneo.nombre}}</a></td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+</div>

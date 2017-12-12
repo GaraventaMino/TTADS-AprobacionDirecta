@@ -1,0 +1,23 @@
+<hr>
+<h2 class="title">Nuevo Torneo</h2>
+<hr>
+<div class="container altura-cont">
+  <div class="row">
+    <div>
+        <form (ngSubmit)="altaTorneo()" name="altaTorneo" action="#">
+            <md-form-field class="form-inputs">
+                <input mdInput name="nombre" placeholder="Nombre del torneo" type="text" [(ngModel)]="torneo.nombre" required>
+            </md-form-field>
+            <md-form-field class="form-inputs">
+                <input mdInput name="logo" placeholder="URL Logo del torneo" type="text" [(ngModel)]="torneo.logo">
+            </md-form-field>
+            <md-form-field class="form-inputs">
+                <input mdInput name="trofeo" placeholder="URL Trofeo del torneo" type="text" [(ngModel)]="torneo.imagen_trofeo">
+            </md-form-field>
+            <a md-button (click)="altaTorneo()" class="submit-styles" routerLink="/principal">
+                Crear
+            </a>
+        </form>
+    </div>
+  </div>
+</div>

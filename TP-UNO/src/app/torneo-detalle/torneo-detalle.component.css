@@ -1,0 +1,51 @@
+.title {
+    text-align: center;
+    color: #326295;
+    font-style: italic;
+    font-size: 30px;
+}
+.title-imgs {
+    text-align: center;
+    color: #326295;
+    font-style: italic;
+    font-size: 20px;
+}
+.title-posiciones {
+    color: #326295;
+    font-size: 20px;
+    text-align: center;
+}
+.tabla-container {
+    width: 40%;
+}
+.altura-cont {
+    min-height: 660px;
+}
+.tabla-posiciones {
+    width:100%;
+    margin-top: 2%;
+    margin-bottom: 1%;
+}
+.logo {
+    width: 180px;
+    height: 180px;
+}
+.trofeo{
+    width:100px;
+}
+.cargando-torneo {
+    text-align: center;
+  }
+  
+.cargando-imagen {
+    height: 50px;
+    position: relative;
+    left: 50%;
+    margin-left: -25px;
+    margin-bottom: 50px;
+  }
+.escudo {
+    width: 40px;
+    height: 40px;
+}
+

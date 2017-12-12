@@ -1,0 +1,43 @@
+.versus-cartel {
+    text-align: center;
+    margin-top: 9%;
+}
+.equipo-cartel {
+    text-align: center;
+    margin-top: 8%;
+    margin-bottom: 10%;
+    color: black;
+}
+.equipo-cartel a{
+    color: black;
+}
+.escudo-equipo {
+    width: 63%;
+    height: 63%;
+    margin-left: 20%;
+}
+.ul-style {
+    list-style: none;
+    padding: 0
+}
+.background-mid {
+    background-color: white;
+}
+.altura-cont {
+    min-height: 660px;
+}
+.title {
+    text-align: center;
+    color: #326295
+}
+.cargando-torneo {
+    text-align: center;
+  }
+  
+.cargando-imagen {
+    height: 50px;
+    position: relative;
+    left: 50%;
+    margin-left: -25px;
+    margin-bottom: 50px;
+  }

@@ -1,0 +1,16 @@
+<div class="cont">
+    <md-form-field class="example">
+        <input mdInput (input)="onSearchChange($event.target.value)" (blur)="onBlur()" placeholder="Buscar torneo">
+    </md-form-field>
+</div>
+<div *ngIf="items" class="lista">      
+        <div *ngFor="let item of items; let i=index">
+            <div *ngIf="i<5">
+                <img class='mini' src='https://image.tmdb.org/t/p/w92{{item.poster_path}}' alt="">
+                <a (click)="onBlur()" routerLink="/details/{{item.id}}">
+                    {{item.title}} ({{item.release_date | date:"yyyy"}})
+                </a>
+                <hr>
+            </div>
+        </div>
+</div>

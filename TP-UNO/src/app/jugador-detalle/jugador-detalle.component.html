@@ -1,0 +1,29 @@
+<hr>
+<div *ngIf="jugador; else ElseBlock">
+    <div class="container altura-cont">
+        <div class="row">
+            <md-card class="jugador-card">
+                <md-card-header>
+                  <md-card-title>{{jugador.nombre}}</md-card-title>
+                  <md-card-subtitle>{{jugador.edad}} años</md-card-subtitle>
+                </md-card-header>
+                <img md-card-image src="{{jugador.imagen}}" alt="Photo of a Shiba Inu">
+                <md-card-content>
+                  <p>Equipo: {{jugador.equipo.nombre}}</p>
+                  <p>Goles: {{jugador.goles}}</p>
+                  <p>Amonestaciones: {{jugador.amarillas}}</p>
+                  <p>Expulsiones: {{jugador.rojas}}</p>
+                </md-card-content>
+                <md-card-actions>
+                  <a md-button routerLink="/editarJugador/{{jugador._id}}">Editar</a>
+                  <button md-button>Eliminar</button>
+                </md-card-actions>
+              </md-card>
+        </div>
+    </div>
+</div>
+<ng-template #ElseBlock>
+    <h3 class="cargando-torneo">Cargando Torneo</h3>
+    <img class="cargando-imagen" src="../../assets/cargando.gif" alt="cargando">
+</ng-template>
+  

@@ -1,0 +1,34 @@
+<div *ngIf="equipo && equipo.estadios[0] && equipo.torneos[0] && equipo.jugadores[0]; else ElseBlock">
+  <hr>
+  <h2 class="title">{{equipo.nombre}}</h2>
+  <hr>
+  <div class="container altura-cont">
+    <div class="row">
+        <table class="table table-hover col-md-8">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Torneo</th>
+              <th>Estadio</th>
+              <th>Tecnico</th>
+              <th>Partidos Jugados</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img src="{{equipo.escudo}}" class="escudo" />  {{equipo.nombre}}</td>
+              <td>{{equipo.torneos[0]}}</td>
+              <td>{{equipo.estadios[0].nombre}}</td>
+              <td>{{equipo.tecnico}}</td>
+              <td>{{equipo.partidos_jugados}}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+<ng-template #ElseBlock>
+		<h3 class="cargando-equipo">Cargando Equipo</h3>
+		<img class="cargando-imagen" src="../../assets/cargando.gif" alt="cargando">
+</ng-template>
+
