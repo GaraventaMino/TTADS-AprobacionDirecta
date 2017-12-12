@@ -205,7 +205,7 @@ router.get('/:id/goleadores', (req, res, next) => {
   });  
 });
 
-//Get Tabla de amonestados de un torneo
+/* //Get Tabla de amonestados de un torneo
 router.get('/:id/amonestados', (req, res, next) => {
   Jugador.find((err, jugadores) => {
     if (err) {
@@ -236,11 +236,11 @@ router.get('/:id/amonestados', (req, res, next) => {
           if(result.partidos.length != 0) {
             var continuar = 1;
             for(var i = 0; i < result.partidos.length; i++) {
-              var continuar1 = 1;
               var today = new Date();
               today.setHours(today.getHours() - 3);
               if((result.partidos[i].fecha_hora.getTime()) < (today.getTime() - 630000)) {                
-                if(result.partidos[i].eventos.length != 0) { 
+                if(result.partidos[i].eventos.length != 0) {
+                  var continuar1 = 1; 
                   for(var j = 0; j < result.partidos[i].eventos.length; j++) {
                     var autor = -1;
                     for(var w = 0; w < jugadores.length; w++) {                      
@@ -252,10 +252,11 @@ router.get('/:id/amonestados', (req, res, next) => {
                     }
                     if(autor != -1) {
                       if(result.partidos[i].eventos[j].tipo_evento.nombre == "Tarjeta amarilla") {
-                        jugadores[autor].amarillas += 1;
-                        console.log(continuar1)
-                        console.log(result.partidos[i].eventos.length)
-                        result.save((err) => {
+                        var j = jugadores[autor];
+                        j.amarillas += 1;
+                        console.log(j);
+                        console.log(j.amarillas);
+                        j.save((err) => {
                           if(err){
                             res.send(err);
                           }
@@ -277,6 +278,7 @@ router.get('/:id/amonestados', (req, res, next) => {
                               });
                             }
                             else {
+                              console.log(continuar1 == j)
                               continuar++;
                             }                            
                           }
@@ -369,7 +371,193 @@ router.get('/:id/amonestados', (req, res, next) => {
       res.send("No existe ningún Jugador aún");
     }
   });   
+}); */
+
+
+
+
+
+//Get Tabla de amonestados de un torneo
+router.get('/:id/amonestados', (req, res, next) => {
+  Jugador.find((err, jugadores) => {
+    if (err) {
+      res.send(err);
+    }
+    else if (jugadores.length != 0) {
+      for(var k = 0; k < jugadores.length; k++) {
+        jugadores[k].amarillas = 0;
+      }
+      Torneo.findOne({_id: req.params.id}).
+      populate({
+        path: 'partidos',
+        select: '_id eventos fecha_hora',
+        populate: { 
+          path: 'eventos',
+          select: '_id tipo_evento jugador',
+          populate: {
+            path: 'tipo_evento',
+            select: '_id nombre',
+          },
+        },
+      }).
+      exec((err, result) => {
+        if (err) {
+          res.send(err);
+        }
+        else if (result != null) {
+          if(result.partidos.length != 0) {
+            var continuar = 1;
+            for(var i = 0; i < result.partidos.length; i++) {
+              var continuar1 = 1;
+              var today = new Date();
+              today.setHours(today.getHours() - 3);
+              if((result.partidos[i].fecha_hora.getTime()) < (today.getTime() - 630000)) {                
+                if(result.partidos[i].eventos.length != 0) {
+                  for(var j = 0; j < result.partidos[i].eventos.length; j++) {
+                    var autor = -1;
+                    for(var w = 0; w < jugadores.length; w++) {                      
+                      if(result.partidos[i].eventos[j].jugador != null) {
+                        if(jugadores[w]._id.equals(result.partidos[i].eventos[j].jugador)) {                          
+                          autor = w;
+                        }
+                      }                
+                    }
+                    if(autor != -1) {
+                      if(result.partidos[i].eventos[j].tipo_evento.nombre == "Tarjeta amarilla") {
+                        var j = jugadores[autor];
+                        j.amarillas += 1;
+                        j.save((err) => {
+                          if(err){
+                            res.send(err);
+                          }
+                          else if(continuar1 == result.partidos[i].eventos.length) {
+                            if(continuar == result.partidos.length) {
+                              Jugador.find().
+                              sort({amarillas: -1}).
+                              populate({
+                                path: 'equipo',
+                                select: '_id nombre escudo'
+                              }).
+                              exec((err, amonestados) => {
+                                if(err) {
+                                  res.send(err);
+                                }
+                                else {
+                                  res.send(amonestados);
+                                }
+                              });
+                            }
+                            else {
+                              continuar++;
+                              console.log("AMARILLA. continuar " + continuar + " continuar1 " + continuar1)
+                            }                            
+                          }
+                          else {
+                            continuar1++;
+                            console.log("AMARILLA. continuar1 " + continuar1 + " continuar " + continuar)
+                          }                        
+                        });
+                      }
+                      else if(continuar1 == result.partidos[i].eventos.length) {
+                        if(continuar == result.partidos.length) {
+                          Jugador.find().
+                          sort({amarillas: -1}).
+                          populate({
+                            path: 'equipo',
+                            select: '_id nombre escudo'
+                          }).
+                          exec((err, amonestados) => {
+                            if(err) {
+                              res.send(err);
+                            }
+                            else {
+                              res.send(amonestados);
+                            }
+                          });
+                        }
+                        else {
+                          continuar++;
+                          console.log("no es amarilla. Continuar " + continuar + " continuar1 " + continuar1)
+                        }                        
+                      }
+                      else {
+                        console.log("continuar1 " + continuar1)
+                        continuar1++;
+                        console.log("no es amarilla. Continuar1 " + continuar1 + " continuar " + continuar)
+                      }
+                    }  
+                    else {
+                      res.send("Error al identificar un jugador protagonista de un evento. NO DEBERIA PASAR NUNCA")
+                    }                               
+                  }
+                }
+                else if(continuar == result.partidos.length) {
+                  Jugador.find().
+                  sort({amarillas: -1}).
+                  populate({
+                    path: 'equipo',
+                    select: '_id nombre escudo'
+                  }).
+                  exec((err, amonestados) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else {
+                      res.send(amonestados);
+                    }
+                  });
+                }
+                else {
+                  continuar++;
+                  console.log(result.partidos[i].eventos)
+                  console.log(" continuar " + continuar + " continuar1 " + continuar1)
+                }
+              }
+              else if(continuar == result.partidos.length) {
+                Jugador.find().
+                sort({amarillas: -1}).
+                populate({
+                  path: 'equipo',
+                  select: '_id nombre escudo'
+                }).
+                exec((err, amonestados) => {
+                  if(err) {
+                    res.send(err);
+                  }
+                  else {
+                    res.send(amonestados);
+                  }
+                });
+              }
+              else {
+                continuar++;
+                console.log((result.partidos[i].fecha_hora.getTime()) < (today.getTime() - 630000))
+                console.log(" Continuar " + continuar + " continuar1 " + continuar1)
+                console.log(continuar == result.partidos.length)
+                console.log("i " + i + " continuar " + continuar)
+              }      
+            }
+          }
+          else {
+            res.send("El torneo del que desea saber su tabla de amonestados no tiene partidos");
+          }                    
+        }
+        else {
+          res.send("El torneo del que desea saber su tabla de amonestados no existe");
+        }
+      });
+    }
+    else {
+      res.send("No existe ningún Jugador aún");
+    }
+  });   
 });
+
+
+
+
+
+
 
 //Get Tabla de expulsados de un torneo
 router.get('/:id/expulsados', (req, res, next) => {

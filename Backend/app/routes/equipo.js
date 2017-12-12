@@ -84,7 +84,6 @@ router.post('/', (req, res, next) => {
   let estadioNuevo=null;
   if(req.body.estadio) {
     //Se le asigno un estadio al equipo
-    var continuar1 = 1;
     Estadio.findOne({_id: req.body.estadio}, (error, estad) => {
       if (error) {
         res.send(error);
@@ -95,91 +94,53 @@ router.post('/', (req, res, next) => {
         }
         else { 
           estadioNuevo = estad._id;          
-          if(req.body.torneos) {
-            //Se agregan torneos y estadios                
-            var continuar = 1;
-            let torneosNuevo=[];
-
-            if(typeof(req.body.torneos) != 'object') {
-              req.body.torneos = JSON.parse(req.body.torneos);
-            }
-            
-            for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-              req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
-            }
-
-            for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-              Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
-                if (error) {
-                  res.send(error);
-                }
-                else if (torn != null) {
-                  torneosNuevo.push(torn._id);
-                  if(continuar == req.body.torneos.torneos.length) {
-                    var equipoNuevo = new Equipo({
-                      nombre: nombreNuevo,
-                      tecnico: tecnicoNuevo,
-                      estadio: estadioNuevo,
-                      escudo: escudoNuevo,
-                      torneos: torneosNuevo
-                    });
-                    equipoNuevo.save((err, equipoGuardado) => {
+          if(req.body.torneo) {
+            //Se agrega torneo y estadio                
+            Torneo.findOne({_id: req.body.torneo}, (error, torn) => {
+              if (error) {
+                res.send(error);
+              }
+              else if (torn != null) {
+                let torneoNuevo = torn._id;
+                var equipoNuevo = new Equipo({
+                  nombre: nombreNuevo,
+                  tecnico: tecnicoNuevo,
+                  estadio: estadioNuevo,
+                  escudo: escudoNuevo,
+                  torneo: torneoNuevo
+                });
+                equipoNuevo.save((err, equipoGuardado) => {
+                  if(err){
+                    res.send(err);
+                  }
+                  else {                      
+                    estad.equipo = equipoGuardado._id;
+                    estad.save((err) => {
                       if(err){
                         res.send(err);
                       }
-                      else {
-                        Estadio.findOne({_id: req.body.estadio}, (error, estad) => {
-                          if (error) {
-                            res.send(error);
+                      else {                        
+                        torn.equipos.push(equipoGuardado._id);
+                        torn.save((err) => {
+                          if(err){
+                            res.send(err);
                           }
-                          else if (estad != null) {
-                            estad.equipo = equipoGuardado._id;
-                            estad.save((err) => {
-                              if(err){
-                                res.send(err);
-                              }
-                              else {
-                                var cont2 = 1;
-                                for(var w = 0; w < req.body.torneos.torneos.length; w++) {                                        
-                                  Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
-                                    if (error) {
-                                      res.send(error);
-                                    }
-                                    else if (torn != null) {
-                                      torn.equipos.push(equipoGuardado._id);
-                                      torn.save((err) => {
-                                        if(err){
-                                          res.send(err);
-                                        }
-                                        else if(cont2 == req.body.torneos.torneos.length) {
-                                          res.send("Equipo creado correctamente con estadio y torneos");
-                                        }
-                                        else {
-                                          cont2++;
-                                        }
-                                      });
-                                    }
-                                  });
-                                }
-                              }
-                            });
+                          else {
+                            res.send("Equipo creado correctamente con estadio y torneo");
                           }
                         });
-                      }                        
+                      }
                     });
                   }
-                  else {
-                    continuar++;
-                  }
-                }
-                else {
-                  res.send("Algún torneo seleccionado no existe");
-                }
-              });
-            }
-          }
+                });
+              }  
+              else {
+                res.send("El torneo seleccionado no existe");
+              }                      
+            });
+          }  
           else {
-            //Solo se le agrega estadio pero no torneos
+            //Solo se le agrega estadio pero no torneo
             var equipoNuevo = new Equipo({
               nombre: nombreNuevo,
               tecnico: tecnicoNuevo,
@@ -190,102 +151,65 @@ router.post('/', (req, res, next) => {
               if(err) {
                 res.send(err);
               }
-              else {                  
-                Estadio.findOne({_id: req.body.estadio}, (error, estad) => {
-                  if (error) {
-                    res.send(error);
-                  }
-                  else if (estad != null) {
-                    estad.equipo = equipoGuardado._id;
-                    estad.save((err, correcto) => {
-                      if(err){
-                        res.send(err);
-                      }
-                      else {
-                        res.send("Equipo creado correctamente con estadio pero sin torneos");
-                      }
-                    });
+              else {
+                estad.equipo = equipoGuardado._id;
+                estad.save((err) => {
+                  if(err){
+                    res.send(err);
                   }
                   else {
-                    res.send("El estadio que se ingreso no existe");
+                    res.send("Equipo creado correctamente con estadio pero sin torneo");
                   }
                 });
-              }                
+              }                  
             });
-          }
-        }
-      }
+          } 
+        } 
+      }              
       else {
         res.send("El estadio que se ingreso no existe");
       }
     });
   }
-  else if(req.body.torneos) {
-    //Se agregan torneos pero no estadio
-    var continuar = 1;
-    let torneosNuevo=[];
-    req.body.torneos = JSON.parse(req.body.torneos);
-    for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-      req.body.torneos.torneos[w] = mongoose.Types.ObjectId(req.body.torneos.torneos[w]);
-    }
-
-    for(var w = 0; w < req.body.torneos.torneos.length; w++) {
-      Torneo.findOne({_id: req.body.torneos.torneos[w]}, (error, torn) => {
-        if (error) {
-          res.send(error);
-        }
-        else if (torn != null) {
-          torneosNuevo.push(torn._id);
-          if(continuar == req.body.torneos.torneos.length) {
-            var equipoNuevo = new Equipo({
-              nombre: nombreNuevo,
-              tecnico: tecnicoNuevo,
-              escudo: escudoNuevo,
-              estadio: estadioNuevo,
-              torneos: torneosNuevo
-            });
-            equipoNuevo.save((err, equipoGuardado) => {
+  else if(req.body.torneo) {
+    //Se agrega torneo pero no estadio
+    Torneo.findOne({_id: req.body.torneo}, (error, torn) => {
+      if (error) {
+        res.send(error);
+      }
+      else if (torn != null) {
+        torneoNuevo = torn._id;
+        var equipoNuevo = new Equipo({
+          nombre: nombreNuevo,
+          tecnico: tecnicoNuevo,
+          escudo: escudoNuevo,
+          estadio: estadioNuevo,
+          torneo: torneosNuevo
+        });
+        equipoNuevo.save((err, equipoGuardado) => {
+          if(err){
+            res.send(err);
+          }
+          else {                 
+            torn.equipos.push(equipoGuardado._id);
+            torn.save((err) => {
               if(err){
                 res.send(err);
               }
               else {
-                var cont = 1;
-                for(var k = 0; k < req.body.torneos.torneos.length; k++) {
-                  Torneo.findOne({_id: req.body.torneos.torneos[k]}, (error, torn) => {
-                    if (error) {
-                      res.send(error);
-                    }
-                    else if (torn != null) {
-                      torn.equipos.push(equipoGuardado._id);
-                      torn.save((err, correcto) => {
-                        if(err){
-                          res.send(err);
-                        }
-                        else if(cont == req.body.torneos.torneos.length) {
-                          res.send("Equipo creado correctamente con torneos pero sin estadios");
-                        }
-                        else {
-                          cont++;
-                        }
-                      });
-                    }
-                  });
-                }              
+                res.send("Equipo creado correctamente con torneos pero sin estadios");
               }
             });
           }
-          else {
-            continuar++;
-          }
-        }
-        else {
-          res.send("Algún torneo seleccionado no existe");
-        }
-      });
-    }
+        });
+      }  
+      else {
+        res.send("Algún torneo seleccionado no existe");
+      } 
+    });
   }
   else {
-    //No se agregan estadios ni torneos
+    //No se agrega estadio ni torneo
     var equipoNuevo = new Equipo({
       nombre: nombreNuevo,
       tecnico: tecnicoNuevo,
