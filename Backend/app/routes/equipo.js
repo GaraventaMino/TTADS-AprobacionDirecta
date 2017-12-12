@@ -82,6 +82,7 @@ router.post('/', (req, res, next) => {
   let tecnicoNuevo=req.body.tecnico;
   let escudoNuevo=req.body.escudo;
   let estadioNuevo=null;
+  let torneoNuevo=null;
   if(req.body.estadio) {
     //Se le asigno un estadio al equipo
     Estadio.findOne({_id: req.body.estadio}, (error, estad) => {
@@ -145,7 +146,8 @@ router.post('/', (req, res, next) => {
               nombre: nombreNuevo,
               tecnico: tecnicoNuevo,
               estadio: estadioNuevo,
-              escudo: escudoNuevo
+              escudo: escudoNuevo,
+              torneo: torneoNuevo
             });
             equipoNuevo.save((err, equipoGuardado) => {
               if(err) {
@@ -214,7 +216,8 @@ router.post('/', (req, res, next) => {
       nombre: nombreNuevo,
       tecnico: tecnicoNuevo,
       escudo: escudoNuevo,
-      estadio: estadioNuevo
+      estadio: estadioNuevo,
+      torneo: torneoNuevo
     });
     equipoNuevo.save((err, equipoGuardado) => {
       if(err){
@@ -2433,8 +2436,7 @@ router.delete('/:id', (req, res, next) => {
       res.send(err);
     }
     else if(result != null) {
-      if(result.torneos.length == 0 && 
-      result.estadio == null && result.jugadores.length == 0) {
+      if(result.torneo == null && result.estadio == null && result.jugadores.length == 0) {
         Evento.find({}, 'equipo').
         populate('equipo').
         exec((err, eventos) => {
