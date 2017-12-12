@@ -51,30 +51,33 @@ router.get('/:id', (req, res, next) => {
 
 //Create
 router.post('/', (req, res, next) => {
-  Partido.findOne({_id: req.body.partido}, function(err, correcto){
+  Partido.findOne({_id: req.body.partido}, (err, correcto) => {
     if(err){
       res.send(err);
     }
     else if (correcto != null) {
       if(req.body.tiempo_ocurrencia <= 90 && req.body.tiempo_ocurrencia >= 0) {
         var today = new Date();
+        today.setHours(today.getHours() - 3);
         if (correcto.fecha_hora > (today.getTime() - (6300000)) &&
-        correcto.finalizado == false) {
+        correcto.fecha_hora < today.getTime()) {
           let tiempo_ocurrenciaNuevo = req.body.tiempo_ocurrencia;
           let partidoNuevo = req.body.partido;
+          let equipoNuevo = null;
+          let jugadorNuevo = null;
           Tipo_evento.findOne({_id: req.body.tipo_evento}, (err, te) => {
             if(err) {
               res.send(err);
             }
             else if(te != null) {
               let tipo_eventoNuevo = req.body.tipo_evento;
-              if(req.body.equipo.length != 0) {
+              if(req.body.equipo) {
                 Equipo.findOne({_id: req.body.equipo}, (err, eq) => {
                   if(err) {
                     res.send(err);
                   }
                   else if(eq != null) {
-                    if(req.body.jugador.length != 0) {
+                    if(req.body.jugador) {
                       Jugador.findOne({_id: req.body.jugador}, (err, ju) => {
                         if(err) {
                           res.send(err);
@@ -100,7 +103,7 @@ router.post('/', (req, res, next) => {
                                   res.send(err);
                                 }
                                 else {
-                                  res.send("Evento creado correctamente");
+                                  res.send("Evento creado correctamente con equipo y jugador");
                                 }
                               });
                             }
@@ -124,7 +127,9 @@ router.post('/', (req, res, next) => {
                 var eventoNuevo = new Evento({
                   tiempo_ocurrencia: tiempo_ocurrenciaNuevo,
                   partido: partidoNuevo,
-                  tipo_evento: tipo_eventoNuevo
+                  tipo_evento: tipo_eventoNuevo,
+                  equipo: equipoNuevo,
+                  jugador: jugadorNuevo
                 });
                 eventoNuevo.save((err, eventoCreado) => {
                   if(err) {

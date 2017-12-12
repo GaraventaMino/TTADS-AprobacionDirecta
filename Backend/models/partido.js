@@ -8,7 +8,7 @@ var partidoSchema= new mongoose.Schema({
   arbitro: {type: mongoose.Schema.Types.ObjectId, ref: 'arbitro'},
   estadio: {type: mongoose.Schema.Types.ObjectId, ref: 'estadio'},
   finalizado: {type: Boolean},
-  torneo: {type: mongoose.Schema.Types.ObjectId, red: 'torneo'}
+  torneo: {type: mongoose.Schema.Types.ObjectId, ref: 'torneo'}
 },);
 
 mongoose.model('partido', partidoSchema);
