@@ -30,14 +30,8 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   Equipo.findOne({_id: req.params.id}).
   populate('jugadores').
-  populate({
-    path: 'estadio',
-    select: 'nombre direccion'
-  }).  
-  populate({
-    path: 'torneo',
-    select: 'nombre logo imagen_trofeo'
-  }).
+  populate('estadio').
+  populate('torneo').
   exec(function (err, result) {
     if (err) {
       res.send(err);
