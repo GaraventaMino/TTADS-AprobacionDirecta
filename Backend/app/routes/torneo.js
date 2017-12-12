@@ -637,7 +637,9 @@ router.get('/:id/expulsados', (req, res, next) => {
 
 //GET ALL
 router.get('/', (req, res, next) => {
-  Torneo.find((err, result) => {
+  Torneo.find().
+  populate('equipos').
+  exec((err, result) => {
     if (err) {
       res.send(err);
     }
@@ -652,38 +654,17 @@ router.get('/', (req, res, next) => {
 
 //GET ONE
 router.get('/:id', (req, res, next) => {
-  /* Torneo.findOne({_id: req.params.id}).
-  populate('partidos').
-  exec((err, result) => {
-    if (err) {
-      res.send(err);
-    } 
-    else if(result != null) {
-      res.json(result);
-    } 
-    else {
-      res.send("Ningún Torneo Encontrado");
-    } 
-  }); */
   Torneo.findOne({_id: req.params.id}).
-  populate({
-    path: 'partidos',
-    select: '_id eventos',
-    populate: { 
-      path: 'eventos',
-      select: '_id tipo_evento jugador',
-      populate: {
-        path: 'tipo_evento',
-        select: '_id nombre',
-      },
-    },
-  }).
+  populate('equipos').
   exec((err, result) => {
     if (err) {
       res.send(err);
     }
-    else if (result != null) {
+    else if (result.length != 0) {
       res.json(result);
+    }
+    else {
+      res.send("No existe ningún torneo aún");
     }
   });
 });
