@@ -4,6 +4,24 @@ var Equipo = mongoose.model('equipo');
 var router=require('express').Router()
 
 
+//GET LIBRES
+router.get('/libres', (req, res, next) => {
+  Estadio.find().
+  where('equipo' == null). //CHEQUEAR ESTO
+  populate('equipo').
+  exec((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else if (result.length != 0) {
+      res.json(result);
+    }
+    else {
+      res.json("No existe ningún estadio sin equipo");
+    }
+  });
+});
+
 //GET ALL
 router.get('/', (req, res, next) => {
   Estadio.find().

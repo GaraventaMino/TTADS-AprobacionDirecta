@@ -34,7 +34,7 @@ router.get('/activos', (req, res) => {
       res.json(partido);
     }
     else {
-      res.send("Ningún partido en curso");
+      res.json("Ningún partido en curso");
     }
   });
 });
@@ -74,7 +74,7 @@ router.get('/planificados', (req, res) => {
       res.json(partido);
     }
     else {
-      res.send("Ningún partido planificado");
+      res.json("Ningún partido planificado");
     }
   });
 });
@@ -110,7 +110,7 @@ router.get('/', (req, res, next) => {
       res.json(partido);
     }
     else {
-      res.send("Ningún partido encontrado");
+      res.json("Ningún partido encontrado");
     }
   });
 });
@@ -150,7 +150,7 @@ router.get('/:id', (req, res, next) => {
         res.json(partido);
       }
       else {
-        res.send("Ningún partido encontrado");
+        res.json("Ningún partido encontrado");
       }
     });
 });
@@ -213,7 +213,7 @@ router.post('/', (req, res, next) => {
                                     res.send(err);
                                   }
                                   else {
-                                    res.send("Partido creado con éxito");
+                                    res.json("Partido creado con éxito");
                                   }
                                 });
                               }
@@ -222,32 +222,32 @@ router.post('/', (req, res, next) => {
                         });
                       }
                       else {
-                        res.send("No existe el torneo que se eligió")
+                        res.json("No existe el torneo que se eligió")
                       }
                     });
                   }
                   else {
-                    res.send("No existe el árbitro que se eligió");
+                    res.json("No existe el árbitro que se eligió");
                   }
                 });
               }
               else {
-                res.send("No existe el equipo visitante que se eligió");
+                res.json("No existe el equipo visitante que se eligió");
               }
             });
           }
           else {
-            res.send("No existe el equipo local que se eligió");
+            res.json("No existe el equipo local que se eligió");
           }
         });
       }
       else {
-       res.send("No existe el estadio que se eligió");
+       res.json("No existe el estadio que se eligió");
      }
     });
   }
   else {
-    res.send("Debe seleccionar un estadio");
+    res.json("Debe seleccionar un estadio");
   }
 });
 
@@ -280,16 +280,16 @@ router.put('/:id', (req, res, next) => {
             res.send(err);
           }
           else {
-            res.send("Partido modificado con éxito");
+            res.json("Partido modificado con éxito");
           }
         });
       }
       else {
-        res.send("No se puede modificar un partido que ya comenzó o finalizó");
+        res.json("No se puede modificar un partido que ya comenzó o finalizó");
       }
     }
     else {
-      res.send("El partido que desea modificar no existe");
+      res.json("El partido que desea modificar no existe");
     }
   });
 });
@@ -330,7 +330,7 @@ router.delete('/:id', (req, res, next) => {
                         res.send(err);
                       }
                       else {
-                        res.send("Partido eliminado con éxito");               
+                        res.json("Partido eliminado con éxito");               
                       }
                     });
                   }
@@ -339,16 +339,16 @@ router.delete('/:id', (req, res, next) => {
             });
           }
           else {
-            res.send("Error a buscar el torneo al que pertenece el partido");
+            res.json("Error a buscar el torneo al que pertenece el partido");
           }
         });
       }
       else {
-        res.send("No se puede eliminar un partido que ya comenzó o finalizó");
+        res.json("No se puede eliminar un partido que ya comenzó o finalizó");
       }
     }
     else {
-      res.send("No existe ese Partido");
+      res.json("No existe ese Partido");
     }
   });
 });
