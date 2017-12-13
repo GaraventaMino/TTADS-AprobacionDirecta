@@ -1,10 +1,57 @@
+<hr>
 <div class="container altura-cont">
 <div *ngIf="torneo; else ElseBlock">
-  <hr>
-  <h2 class="title">{{torneo.nombre}}</h2>
-  <p class="title-imgs"><img src="{{torneo.logo}}" class="logo"/> - <img src="{{torneo.imagen_trofeo}}" class="trofeo" /></p>
+  <p class="title-imgs"><img src="{{torneo.logo}}" class="logo"/>  <img src="{{torneo.imagen_trofeo}}" class="trofeo" /></p>
     <div class="row">
       <hr>
+      <div class="col-md-6">
+        <h3 class="title-posiciones">
+          Equipos
+        </h3>  
+        <hr>
+        <div *ngIf="torneo.equipos[0]">
+          <table class="table table-hover col-md-8">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Estadio</th>
+                  <th>Tecnico</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let equipo of torneo.equipos;">
+                  <td><span  class="overflow"><img src="{{equipo.escudo}}" class="escudo" /> <a  routerLink="/detalleEquipo/{{equipo._id}}">    {{equipo.nombre}}</a></span></td>
+                  <td><span  class="overflow-less">{{equipo.estadio.nombre}}</span></td>
+                  <td><span  class="overflow-less">{{equipo.tecnico}}</span></td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h3 class="title-posiciones">
+          Partidos
+        </h3>
+        <hr>
+        <div *ngIf="partidos">
+            <ul class="ul-style background-mid">
+                <li *ngFor="let p of partidos" class="li-edited">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="{{p.equipo_local.escudo}}" alt="" class="escudo-equipo">
+                    </div>
+                    <div class="col-sm-4 versus-cartel">
+                      <p>{{ p.fecha_hora | date : 'medium' : timezone}}</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <img src="{{p.equipo_visitante.escudo}}" alt="" class="escudo-equipo">
+                    </div>
+                  </div>
+                </li>
+          </ul>
+
+          </div>
+        </div>
      <!--  <div class="col-md-6">
         <h3 class="title-posiciones">
           Tabla de Posiciones
@@ -19,30 +66,30 @@
           <tbody>
             <tr *ngFor="let equipo of posiciones.equipos">
               <td><img src="{{equipo.escudo}}" class="escudo"/>{{equipo.nombre}}</td>
-              <td>ptos</td>
+              <td>{{equipo.puntaje}}</td>
             </tr>
           </tbody>
         </table>
       </div>
-     <div class="col-md-6">
-          <h3 class="title-posiciones">
-            Tabla de Goleadores
-          </h3>  
-        <table class="table table-hover tabla-posiciones">
-            <thead>
-              <tr>
-                <th>Equipo</th>
-                <th>Puntaje</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let equipo of posiciones.equipos">
-                <td><img src="" class="escudo"/>{{equipo.nombre}}</td>
-                <td>ptos</td>
-              </tr>
-            </tbody>
-          </table>
-        </div> 
+        <div class="col-md-6">
+            <h3 class="title-posiciones">
+              Tabla de Goleadores
+            </h3>  
+          <table class="table table-hover tabla-posiciones">
+              <thead>
+                <tr>
+                  <th>Jugador</th>
+                  <th><img src="https://image.flaticon.com/icons/svg/53/53283.svg" class="iconos"/></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let jugador of goleadores">
+                  <td>{{jugador.nombre}}</td>
+                  <td>{{jugador.goles}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         <div class="col-md-6">
             <h3 class="title-posiciones">
               Tabla de Amonestados
@@ -62,27 +109,27 @@
               </tbody>
             </table>
           </div>
-          <div class="col-md-6">
-              <h3 class="title-posiciones">
-                Tabla de Expulsados
-              </h3>  
-            <table class="table table-hover tabla-posiciones">
-                <thead>
-                  <tr>
-                    <th>Equipo</th>
-                    <th>Puntaje</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let equipo of posiciones.equipos">
-                    <td><img src="" class="escudo"/>{{equipo.nombre}}</td>
-                    <td>ptos</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>-->
-            <div class="col-md-12">
-                <a class="btn btn-info separar"  routerLink="/editarTorneo/{{torneo._id}}">
+        <div class="col-md-6">
+            <h3 class="title-posiciones">
+              Tabla de Expulsados
+            </h3>  
+          <table class="table table-hover tabla-posiciones">
+              <thead>
+                <tr>
+                  <th>Jugador</th>
+                  <th><img src="https://www.iconexperience.com/_img/v_collection_png/512x512/shadow/hand_red_card.png" class="iconos"/></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let jugador of expulsados">
+                  <td>{{jugador.nombre}}</td>
+                  <td>{{jugador.rojas}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>-->
+            <div class="col-md-12 separar">
+                <a class="btn btn-info"  routerLink="/editarTorneo/{{torneo._id}}">
                   Modificar
               </a>
               <a (click)="eliminarTorneo(equipo._id)" class="btn btn-danger" routerLink="/principal">

@@ -13,6 +13,7 @@ export class EstadiosService {
     constructor (private http: Http) {}
 
     urlEstadios: string = 'http://localhost:3000/api/estadios';
+    urlEstadiosById: string = 'http://localhost:3000/api/estadios/{id}';
     
     
     addEstadio(estadio: Object) :Observable<any> {
@@ -29,5 +30,13 @@ export class EstadiosService {
         return this.http.get(this.urlEstadios)
                             .map((res:Response) => res.json())
                             .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+    getEstadio(id: any) : Observable<any> {
+        // ...using get request
+        return this.http.get(this.urlEstadiosById.replace('{id}', id))
+                        // ...and calling .json() on the response to return data
+                        .map((res:Response) => res.json()) 
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
 }

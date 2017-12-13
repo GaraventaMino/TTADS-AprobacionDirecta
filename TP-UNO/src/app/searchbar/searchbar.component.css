@@ -16,9 +16,9 @@
 }
 .lista{
     width: 100%;
-    border: 3px solid darkslategrey;
+    border: 3px solid  #326295;
     border-radius: 5px;
-    background-color: wheat;
+    background-color:  white;
     padding: 15px;
     position: absolute;
     z-index: 2;

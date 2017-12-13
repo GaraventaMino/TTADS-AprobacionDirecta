@@ -4,6 +4,7 @@ import {Observable} from 'rxjs/Rx';
 import { ActivatedRoute } from '@angular/router';
 import { EquiposService } from "../services/equipos.service";
 import { PartidosService } from "../services/partidos.service";
+import { EstadiosService } from "../services/estadios.service";
 
 @Component({
   selector: 'app-torneo-detalle',
@@ -19,17 +20,20 @@ export class TorneoDetalleComponent implements OnInit {
     imagen_trofeo: ''
   }
   equipos: any;
-  partidos: any;
-  posiciones: any;
-  amonestados: any;
-  expulsados: any;
-  goleadores: any;
+  partidos: any = [];
+  estadios: any = [];
+  posiciones: any = [];
+  amonestados: any = [];
+  expulsados: any = [];
+  goleadores: any = [];
+  torneos: any;
 
   constructor(
     private route: ActivatedRoute,
     private torneoService: TorneosService,
     private equiposService: EquiposService,
-    private partidosService: PartidosService
+    private partidosService: PartidosService,
+    private estadiosService: EstadiosService
   ) { }
 
   ngOnInit() {
@@ -42,7 +46,15 @@ export class TorneoDetalleComponent implements OnInit {
                console.log(err);
            });
     });
-
+    setTimeout(()=>{   //Tiene timeout para que primero haga el routing al detalle, sino se vacian los items antes
+      for(let part of this.torneo.partidos) {
+        this.partidosService.getPartido(part)
+        .subscribe(
+          partido => this.partidos.push(partido),
+          err => console.log(err)
+        );
+      }
+    },300);
  //   this.route.params.subscribe(params => {
   //    this.torneoService.getTablaPosiciones(params['id'])
   //    .subscribe(
@@ -83,4 +95,13 @@ export class TorneoDetalleComponent implements OnInit {
       //     });
     //});
   }
-}
+
+  eliminarTorneo(id: any) {
+    this.torneoService.deleteTorneo(id)
+    .subscribe(
+      data => alert(data),
+      err => alert(err)
+    );
+  }
+  }
+
