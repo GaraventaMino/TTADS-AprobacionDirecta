@@ -9,7 +9,6 @@ var router=require('express').Router()
 //Get Partidos activos
 router.get('/activos', (req, res) => {
   var today = new Date();
-  today.setHours(today.getHours() - 3);
   Partido.
   where('fecha_hora').gt(today.getTime() - (6300000)).
   lt(today.getTime()).
@@ -43,13 +42,18 @@ router.get('/activos', (req, res) => {
 //Get Partidos planificados (ni activos ni finalizados)
 router.get('/planificados', (req, res) => {
   var today = new Date();
-  today.setHours(today.getHours() - 3);
   Partido.
   find().
   where('fecha_hora').gt(today.getTime()).
   sort({fecha_hora: 'asc'}).
-  populate('equipo_local').
-  populate('equipo_visitante').
+  populate({
+    path: 'equipo_local',
+    populate: { path: 'jugadores' }
+    }).
+  populate({
+    path: 'equipo_visitante',
+    populate: { path: 'jugadores' }
+    }).
   populate('arbitro').
   populate('estadio').
   populate({
@@ -62,8 +66,6 @@ router.get('/planificados', (req, res) => {
     populate: { path: 'tipo_evento' }
   }).
   populate('torneo').
-  populate('arbitro').
-  populate('estadio').
   exec(function (err, partido) {
     if (err) {
       res.send(err);
@@ -81,8 +83,14 @@ router.get('/planificados', (req, res) => {
 router.get('/', (req, res, next) => {
   Partido.
   find().
-  populate('equipo_local').
-  populate('equipo_visitante').
+  populate({
+    path: 'equipo_local',
+    populate: { path: 'jugadores' }
+    }).
+  populate({
+    path: 'equipo_visitante',
+    populate: { path: 'jugadores' }
+    }).
   populate({
     path: 'eventos',
     populate: { path: 'equipo' },
@@ -111,8 +119,14 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   Partido.
     findOne({_id: req.params.id}).
-    populate('equipo_local').
-    populate('equipo_visitante').
+    populate({
+      path: 'equipo_local',
+      populate: { path: 'jugadores' }
+      }).
+    populate({
+      path: 'equipo_visitante',
+      populate: { path: 'jugadores' }
+      }).
     populate({
     path: 'eventos',
     populate: { path: 'equipo' },
@@ -169,8 +183,7 @@ router.post('/', (req, res, next) => {
                         res.send(err);
                       }
                       else if (to != null) { 
-                        var fecha_hora = new Date(req.body.fecha_hora);
-                        fecha_hora.setHours(fecha_hora.getHours() - 3);                       
+                        let fecha_hora = req.body.fecha_hora;
                         let equipo_local = req.body.equipo_local;
                         let equipo_visitante = req.body.equipo_visitante;
                         let arbitro = req.body.arbitro;
@@ -256,12 +269,9 @@ router.put('/:id', (req, res, next) => {
     } 
     else if (pa != null) {
       var today = new Date();
-      today.setHours(today.getHours() - 3);
       if(pa.fecha_hora.getTime() > today.getTime()) {
         if(req.body.fecha_hora) {
-          var fecha_hora = new Date(req.body.fecha_hora);
-          fecha_hora.setHours(fecha_hora.getHours() - 3);
-          pa.fecha_hora = fecha_hora;
+          pa.fecha_hora = req.body.fecha_hora;
         }        
         pa.arbitro = req.body.arbitro || pa.arbitro;
         pa.estadio = req.body.estadio || pa.estadio;
@@ -299,7 +309,6 @@ router.delete('/:id', (req, res, next) => {
     }
     else if(pa != null) {
       var today = new Date();
-      today.setHours(today.getHours() - 3);
       if(pa.fecha_hora.getTime() > today.getTime()) {
         Torneo.findOne({_id: pa.torneo._id}).
         populate('partidos').

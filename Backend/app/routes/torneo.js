@@ -104,7 +104,7 @@ router.get('/:id/posiciones', (req, res, next) => {
             });
           }
           Torneo.findOne({_id: req.params.id}).
-          populate('equipos', 'nombre puntaje partidos_jugados').
+          populate('equipos').
           sort('-puntaje').
           exec(function (err, posiciones) {
             if (err) {
@@ -410,7 +410,6 @@ router.get('/:id/amonestados', (req, res, next) => {
             for(var i = 0; i < result.partidos.length; i++) {
               var continuar1 = 1;
               var today = new Date();
-              today.setHours(today.getHours() - 3);
               if((result.partidos[i].fecha_hora.getTime()) < (today.getTime() - 630000)) {                
                 if(result.partidos[i].eventos.length != 0) {
                   for(var j = 0; j < result.partidos[i].eventos.length; j++) {
