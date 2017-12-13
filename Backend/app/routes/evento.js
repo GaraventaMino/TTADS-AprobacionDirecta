@@ -23,7 +23,7 @@ router.get('/', (req, res, next) => {
         res.json(evento);
       }
       else {
-        res.send("Ningún evento encontrado");
+        res.json("Ningún evento encontrado");
       }
     });
 });
@@ -44,7 +44,7 @@ router.get('/:id', (req, res, next) => {
         res.json(evento);
       }
       else {
-        res.send("Ningún evento encontrado");
+        res.json("Ningún evento encontrado");
       }
     });
 });
@@ -102,23 +102,23 @@ router.post('/', (req, res, next) => {
                                   res.send(err);
                                 }
                                 else {
-                                  res.send("Evento creado correctamente con equipo y jugador");
+                                  res.json("Evento creado correctamente con equipo y jugador");
                                 }
                               });
                             }
                           });
                         }
                         else {
-                          res.send("No existe ese jugador");
+                          res.json("No existe ese jugador");
                         }
                       });
                     }
                     else {
-                      res.send("Un evento que pertenece a un equipo, también debe pertenecer a un jugador");
+                      res.json("Un evento que pertenece a un equipo, también debe pertenecer a un jugador");
                     }
                   }
                   else {
-                    res.send("No existe ese Equipo");
+                    res.json("No existe ese Equipo");
                   }
                 });
               }
@@ -141,7 +141,7 @@ router.post('/', (req, res, next) => {
                         res.send(err);
                       }
                       else {
-                        res.send("Evento sin equipo ni jugador creado correctamente");
+                        res.json("Evento sin equipo ni jugador creado correctamente");
                       }
                     });
                   }
@@ -149,20 +149,20 @@ router.post('/', (req, res, next) => {
               }
             }
             else {
-              res.send("No existe ese tipo de evento");
+              res.json("No existe ese tipo de evento");
             }
           });
         }
         else {
-          res.send("El partido no está en curso, por lo tanto no se le pueden crear eventos");
+          res.json("El partido no está en curso, por lo tanto no se le pueden crear eventos");
         }
       }
       else {
-        res.send("El tiempo de ocurrencia debe ser entre 0 y 90");
+        res.json("El tiempo de ocurrencia debe ser entre 0 y 90");
       }
     }
     else {
-      res.send("No existe ese partido");
+      res.json("No existe ese partido");
     }
   });
 });
@@ -188,12 +188,12 @@ router.put('/:id', (req, res, next) => {
             res.send(err)
           }
           else {
-            res.send("Evento modificado correctamente");
+            res.json("Evento modificado correctamente");
           }
         });
       }
       else {
-        res.send("El evento que quiere modificar no existe");
+        res.json("El evento que quiere modificar no existe");
       }
     });
 })
@@ -232,21 +232,21 @@ router.delete('/:id', (req, res, next) => {
                       res.send(err);
                     }
                     else {
-                      res.send("Evento eliminado con éxito");
+                      res.json("Evento eliminado con éxito");
                     }
                   });                                                 
                 }                                                                          
               }
             }
             else {
-              "No existe el partido al que pertenece el evento que desea eliminar";
+              res.json("No existe el partido al que pertenece el evento que desea eliminar");
             }
           })
         }
       })
     }
     else {
-      res.send("No existe el Evento que desea eliminar");
+      res.json("No existe el Evento que desea eliminar");
     }
   });
 });

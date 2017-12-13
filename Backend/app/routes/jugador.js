@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
       res.json(result);
     }
     else {
-      res.send("No existe ningún jugador aún");
+      res.json("No existe ningún jugador aún");
     }
   });
 });
@@ -33,7 +33,7 @@ router.get('/:id', (req, res, next) => {
       res.json(result);
     } 
     else {
-      res.send("Ningún Jugador Encontrado");
+      res.json("Ningún Jugador Encontrado");
     } 
   });
 });
@@ -72,19 +72,19 @@ router.post('/', (req, res, next) => {
                 res.send(err);
               }
               else {
-                res.send("Jugador creado con éxito");
+                res.json("Jugador creado con éxito");
               }
             });
           }
         });
       }
       else {
-        res.send("Debe asignarle un equipo existente al jugador!");
+        res.json("Debe asignarle un equipo existente al jugador!");
       }
     });
   }
   else {
-    res.send("Debe asignarle un equipo al jugador!");
+    res.json("Debe asignarle un equipo al jugador!");
   }
 });
 
@@ -105,7 +105,7 @@ router.put('/:id', (req, res, next) => {
               res.send(err);
             }
             else {
-              res.send("Jugador modificado. No se modifico su equipo");
+              res.json("Jugador modificado. No se modifico su equipo");
             }
           });
         }
@@ -145,7 +145,7 @@ router.put('/:id', (req, res, next) => {
                                   res.send(err);
                                 }
                                 else {
-                                  res.send("Jugador modificado (incluso el equipo)");
+                                  res.json("Jugador modificado (incluso el equipo)");
                                 }
                               });                              
                             }             
@@ -156,22 +156,22 @@ router.put('/:id', (req, res, next) => {
                   }
                 }
                 else {
-                  res.send("Se debe asignar un equipo existente al jugador");
+                  res.json("Se debe asignar un equipo existente al jugador");
                 }
               });              
             }
             else {
-              res.send("Error al intentar localizar el equipo actual del jugador. NO DEBERIA PASAR ESTO");
+              res.json("Error al intentar localizar el equipo actual del jugador. NO DEBERIA PASAR ESTO");
             }
           });
         }        
       }
       else {
-        res.send("Debe asignarle un equipo al jugador")
+        res.json("Debe asignarle un equipo al jugador")
       }      
     }
     else {
-      res.send("No existe el Jugador que desea modificar");
+      res.json("No existe el Jugador que desea modificar");
     }
   });
 });
@@ -188,7 +188,7 @@ router.delete('/:id', (req, res, next) => {
       var continuar = 1;
       for(var i = 0; i < ev.length; i++) {
         if(ev[i].jugador._id == req.params.id) {
-          res.send("El jugador no se puede eliminar, pues ya disputó partidos y fue partícipe de algún evento");
+          res.json("El jugador no se puede eliminar, pues ya disputó partidos y fue partícipe de algún evento");
         }
         else if (continuar == ev.length) {
           Jugador.findOne({_id: req.params.id}).
@@ -218,7 +218,7 @@ router.delete('/:id', (req, res, next) => {
                               res.send(err);
                             }
                             else {
-                              res.send("Jugador borrado con éxito");
+                              res.json("Jugador borrado con éxito");
                             }
                           });
                         }
@@ -227,12 +227,12 @@ router.delete('/:id', (req, res, next) => {
                   }
                 }
                 else {
-                  res.send("No existe el equipo que tenia asignado el jugador. No debería pasar esto");
+                  res.json("No existe el equipo que tenia asignado el jugador. No debería pasar esto");
                 }
               });
             }
             else {
-              res.send("No existe el Jugador que desea eliminar");
+              res.json("No existe el Jugador que desea eliminar");
             }
           });
         }
@@ -269,7 +269,7 @@ router.delete('/:id', (req, res, next) => {
                           res.send(err);
                         }
                         else {
-                          res.send("Jugador borrado con éxito");
+                          res.json("Jugador borrado con éxito");
                         }
                       });
                     }
@@ -281,12 +281,12 @@ router.delete('/:id', (req, res, next) => {
               }
             }
             else {
-              res.send("No existe el equipo que tenia asignado el jugador. No debería pasar esto");
+              res.json("No existe el equipo que tenia asignado el jugador. No debería pasar esto");
             }
           });
         }
         else {
-          res.send("No existe el Jugador que desea eliminar");
+          res.json("No existe el Jugador que desea eliminar");
         }
       });
     }

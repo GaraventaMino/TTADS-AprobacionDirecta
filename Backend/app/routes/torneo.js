@@ -16,7 +16,7 @@ router.get('/presentacion', (req, res, next) => {
       res.json(result);
     }
     else {
-      res.send("No existe ningún torneo aún");
+      res.json("No existe ningún torneo aún");
     }
   });
 });
@@ -114,17 +114,17 @@ router.get('/:id/posiciones', (req, res, next) => {
               res.json(posiciones);
             }
             else {
-              res.send("No hay equipos para armar la tabla de posiciones");
+              res.json("No hay equipos para armar la tabla de posiciones");
             }
           });
         }
         else {
-          res.send("No existe el torneo del que busca la tabla de posiciones");
+          res.json("No existe el torneo del que busca la tabla de posiciones");
         }
       });
     }
     else {
-      res.send("No hay ningún equipo en este torneo");
+      res.json("No hay ningún equipo en este torneo");
     }
   });
 });
@@ -195,12 +195,12 @@ router.get('/:id/goleadores', (req, res, next) => {
           });
         }
         else {
-          res.send("No existe el torneo del que desea obtener la tabla de goleadores");
+          res.json("No existe el torneo del que desea obtener la tabla de goleadores");
         }
       });
     }
     else {
-      res.send("No existe ningún Jugador aún");
+      res.json("No existe ningún Jugador aún");
     }
   });  
 });
@@ -486,7 +486,7 @@ router.get('/:id/amonestados', (req, res, next) => {
                       }
                     }  
                     else {
-                      res.send("Error al identificar un jugador protagonista de un evento. NO DEBERIA PASAR NUNCA")
+                      res.json("Error al identificar un jugador protagonista de un evento. NO DEBERIA PASAR NUNCA")
                     }                               
                   }
                 }
@@ -538,16 +538,16 @@ router.get('/:id/amonestados', (req, res, next) => {
             }
           }
           else {
-            res.send("El torneo del que desea saber su tabla de amonestados no tiene partidos");
+            res.json("El torneo del que desea saber su tabla de amonestados no tiene partidos");
           }                    
         }
         else {
-          res.send("El torneo del que desea saber su tabla de amonestados no existe");
+          res.json("El torneo del que desea saber su tabla de amonestados no existe");
         }
       });
     }
     else {
-      res.send("No existe ningún Jugador aún");
+      res.json("No existe ningún Jugador aún");
     }
   });   
 });
@@ -624,12 +624,12 @@ router.get('/:id/expulsados', (req, res, next) => {
           });
         }
         else {
-          res.send("El torneo del que quiere saber la tabla de expulsados no existe");
+          res.json("El torneo del que quiere saber la tabla de expulsados no existe");
         }
       });
     }
     else {
-      res.send("No existe ningún Jugador aún");
+      res.json("No existe ningún Jugador aún");
     }
   });   
 });
@@ -646,7 +646,7 @@ router.get('/', (req, res, next) => {
       res.json(result);
     }
     else {
-      res.send("No existe ningún torneo aún");
+      res.json("No existe ningún torneo aún");
     }
   });
 });
@@ -667,7 +667,7 @@ router.get('/:id', (req, res, next) => {
       res.json(result);
     }
     else {
-      res.send("No existe ningún torneo aún");
+      res.json("No existe ningún torneo aún");
     }
   });
 });
@@ -687,7 +687,7 @@ router.post('/', (req, res, next) => {
       res.send(err);
     }
     else {
-      res.send("Torneo creado con éxito");
+      res.json("Torneo creado con éxito");
     }
   });
 });
@@ -707,12 +707,12 @@ router.put('/:id', (req, res, next) => {
           res.send(err)
         }
         else {
-          res.send("Torneo modificado con éxito");
+          res.json("Torneo modificado con éxito");
         }
       });
     }
     else {
-      res.send("No existe el torneo que desea modificar");
+      res.json("No existe el torneo que desea modificar");
     }
   });
 });
@@ -742,7 +742,7 @@ router.delete('/:id', (req, res, next) => {
       }
     }
     else {
-      res.send("No existe ese torneo");
+      res.json("No existe ese torneo");
     }
   });
 });

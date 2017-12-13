@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
       res.json(result);
     }
     else {
-      res.send("No existe ningún equipo");
+      res.json("No existe ningún equipo");
     }
   });
 });
@@ -40,7 +40,7 @@ router.get('/:id', (req, res, next) => {
       res.json(result);
     } 
     else {
-      res.send("No existe el equipo buscado");
+      res.json("No existe el equipo buscado");
     } 
   });
 });
@@ -64,7 +64,7 @@ router.post('/', (req, res, next) => {
       }
       else if (estad != null) {
         if(estad.equipo != null) {
-          res.send("El estadio seleccionado ya pertenece a un equipo");
+          res.json("El estadio seleccionado ya pertenece a un equipo");
         }
         else { 
           estadioNuevo = estad._id;          
@@ -100,7 +100,7 @@ router.post('/', (req, res, next) => {
                             res.send(err);
                           }
                           else {
-                            res.send("Equipo creado correctamente con estadio y torneo");
+                            res.json("Equipo creado correctamente con estadio y torneo");
                           }
                         });
                       }
@@ -109,7 +109,7 @@ router.post('/', (req, res, next) => {
                 });
               }  
               else {
-                res.send("El torneo seleccionado no existe");
+                res.json("El torneo seleccionado no existe");
               }                      
             });
           }  
@@ -133,7 +133,7 @@ router.post('/', (req, res, next) => {
                     res.send(err);
                   }
                   else {
-                    res.send("Equipo creado correctamente con estadio pero sin torneo");
+                    res.json("Equipo creado correctamente con estadio pero sin torneo");
                   }
                 });
               }                  
@@ -142,7 +142,7 @@ router.post('/', (req, res, next) => {
         } 
       }              
       else {
-        res.send("El estadio que se ingreso no existe");
+        res.json("El estadio que se ingreso no existe");
       }
     });
   }
@@ -172,14 +172,14 @@ router.post('/', (req, res, next) => {
                 res.send(err);
               }
               else {
-                res.send("Equipo creado correctamente con torneos pero sin estadios");
+                res.json("Equipo creado correctamente con torneos pero sin estadios");
               }
             });
           }
         });
       }  
       else {
-        res.send("Algún torneo seleccionado no existe");
+        res.json("Algún torneo seleccionado no existe");
       } 
     });
   }
@@ -197,7 +197,7 @@ router.post('/', (req, res, next) => {
         res.send(err);
       }
       else {
-        res.send("Equipo creado correctamente sin estadios ni torneos");
+        res.json("Equipo creado correctamente sin estadios ni torneos");
       }
     });
   }
@@ -234,7 +234,7 @@ router.put('/:id', (req, res, next) => {
                       res.send(err);
                     }
                     else {
-                      res.send("Equipo modificado (no se modifico ni su estadio ni su torneo)")
+                      res.json("Equipo modificado (no se modifico ni su estadio ni su torneo)")
                     }
                   });
                 }
@@ -267,21 +267,21 @@ router.put('/:id', (req, res, next) => {
                                       res.send(err);
                                     }
                                     else {
-                                      res.send("Equipo modificado (El torneo sigue igual. Tenia un estadio pero ahora tiene otro)")
+                                      res.json("Equipo modificado (El torneo sigue igual. Tenia un estadio pero ahora tiene otro)")
                                     }
                                   });
                                 }
                               });
                             }
                             else {
-                              res.send("El estadio que se ingreso no existe");
+                              res.json("El estadio que se ingreso no existe");
                             }
                           });                          
                         }
                       });
                     }
                     else {
-                      res.send("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
+                      res.json("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
                     }
                   });
                 }
@@ -304,14 +304,14 @@ router.put('/:id', (req, res, next) => {
                             res.send(err);
                           }
                           else {
-                            res.send("Equipo modificado (Torneo sigue igual. Estadio no tenia, ahora se le agregó)");
+                            res.json("Equipo modificado (Torneo sigue igual. Estadio no tenia, ahora se le agregó)");
                           }
                         });
                       }
                     });
                   }
                   else {
-                    res.send("El estadio que se ingreso no existe");
+                    res.json("El estadio que se ingreso no existe");
                   }
                 });
               }
@@ -335,19 +335,19 @@ router.put('/:id', (req, res, next) => {
                           res.send(err);
                         }
                         else {
-                          res.send("Equipo modificado (torneo sigue igual. Estadio tenia, ahora se le borro");
+                          res.json("Equipo modificado (torneo sigue igual. Estadio tenia, ahora se le borro");
                         }
                       });
                     }
                   });
                 }
                 else {
-                  res.send("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
+                  res.json("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
                 }
               });
             }
             else {
-              res.send("Equipo modificado (torneo sigue igual. estadio no tenia y sigue sin tener)");
+              res.json("Equipo modificado (torneo sigue igual. estadio no tenia y sigue sin tener)");
             }
           }
           else {
@@ -391,7 +391,7 @@ router.put('/:id', (req, res, next) => {
                                     if(req.body.estadio) {
                                       if(result.estadio != null) {
                                         if(result.estadio.equals(req.body.estadio)) {
-                                          res.send("Equipo modificado (Tenia torneo pero se cambio por otro. No se modifico su estadio)")
+                                          res.json("Equipo modificado (Tenia torneo pero se cambio por otro. No se modifico su estadio)")
                                         }
                                         else {
                                           Estadio.findOne({_id: result.estadio}, (err, es) => {
@@ -422,21 +422,21 @@ router.put('/:id', (req, res, next) => {
                                                               res.send(err);
                                                             }
                                                             else {
-                                                              res.send("Equipo modificado (Tenia torneo pero se cambio por otro. Tenia un estadio pero ahora tiene otro)")
+                                                              res.json("Equipo modificado (Tenia torneo pero se cambio por otro. Tenia un estadio pero ahora tiene otro)")
                                                             }
                                                           });
                                                         }
                                                       });
                                                     }
                                                     else {
-                                                      res.send("El estadio que se ingreso no existe");
+                                                      res.json("El estadio que se ingreso no existe");
                                                     }
                                                   });                          
                                                 }
                                               });
                                             }
                                             else {
-                                              res.send("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
+                                              res.json("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
                                             }
                                           });
                                         }
@@ -459,14 +459,14 @@ router.put('/:id', (req, res, next) => {
                                                     res.send(err);
                                                   }
                                                   else {
-                                                    res.send("Equipo modificado (Tenia torneo pero se cambio por otro. Estadio no tenia, ahora se le agregó)");
+                                                    res.json("Equipo modificado (Tenia torneo pero se cambio por otro. Estadio no tenia, ahora se le agregó)");
                                                   }
                                                 });
                                               }
                                             });
                                           }
                                           else {
-                                            res.send("El estadio que se ingreso no existe");
+                                            res.json("El estadio que se ingreso no existe");
                                           }
                                         });
                                       }
@@ -490,19 +490,19 @@ router.put('/:id', (req, res, next) => {
                                                   res.send(err);
                                                 }
                                                 else {
-                                                  res.send("Equipo modificado (Tenia torneo pero se cambio por otro. Estadio tenia, ahora se le borro");
+                                                  res.json("Equipo modificado (Tenia torneo pero se cambio por otro. Estadio tenia, ahora se le borro");
                                                 }
                                               });
                                             }
                                           });
                                         }
                                         else {
-                                          res.send("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
+                                          res.json("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
                                         }
                                       });
                                     }
                                     else {
-                                      res.send("Equipo modificado (Tenia torneo pero se cambio por otro. Estadio no tenia y sigue sin tener)");
+                                      res.json("Equipo modificado (Tenia torneo pero se cambio por otro. Estadio no tenia y sigue sin tener)");
                                     }
                                   }
                                 });
@@ -514,12 +514,12 @@ router.put('/:id', (req, res, next) => {
                     }
                   }
                   else {
-                    res.send("El torneo que se ingreso no existe");
+                    res.json("El torneo que se ingreso no existe");
                   }
                 });
               }
               else {
-                res.send("Error al buscar el torneo que tenia el equipo. NO DEBERIA PASAR ESTO");
+                res.json("Error al buscar el torneo que tenia el equipo. NO DEBERIA PASAR ESTO");
               }
             });
           }
@@ -551,7 +551,7 @@ router.put('/:id', (req, res, next) => {
                       if(req.body.estadio) {
                         if(result.estadio != null) {
                           if(result.estadio.equals(req.body.estadio)) {
-                            res.send("Equipo modificado (no se modifico su estadio. No tenia torneo y ahora se le agrego)")
+                            res.json("Equipo modificado (no se modifico su estadio. No tenia torneo y ahora se le agrego)")
                           }
                           else {
                             Estadio.findOne({_id: result.estadio}, (err, es) => {
@@ -582,21 +582,21 @@ router.put('/:id', (req, res, next) => {
                                                 res.send(err);
                                               }
                                               else {
-                                                res.send("Equipo modificado (No tenia torneo y ahora se le agrego. Tenia un estadio pero ahora tiene otro)")
+                                                res.json("Equipo modificado (No tenia torneo y ahora se le agrego. Tenia un estadio pero ahora tiene otro)")
                                               }
                                             });
                                           }
                                         });
                                       }
                                       else {
-                                        res.send("El estadio que se ingreso no existe");
+                                        res.json("El estadio que se ingreso no existe");
                                       }
                                     });                          
                                   }
                                 });
                               }
                               else {
-                                res.send("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
+                                res.json("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
                               }
                             });
                           }
@@ -619,14 +619,14 @@ router.put('/:id', (req, res, next) => {
                                       res.send(err);
                                     }
                                     else {
-                                      res.send("Equipo modificado (No tenia torneo y ahora se le agrego. Estadio no tenia, ahora se le agregó)");
+                                      res.json("Equipo modificado (No tenia torneo y ahora se le agrego. Estadio no tenia, ahora se le agregó)");
                                     }
                                   });
                                 }
                               });
                             }
                             else {
-                              res.send("El estadio que se ingreso no existe");
+                              res.json("El estadio que se ingreso no existe");
                             }
                           });
                         }
@@ -649,14 +649,14 @@ router.put('/:id', (req, res, next) => {
                                     res.send(err);
                                   }
                                   else {
-                                    res.send("Equipo modificado (No tenia torneo y ahora se le agrego. Estadio tenia, ahora se le borro");
+                                    res.json("Equipo modificado (No tenia torneo y ahora se le agrego. Estadio tenia, ahora se le borro");
                                   }
                                 });
                               }
                             });
                           }
                           else {
-                            res.send("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
+                            res.json("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
                           }
                         });
                       }
@@ -666,7 +666,7 @@ router.put('/:id', (req, res, next) => {
                             res.send(err);
                           }
                           else {
-                            res.send("Equipo modificado (No tenia torneo y ahora se le agrego. estadio no tenia y sigue sin tener)");
+                            res.json("Equipo modificado (No tenia torneo y ahora se le agrego. estadio no tenia y sigue sin tener)");
                           }
                         });
                       }
@@ -676,7 +676,7 @@ router.put('/:id', (req, res, next) => {
               });
             }
             else {
-              res.send("El torneo que se ingreso no existe");
+              res.json("El torneo que se ingreso no existe");
             }
           });
         }
@@ -713,7 +713,7 @@ router.put('/:id', (req, res, next) => {
                           if(req.body.estadio) {
                             if(result.estadio != null) {
                               if(result.estadio.equals(req.body.estadio)) {
-                                res.send("Equipo modificado (no se modifico su estadio. Tenia torneo y ahora se le borro)")
+                                res.json("Equipo modificado (no se modifico su estadio. Tenia torneo y ahora se le borro)")
                               }
                               else {
                                 Estadio.findOne({_id: result.estadio}, (err, es) => {
@@ -744,21 +744,21 @@ router.put('/:id', (req, res, next) => {
                                                     res.send(err);
                                                   }
                                                   else {
-                                                    res.send("Equipo modificado (Tenia torneo y ahora se le borro. Tenia un estadio pero ahora tiene otro)")
+                                                    res.json("Equipo modificado (Tenia torneo y ahora se le borro. Tenia un estadio pero ahora tiene otro)")
                                                   }
                                                 });
                                               }
                                             });
                                           }
                                           else {
-                                            res.send("El estadio que se ingreso no existe");
+                                            res.json("El estadio que se ingreso no existe");
                                           }
                                         });                          
                                       }
                                     });
                                   }
                                   else {
-                                    res.send("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
+                                    res.json("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
                                   }
                                 });
                               }
@@ -781,14 +781,14 @@ router.put('/:id', (req, res, next) => {
                                           res.send(err);
                                         }
                                         else {
-                                          res.send("Equipo modificado (Tenia torneo y ahora se le borro. Estadio no tenia, ahora se le agregó)");
+                                          res.json("Equipo modificado (Tenia torneo y ahora se le borro. Estadio no tenia, ahora se le agregó)");
                                         }
                                       });
                                     }
                                   });
                                 }
                                 else {
-                                  res.send("El estadio que se ingreso no existe");
+                                  res.json("El estadio que se ingreso no existe");
                                 }
                               });
                             }
@@ -811,14 +811,14 @@ router.put('/:id', (req, res, next) => {
                                         res.send(err);
                                       }
                                       else {
-                                        res.send("Equipo modificado (Tenia torneo y ahora se le borro. Estadio tenia, ahora se le borro");
+                                        res.json("Equipo modificado (Tenia torneo y ahora se le borro. Estadio tenia, ahora se le borro");
                                       }
                                     });
                                   }
                                 });
                               }
                               else {
-                                res.send("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
+                                res.json("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
                               }
                             });
                           }
@@ -828,7 +828,7 @@ router.put('/:id', (req, res, next) => {
                                 res.send(err);
                               }
                               else {
-                                res.send("Equipo modificado (Tenia torneo y ahora se le borro. estadio no tenia y sigue sin tener)");
+                                res.json("Equipo modificado (Tenia torneo y ahora se le borro. estadio no tenia y sigue sin tener)");
                               }
                             });
                           }
@@ -840,7 +840,7 @@ router.put('/:id', (req, res, next) => {
               }
             }
             else {
-              res.send("Error al buscar el torneo del equipo. NO DEBERIA PASAR ESTO");
+              res.json("Error al buscar el torneo del equipo. NO DEBERIA PASAR ESTO");
             }
           });
         }
@@ -854,7 +854,7 @@ router.put('/:id', (req, res, next) => {
                     res.send(err);
                   }
                   else {
-                    res.send("Equipo modificado (no se modifico su estadio. No tenia torneo sigue asi)")
+                    res.json("Equipo modificado (no se modifico su estadio. No tenia torneo sigue asi)")
                   }
                 });
               }
@@ -887,21 +887,21 @@ router.put('/:id', (req, res, next) => {
                                     res.send(err);
                                   }
                                   else {
-                                    res.send("Equipo modificado (No tenia torneo sigue asi. Tenia un estadio pero ahora tiene otro)")
+                                    res.json("Equipo modificado (No tenia torneo sigue asi. Tenia un estadio pero ahora tiene otro)")
                                   }
                                 });
                               }
                             });
                           }
                           else {
-                            res.send("El estadio que se ingreso no existe");
+                            res.json("El estadio que se ingreso no existe");
                           }
                         });                          
                       }
                     });
                   }
                   else {
-                    res.send("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
+                    res.json("Error al encontrar el estadio que tiene el equipo. NO DEBERIA PASAR ESTO");
                   }
                 });
               }
@@ -924,14 +924,14 @@ router.put('/:id', (req, res, next) => {
                           res.send(err);
                         }
                         else {
-                          res.send("Equipo modificado (No tenia torneo sigue asi. Estadio no tenia, ahora se le agregó)");
+                          res.json("Equipo modificado (No tenia torneo sigue asi. Estadio no tenia, ahora se le agregó)");
                         }
                       });
                     }
                   });
                 }
                 else {
-                  res.send("El estadio que se ingreso no existe");
+                  res.json("El estadio que se ingreso no existe");
                 }
               });
             }
@@ -954,14 +954,14 @@ router.put('/:id', (req, res, next) => {
                         res.send(err);
                       }
                       else {
-                        res.send("Equipo modificado (No tenia torneo sigue asi. Estadio tenia, ahora se le borro");
+                        res.json("Equipo modificado (No tenia torneo sigue asi. Estadio tenia, ahora se le borro");
                       }
                     });
                   }
                 });
               }
               else {
-                res.send("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
+                res.json("Error al buscar el estadio que tenia el equipo. NO DEBERIA PASAR ESTO")
               }
             });
           }
@@ -971,7 +971,7 @@ router.put('/:id', (req, res, next) => {
                 res.send(err);
               }
               else {
-                res.send("Equipo modificado (No tenia torneo y sigue asi. Estadio no tenia y sigue sin tener)");
+                res.json("Equipo modificado (No tenia torneo y sigue asi. Estadio no tenia y sigue sin tener)");
               }
             });
           }
@@ -979,7 +979,7 @@ router.put('/:id', (req, res, next) => {
       } 
     }
     else {
-      res.send("El equipo que desea modificar no existe");
+      res.json("El equipo que desea modificar no existe");
     }
   });
 });  
@@ -1008,7 +1008,7 @@ router.delete('/:id', (req, res, next) => {
               var continuar = 1;
               for(var i = 0; i < eventos.length; i++) {
                 if(eventos[i].equipo._id == result._id) {
-                  res.send("No se puede borrar el equipo porque se utiliza en un evento de algun partido");
+                  res.json("No se puede borrar el equipo porque se utiliza en un evento de algun partido");
                 }
                 else if(continuar == eventos.length) {
                   Partido.find({}, 'equipo_local equipo_visitante').
@@ -1023,7 +1023,7 @@ router.delete('/:id', (req, res, next) => {
                       for(var j = 0; j < partidos.length; j++) {
                         if(partidos[j].equipo_local._id == result._id || 
                         partidos[j].equipo_visitante._id == result._id) {
-                          res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                          res.json("No se puede borrar el equipo porque se utiliza en un partido");
                         }
                         else if (continuar2 == partidos.length) {
                           result.remove((err) => {
@@ -1031,7 +1031,7 @@ router.delete('/:id', (req, res, next) => {
                               res.send(err);
                             }
                             else {
-                              res.send("Equipo eliminado correctamente");
+                              res.json("Equipo eliminado correctamente");
                             }
                           });
                         }
@@ -1060,7 +1060,7 @@ router.delete('/:id', (req, res, next) => {
                   for(var j = 0; j < partidos.length; j++) {
                     if(partidos[j].equipo_local._id == result._id || 
                     partidos[j].equipo_visitante._id == result._id) {
-                      res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                      res.json("No se puede borrar el equipo porque se utiliza en un partido");
                     }
                     else if (continuar2 == partidos.length) {
                       result.remove((err) => {
@@ -1068,7 +1068,7 @@ router.delete('/:id', (req, res, next) => {
                           res.send(err);
                         }
                         else {
-                          res.send("Equipo eliminado correctamente");
+                          res.json("Equipo eliminado correctamente");
                         }
                       });
                     }
@@ -1083,7 +1083,7 @@ router.delete('/:id', (req, res, next) => {
                       res.send(err);
                     }
                     else {
-                      res.send("Equipo eliminado correctamente");
+                      res.json("Equipo eliminado correctamente");
                     }
                   });
                 }                  
@@ -1107,7 +1107,7 @@ router.delete('/:id', (req, res, next) => {
                   var continuar = 1;
                   for(var i = 0; i < eventos.length; i++) {
                     if(eventos[i].equipo._id == result._id) {
-                      res.send("No se puede borrar el equipo porque se utiliza en un evento de algun partido");
+                      res.json("No se puede borrar el equipo porque se utiliza en un evento de algun partido");
                     }
                     else if(continuar == eventos.length) {
                       Partido.find({}, 'equipo_local equipo_visitante').
@@ -1122,7 +1122,7 @@ router.delete('/:id', (req, res, next) => {
                           for(var j = 0; j < partidos.length; j++) {
                             if(partidos[j].equipo_local._id == result._id || 
                             partidos[j].equipo_visitante._id == result._id) {
-                              res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                              res.json("No se puede borrar el equipo porque se utiliza en un partido");
                             }
                             else if (continuar2 == partidos.length) {
                               es.equipo = null;
@@ -1136,7 +1136,7 @@ router.delete('/:id', (req, res, next) => {
                                       res.send(err);
                                     }
                                     else {
-                                      res.send("Equipo eliminado correctamente(tenia estadio)");
+                                      res.json("Equipo eliminado correctamente(tenia estadio)");
                                     }
                                   });
                                 }
@@ -1167,7 +1167,7 @@ router.delete('/:id', (req, res, next) => {
                       for(var j = 0; j < partidos.length; j++) {
                         if(partidos[j].equipo_local._id == result._id || 
                         partidos[j].equipo_visitante._id == result._id) {
-                          res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                          res.json("No se puede borrar el equipo porque se utiliza en un partido");
                         }
                         else if (continuar2 == partidos.length) {
                           es.equipo = null;
@@ -1181,7 +1181,7 @@ router.delete('/:id', (req, res, next) => {
                                   res.send(err);
                                 }
                                 else {
-                                  res.send("Equipo eliminado correctamente(tenia estadio)");
+                                  res.json("Equipo eliminado correctamente(tenia estadio)");
                                 }
                               });
                             }
@@ -1204,7 +1204,7 @@ router.delete('/:id', (req, res, next) => {
                               res.send(err);
                             }
                             else {
-                              res.send("Equipo eliminado correctamente(tenia estadio)");
+                              res.json("Equipo eliminado correctamente(tenia estadio)");
                             }
                           });
                         }
@@ -1215,7 +1215,7 @@ router.delete('/:id', (req, res, next) => {
               });
             }
             else {
-              res.send("Error al buscar el estadio del equipo. NO DEBERIA PASAR ESTO");
+              res.json("Error al buscar el estadio del equipo. NO DEBERIA PASAR ESTO");
             }
           });
         }
@@ -1225,7 +1225,7 @@ router.delete('/:id', (req, res, next) => {
       }
     } 
     else {
-      res.send("El equipo no existe");
+      res.json("El equipo no existe");
     }   
   });
 });
