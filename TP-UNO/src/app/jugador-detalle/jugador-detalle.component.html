@@ -1,6 +1,9 @@
 <hr>
-<div *ngIf="jugador; else ElseBlock">
-    <div class="container altura-cont">
+<div class="container altura-cont">
+    <div *ngIf="jugador; else ElseBlock">
+            <hr>
+            <h2 class="title">Plantilla de {{jugador.nombre}}</h2>
+            <hr>
         <div class="row">
             <md-card class="jugador-card">
                 <md-card-header>
@@ -10,13 +13,13 @@
                 <img md-card-image src="{{jugador.imagen}}" alt="Photo of a Shiba Inu">
                 <md-card-content>
                   <p>Equipo: {{jugador.equipo.nombre}}</p>
-                  <p>Goles: {{jugador.goles}}</p>
+              <!--    <p>Goles: {{jugador.goles}}</p>
                   <p>Amonestaciones: {{jugador.amarillas}}</p>
-                  <p>Expulsiones: {{jugador.rojas}}</p>
+                  <p>Expulsiones: {{jugador.rojas}}</p> -->
                 </md-card-content>
                 <md-card-actions>
                   <a md-button routerLink="/editarJugador/{{jugador._id}}">Editar</a>
-                  <button md-button>Eliminar</button>
+                  <button md-button (click)="eliminarJugador(jugador._id)" routerLink="/principal">Eliminar</button>
                 </md-card-actions>
               </md-card>
         </div>

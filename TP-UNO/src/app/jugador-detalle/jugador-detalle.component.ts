@@ -33,4 +33,12 @@ export class JugadorDetalleComponent implements OnInit {
            });
     });
   }
+  eliminarJugador(id: any) {
+    this.jugadoresService.deleteJugador(id)
+    .subscribe(
+        data => console.log("EXITO"),
+        error => console.log(error)
+      );
+      alert("Jugador eliminado correctamente !");
+  }
 }

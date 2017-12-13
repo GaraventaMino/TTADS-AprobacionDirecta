@@ -1,10 +1,10 @@
-<div *ngIf="equipo && equipo.estadios[0] && equipo.torneos[0] && equipo.jugadores[0]; else ElseBlock">
+<div class="container altura-cont">
+<div *ngIf="equipo && equipo.estadio && equipo.torneo; else ElseBlock">
   <hr>
   <h2 class="title">{{equipo.nombre}}</h2>
   <hr>
-  <div class="container altura-cont">
     <div class="row">
-        <table class="table table-hover col-md-8">
+        <table class="table table-hover col-md-12">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -17,13 +17,54 @@
           <tbody>
             <tr>
               <td><img src="{{equipo.escudo}}" class="escudo" />  {{equipo.nombre}}</td>
-              <td>{{equipo.torneos[0]}}</td>
-              <td>{{equipo.estadios[0].nombre}}</td>
+              <td>{{equipo.torneo.nombre}}</td>
+              <td>{{equipo.estadio.nombre}}</td>
               <td>{{equipo.tecnico}}</td>
               <td>{{equipo.partidos_jugados}}</td>
             </tr>
           </tbody>
         </table>
+        <div class="col-md-6">
+        <hr>
+        <h3 class="title">Plantilla</h3>
+        <hr>
+        <table class="table table-hovertabla-jugadores">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Edad</th>
+              <!--  <th><img src="https://image.flaticon.com/icons/svg/53/53283.svg" class="logo"/></th>
+                <th><img src="https://www.iconexperience.com/_img/v_collection_png/512x512/shadow/hand_yellow_card.png" class="logo"/></th>
+                <th><img src="https://www.iconexperience.com/_img/v_collection_png/512x512/shadow/hand_red_card.png" class="logo"/></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let jugador of equipo.jugadores">
+                <td><a routerLink="/detalleJugador/{{jugador._id}}">{{jugador.nombre}}</a></td>
+                <td>{{jugador.edad}}</td>
+               <!-- <td>{{jugador.goles}}</td>
+                <td>{{jugador.amarillas}}</td>
+                <td>{{jugador.rojas}}</td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-6">
+            <hr>
+            <h3 class="title">Estadio</h3>
+            <hr>
+              <img class="estadio-img" src="{{equipo.estadio.imagen}}" alt="estadio">
+              <h4 class="estadio-nombre">{{equipo.estadio.nombre}}</h4>
+              <h5>{{equipo.estadio.direccion}}</h5>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <a class="btn btn-info"  routerLink="/editarEquipo/{{equipo._id}}">
+          Modificar
+      </a>            
+      <a (click)="eliminarEquipo(equipo._id)" class="btn btn-danger" routerLink="/principal">
+        Eliminar
+    </a>
     </div>
   </div>
 </div>

@@ -43,4 +43,12 @@ torneos: any;
            });
     });
   }
+
+  eliminarEquipo(id: any) {
+    this.equiposService.deleteEquipo(id)
+    .subscribe(
+        data => alert(data),
+        error => alert(error)
+      );
+  }
 }

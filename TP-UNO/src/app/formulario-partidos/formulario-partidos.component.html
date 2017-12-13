@@ -9,12 +9,12 @@
                 <input mdInput name="fechahora" placeholder="yyyy/mm/dd hh:mm" type="text" [(ngModel)]="partido.fecha_hora" required>
             </md-form-field>
             <md-select [(ngModel)]="partido.equipo_local" class="btn btn-primary select-form" placeholder="Equipo Local" name="equipo_local">
-              <md-option *ngFor="let equipo of equipos" [value]="equipo._id">
+              <md-option *ngFor="let equipo of torneo.equipos" [value]="equipo._id">
                 {{ equipo.nombre }}
               </md-option>
             </md-select>
             <md-select [(ngModel)]="partido.equipo_visitante" class="btn btn-primary select-form" placeholder="Equipo Visitante" name="equipo_visitante">
-                <md-option *ngFor="let equipo of equipos" [value]="equipo._id">
+                <md-option *ngFor="let equipo of torneo.equipos" [value]="equipo._id">
                   {{ equipo.nombre }}
                 </md-option>
               </md-select>

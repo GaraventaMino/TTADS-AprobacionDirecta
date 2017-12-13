@@ -14,6 +14,7 @@ export class PartidosService {
 
     urlPartidos: string = 'http://localhost:3000/api/partidos';
     urlPartidosActivos: string = 'http://localhost:3000/api/partidos/activos';
+    urlPartidosPlanif: string = 'http://localhost:3000/api/partidos/planificados';
     urlPartidosTorneo: string = 'http://localhost:3000/api/partidos/torneo/{id}';
     urlPartidoById: string = 'http://localhost:3000/api/partidos/{id}';
     
@@ -36,6 +37,11 @@ export class PartidosService {
 
     getAllPartidosActivos() : Observable<any> {
         return this.http.get(this.urlPartidosActivos)
+                            .map((res:Response) => res.json())
+                            .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+    getAllPartidosPlanificados() : Observable<any> {
+        return this.http.get(this.urlPartidosPlanif)
                             .map((res:Response) => res.json())
                             .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }

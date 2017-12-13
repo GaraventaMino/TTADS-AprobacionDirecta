@@ -26,6 +26,9 @@ export class FormularioPartidosComponent implements OnInit {
     torneo: null,
     arbitro: ''
   }
+  torneo: any = {
+    equipos: []
+  };
 
   constructor(
     private equiposService: EquiposService,
@@ -80,9 +83,9 @@ export class FormularioPartidosComponent implements OnInit {
   }
 
   loadEquipos() {
-    this.equiposService.getAllEquipos()
+    this.torneoService.getTorneo(this.partido.torneo)
     .subscribe(
-      equipos => this.equipos = equipos,
+      torneo => this.torneo = torneo,
       err => console.log(err)
     );
   }

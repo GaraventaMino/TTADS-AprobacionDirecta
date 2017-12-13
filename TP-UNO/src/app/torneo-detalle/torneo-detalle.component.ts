@@ -43,45 +43,44 @@ export class TorneoDetalleComponent implements OnInit {
            });
     });
 
-    this.route.params.subscribe(params => {
-      this.torneoService.getTablaPosiciones(params['id'])
-      .subscribe(
-          posiciones => this.posiciones = posiciones, //Bind to view
-           err => {
+ //   this.route.params.subscribe(params => {
+  //    this.torneoService.getTablaPosiciones(params['id'])
+  //    .subscribe(
+  //        posiciones => this.posiciones = posiciones, //Bind to view
+  //         err => {
                // Log errors if any
-               console.log(err);
-           });
-    });
+   //            console.log(err);
+  //         });
+ //   });
 
-    this.route.params.subscribe(params => {
-      this.torneoService.getTablaGoleadores(params['id'])
-      .subscribe(
-          goleadores => this.goleadores = goleadores, //Bind to view
-           err => {
-               // Log errors if any
-               console.log(err);
-           });
-    });
+   // this.route.params.subscribe(params => {
+     // this.torneoService.getTablaGoleadores(params['id'])
+    //  .subscribe(
+    //      goleadores => this.goleadores = goleadores, //Bind to view
+   //        err => {
+    //           // Log errors if any
+     //          console.log(err);
+    //       });
+   // });
 
-    this.route.params.subscribe(params => {
-      this.torneoService.getTablaAmonestados(params['id'])
-      .subscribe(
-          amonestados => this.amonestados = amonestados, //Bind to view
-           err => {
-               // Log errors if any
-               console.log(err);
-           });
-    });
+   // this.route.params.subscribe(params => {
+     // this.torneoService.getTablaAmonestados(params['id'])
+    //  .subscribe(
+     //     amonestados => this.amonestados = amonestados, //Bind to view
+    //       err => {
+   //            // Log errors if any
+  //             console.log(err);
+  //         });
+//    });
 
-    this.route.params.subscribe(params => {
-      this.torneoService.getTablaExpulsados(params['id'])
-      .subscribe(
-          expulsados => this.expulsados = expulsados, //Bind to view
-           err => {
+ //   this.route.params.subscribe(params => {
+  //    this.torneoService.getTablaExpulsados(params['id'])
+   //   .subscribe(
+    //      expulsados => this.expulsados = expulsados, //Bind to view
+     //      err => {
                // Log errors if any
-               console.log(err);
-           });
-    });
+     //          console.log(err);
+      //     });
+    //});
   }
-
 }

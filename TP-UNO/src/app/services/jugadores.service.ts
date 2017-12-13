@@ -40,4 +40,21 @@ export class JugadoresService {
                         //...errors if any
                         .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
+    deleteJugador(id: any) : Observable<any> {
+        // ...using get request
+        return this.http.delete(this.urlJugador.replace('{id}', id))
+                        // ...and calling .json() on the response to return data
+                        .map((res:Response) => res.json()) 
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+    editJugador(id: any, jugador: Object) :Observable<any> {
+        let body = JSON.stringify(jugador);
+        let headers = new Headers({ 'Content-Type' : 'application/json' });
+        let options = new RequestOptions({ headers: headers});
+
+        return this.http.put(this.urlJugador.replace('{id}', id), jugador, options)
+                            .map((res:Response) => res.json())
+                            .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
 }

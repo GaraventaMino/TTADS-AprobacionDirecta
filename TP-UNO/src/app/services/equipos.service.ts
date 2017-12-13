@@ -50,4 +50,21 @@ export class EquiposService {
                         //...errors if any
                         .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
+    deleteEquipo(id: any) : Observable<any> {
+        // ...using get request
+        return this.http.delete(this.urlEquipoById.replace('{id}', id))
+                        // ...and calling .json() on the response to return data
+                        .map((res:Response) => res.json()) 
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+    editEquipo(id: any, equipo: Object) :Observable<any> {
+        let body = JSON.stringify(equipo);
+        let headers = new Headers({ 'Content-Type' : 'application/json' });
+        let options = new RequestOptions({ headers: headers});
+
+        return this.http.put(this.urlEquipoById.replace('{id}', id), equipo, options)
+                            .map((res:Response) => res.json())
+                            .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
 }
