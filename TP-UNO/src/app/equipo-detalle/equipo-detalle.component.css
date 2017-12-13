@@ -26,3 +26,20 @@
     vertical-align: top;
     border-top: 1px solid #ddd;
 }
+.logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+.tabla-jugadores {
+    width:100%;
+    margin-top: 2%;
+    margin-bottom: 1%;
+}
+.estadio-img {
+    width: 100%;
+    height: 20%;
+    margin-bottom: 1%;
+    border: 2px solid;
+    border-color: black;
+}

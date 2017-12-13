@@ -1,7 +1,7 @@
 <hr>
 <h2 class="title">Listado de Jugadores</h2>
 <hr>
-<div *ngIf="jugadores; else ElseBlock">
+<div *ngIf="jugadores && jugadores[0].nombre; else ElseBlock">
   <div class="container altura-cont">
     <div class="row">
         <table class="table table-hover col-md-8">
@@ -10,9 +10,9 @@
               <th>Nombre</th>
               <th>Edad</th>
               <th>Equipo</th>
-              <th><img src="https://image.flaticon.com/icons/svg/53/53283.svg" class="logo"/></th>
+            <!--  <th><img src="https://image.flaticon.com/icons/svg/53/53283.svg" class="logo"/></th>
               <th><img src="https://www.iconexperience.com/_img/v_collection_png/512x512/shadow/hand_yellow_card.png" class="logo"/></th>
-              <th><img src="https://www.iconexperience.com/_img/v_collection_png/512x512/shadow/hand_red_card.png" class="logo"/></th>
+              <th><img src="https://www.iconexperience.com/_img/v_collection_png/512x512/shadow/hand_red_card.png" class="logo"/></th> -->
             </tr>
           </thead>
           <tbody>
@@ -20,9 +20,9 @@
               <td><a routerLink="/detalleJugador/{{jugador._id}}">{{jugador.nombre}}</a></td>
               <td>{{jugador.edad}}</td>
               <td>{{jugador.equipo.nombre}}</td>
-              <td>{{jugador.goles}}</td>
+             <!-- <td>{{jugador.goles}}</td>
               <td>{{jugador.amarillas}}</td>
-              <td>{{jugador.rojas}}</td>
+              <td>{{jugador.rojas}}</td> -->
             </tr>
           </tbody>
         </table>

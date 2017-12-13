@@ -1,8 +1,8 @@
 <hr>
 <h2 class="title">Listado de Equipos</h2>
 <hr>
-<div *ngIf="equipos && equipos[0].estadios[0]; else ElseBlock">
-  <div class="container altura-cont">
+<div class="container altura-cont">
+  <div *ngIf="equipos && equipos[0].nombre; else ElseBlock">
     <div class="row">
         <table class="table table-hover col-md-8">
           <thead>
@@ -16,9 +16,9 @@
           </thead>
           <tbody>
             <tr *ngFor="let equipo of equipos">
-              <td><img src="{{equipo.escudo}}" class="escudo" /><a routerLink="/detalleEquipo/{{equipo._id}}">{{equipo.nombre}}</a></td>
-              <td>{{equipo.torneos[0]}}</td>
-              <td>{{equipo.estadios[0].nombre}}</td>
+              <td><img src="{{equipo.escudo}}" class="escudo" /> <a routerLink="/detalleEquipo/{{equipo._id}}">    {{equipo.nombre}}</a></td>
+              <td>{{equipo.torneo.nombre}}</td>
+              <td>{{equipo.estadio.nombre}}</td>
               <td>{{equipo.tecnico}}</td>
               <td>{{equipo.partidos_jugados}}</td>
             </tr>

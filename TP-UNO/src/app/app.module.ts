@@ -20,6 +20,7 @@ import { EquiposService } from "./services/equipos.service";
 import { EstadiosService } from "./services/estadios.service";
 import { ArbitrosService } from "./services/arbitros.service";
 import { PartidosService } from "./services/partidos.service";
+import { EventosService } from "./services/eventos.service";
 import {RatingModule} from "ngx-rating";
 import { MenuOpcionesComponent } from './menu-opciones/menu-opciones.component';
 import { BienvenidoComponent } from './bienvenido/bienvenido.component';
@@ -63,6 +64,10 @@ import { JugadorDetalleComponent } from './jugador-detalle/jugador-detalle.compo
         component: FormularioTorneosComponent
       },
       {
+        path: 'editarTorneo/:id',
+        component: FormularioTorneosComponent
+      },
+      {
         path: '',
         redirectTo: '/principal',
         pathMatch: 'full'
@@ -85,6 +90,10 @@ import { JugadorDetalleComponent } from './jugador-detalle/jugador-detalle.compo
       },
       {
         path: 'nuevoEquipo',
+        component: FormularioEquiposComponent
+      },
+      {
+        path: 'editarEquipo/:id',
         component: FormularioEquiposComponent
       },
       {
@@ -158,7 +167,8 @@ import { JugadorDetalleComponent } from './jugador-detalle/jugador-detalle.compo
     EquiposService,
     EstadiosService,
     ArbitrosService,
-    PartidosService
+    PartidosService,
+    EventosService
 ],
   bootstrap: [AppComponent]
 })

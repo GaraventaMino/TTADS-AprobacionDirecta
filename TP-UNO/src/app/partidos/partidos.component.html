@@ -12,7 +12,6 @@
               </div>
               <div class="col-sm-4 versus-cartel">
                 <p>{{ p.fecha_hora | date : 'medium' : timezone}}</p>
-                <a routerLink="/detallePartido/{{p._id}}" class="btn btn-primary btn-versus">Ver Resumen</a>
               </div>
               <div class="col-sm-4">
                   <h4 class="equipo-cartel"><a routerLink="#"> {{p.equipo_visitante.nombre}} </a></h4>

@@ -18,7 +18,7 @@ export class PartidosComponent implements OnInit {
   }
 
   loadPartidos() {
-    this.partidosService.getAllPartidos()
+    this.partidosService.getAllPartidosPlanificados()
     .subscribe(
       partidos => this.partidos = partidos,
       err => console.log(err)

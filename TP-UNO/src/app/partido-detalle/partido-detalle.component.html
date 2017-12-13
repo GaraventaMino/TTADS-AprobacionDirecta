@@ -11,29 +11,86 @@
         <img src="{{partido.equipo_visitante.escudo}}" alt="" class="col-md-3 detalle-img">
       <div *ngIf="partido.eventos.length != 0; then content else other_content" ></div>
       <ng-template #content>
-        <h1 class="col-md-12 detalle-title">Resumen del Partido</h1>
-        <table class="table table-hover col-md-12 detalle-eventos"  *ngIf="partido.eventos.length != 0">
-          <thead>
-            <tr>
-              <th>Tiempo</th>
-              <th>Evento</th>
-              <th>Equipo</th>
-              <th>Descripcion</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let ev of partido.eventos">
-              <td>{{ ev.fecha_hora | date : 'HH:mm' : timezone}}</td>
-              <td>{{ev.tipo_evento.nombre}}</td>
-              <td *ngIf="ev.tipo_evento.nombre != 'Comienzo PT' && ev.tipo_evento.nombre != 'Fin PT' && ev.tipo_evento.nombre != 'Comienzo ST' && ev.tipo_evento.nombre != 'Fin ST'">{{ev.equipo.nombre}}</td>
-              <td>{{ev.descripcion}}</td> 
-            </tr>
-          </tbody>
-        </table>
+        <div class=" col-md-12">
+        <h2 class="title">Resumen del Partido</h2>
+        <div class="col-md-8">
+          <table class="table table-hover detalle-eventos"  *ngIf="partido.eventos.length != 0">
+            <thead>
+              <tr>
+                <th>Tiempo</th>
+                <th>Evento</th>
+                <th>Equipo</th>
+                <th>Jugador</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ev of partido.eventos">
+                <td>{{ ev.tiempo_ocurrencia}}'</td>
+                <td><img src="{{ev.tipo_evento.icono}}" class="logo"/></td>
+                <td *ngIf="ev.tipo_evento.nombre != 'Comienzo PT' && ev.tipo_evento.nombre != 'Fin PT' && ev.tipo_evento.nombre != 'Comienzo ST' && ev.tipo_evento.nombre != 'Fin ST'">{{ev.equipo.nombre}}</td>
+                <td>{{ev.jugador.nombre}}</td> 
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        </div>
       </ng-template>
       <ng-template #other_content>
         <p class="detalle-else col-md-12">El partido no tiene eventos programados.</p>
-      </ng-template>  
+      </ng-template>
+      <div class=" col-md-12">
+        <hr>
+          <h2 class="title">Eventos</h2>
+          <hr>
+          <div class="col-md-6">
+            <h3>{{partido.equipo_local.nombre}}</h3>
+            <form name="eventoLocal" action="#">
+                <md-form-field class="form-inputs">
+                <input mdInput name="tiempo_visitante" placeholder="Tiempo de ocurrencia" type="number" [(ngModel)]="evento_local.tiempo_ocurrencia" required>
+                </md-form-field>
+                <br>
+                <md-select [(ngModel)]="evento_local.tipo_evento" class="btn btn-primary select-form" placeholder="Tipo Evento" name="tipo_evento">
+                    <md-option *ngFor="let tp of tipo_evento" [value]="tp._id">
+                      {{ tp.nombre }}
+                    </md-option>
+                  </md-select>
+                  <br>
+                  <md-select [(ngModel)]="evento_local.jugador" class="btn btn-primary select-form" placeholder="Jugador" name="jugador">
+                      <md-option *ngFor="let jugador of partido.equipo_local.jugadores" [value]="jugador._id">
+                        {{ jugador.nombre }}
+                      </md-option>
+                    </md-select>
+                <br>
+                <a md-button class="submit-styles" (click)="eventoLocal()">
+                Agregar
+                </a>
+            </form>
+          </div>
+          <div class="col-md-6">
+              <h3>{{partido.equipo_visitante.nombre}}</h3>
+              <form name="eventoLocal" action="#">
+                  <md-form-field class="form-inputs">
+                  <input mdInput name="tiempo_visitante" placeholder="Tiempo de ocurrencia" type="number" [(ngModel)]="evento_visitante.tiempo_ocurrencia" required>
+                  </md-form-field>
+                  <br>
+                  <md-select [(ngModel)]="evento_visitante.tipo_evento" class="btn btn-primary select-form" placeholder="Tipo Evento" name="tipo_evento">
+                      <md-option *ngFor="let tp of tipo_evento" [value]="tp._id">
+                        {{ tp.nombre }}
+                      </md-option>
+                    </md-select>
+                    <br>
+                    <md-select [(ngModel)]="evento_visitante.jugador" class="btn btn-primary select-form" placeholder="Jugador" name="jugador">
+                        <md-option *ngFor="let jugador of partido.equipo_visitante.jugadores" [value]="jugador._id">
+                          {{ jugador.nombre }}
+                        </md-option>
+                      </md-select>
+                  <br>
+                  <a md-button class="submit-styles" (click)="eventoVisitante()">
+                  Agregar
+                  </a>
+              </form>
+            </div>
+      </div>  
     </div>
   </div>
 </div>

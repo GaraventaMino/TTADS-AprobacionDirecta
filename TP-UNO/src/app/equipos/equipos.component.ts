@@ -11,8 +11,8 @@ export class EquiposComponent implements OnInit {
   equipos: any = [{
     nombre: '',
     escudo: '',
-    torneos: [],
-    estadios: [],
+    torneo: '',
+    estadio: '',
     tecnico: '',
     partidos_jugados: ''
   }]

@@ -1,33 +1,66 @@
-<hr>
-<h2 class="title">Nuevo Equipo</h2>
-<hr>
-<div class="container altura-cont">
-  <div class="row">
-    <div>
-        <form (ngSubmit)="altaEquipo()" name="altaEquipo" action="#">
-            <md-form-field class="form-inputs">
-                <input mdInput name="nombre" placeholder="Nombre del Equipo" type="text" [(ngModel)]="equipo.nombre" required>
-            </md-form-field>
-            <md-form-field class="form-inputs">
-                <input mdInput name="tecnico" placeholder="Nombre del Técnico" type="text" [(ngModel)]="equipo.tecnico">
-            </md-form-field>
-            <md-form-field class="form-inputs">
-              <input mdInput name="escudo" placeholder="URL del Escudo" type="text" [(ngModel)]="equipo.escudo">
-          </md-form-field>
-            <md-select [(ngModel)]="equipo.estadios[0]" class="btn btn-primary select-form" placeholder="Estadio" name="estadio">
-              <md-option *ngFor="let estadio of estadios" [value]="estadio._id">
-                {{ estadio.nombre }}
-              </md-option>
-            </md-select>
-          <md-select [(ngModel)]="equipo.torneos[0]" class="btn btn-primary select-form" placeholder="Torneo" name="torneo">
-            <md-option *ngFor="let torneo of torneos" [value]="torneo._id">
-              {{ torneo.nombre }}
-            </md-option>
-          </md-select>
-            <a md-button (click)="altaEquipo()" class="submit-styles" routerLink="/principal">
-                Crear
-            </a>
-        </form>
+<div *ngIf="!modificacion; else ElseBlock">
+  <hr>
+  <h2 class="title">Nuevo Equipo</h2>
+  <hr>
+  <div class="container altura-cont">
+    <div class="row">
+      <form (ngSubmit)="altaEquipo()" name="altaEquipo" action="#">
+        <md-form-field class="form-inputs">
+        <input mdInput name="nombre" placeholder="Nombre del Equipo" type="text" [(ngModel)]="equipo.nombre" required>
+        </md-form-field>
+        <md-form-field class="form-inputs">
+        <input mdInput name="tecnico" placeholder="Nombre del Técnico" type="text" [(ngModel)]="equipo.tecnico" required>
+        </md-form-field>
+        <md-form-field class="form-inputs">
+        <input mdInput name="escudo" placeholder="URL del Escudo" type="text" [(ngModel)]="equipo.escudo" required>
+        </md-form-field>
+        <md-select [(ngModel)]="equipo.estadio" class="btn btn-primary select-form" placeholder="Estadio" name="estadio">
+        <md-option *ngFor="let estadio of estadios" [value]="estadio._id">
+        {{ estadio.nombre }}
+        </md-option>
+        </md-select>
+        <md-select [(ngModel)]="equipo.torneo" class="btn btn-primary select-form" placeholder="Torneo" name="torneo">
+        <md-option *ngFor="let torneo of torneos" [value]="torneo._id">
+        {{ torneo.nombre }}
+        </md-option>
+        </md-select>
+        <a md-button (click)="altaEquipo()" class="submit-styles" routerLink="/principal">
+        Crear
+        </a>
+      </form>
     </div>
   </div>
 </div>
+<ng-template #ElseBlock>
+  <hr>
+  <h2 class="title">Modificación de un Equipo</h2>
+  <hr>
+  <div class="container altura-cont">
+    <div class="row">
+      <form (ngSubmit)="altaEquipo()" name="altaEquipo" action="#">
+        <md-form-field class="form-inputs">
+        <input mdInput name="nombre" placeholder="Nombre del Equipo" type="text" [(ngModel)]="equipo.nombre" required>
+        </md-form-field>
+        <md-form-field class="form-inputs">
+        <input mdInput name="tecnico" placeholder="Nombre del Técnico" type="text" [(ngModel)]="equipo.tecnico" required>
+        </md-form-field>
+        <md-form-field class="form-inputs">
+        <input mdInput name="escudo" placeholder="URL del Escudo" type="text" [(ngModel)]="equipo.escudo" required>
+        </md-form-field>
+        <md-select [(ngModel)]="equipo.estadio" class="btn btn-primary select-form" placeholder="{{equipo.estadio.nombre}}" name="estadio">
+        <md-option *ngFor="let estadio of estadios" [value]="estadio._id">
+        {{ estadio.nombre }}
+        </md-option>
+        </md-select>
+        <md-select [(ngModel)]="equipo.torneo" class="btn btn-primary select-form" placeholder="{{equipo.torneo.nombre}}" name="torneo">
+        <md-option *ngFor="let torneo of torneos" [value]="torneo._id">
+        {{ torneo.nombre }}
+        </md-option>
+        </md-select>
+        <a md-button (click)="editarEquipo(equipo._id)" class="submit-styles" routerLink="/principal">
+        Modificar
+        </a>
+      </form>
+    </div>
+  </div>
+</ng-template>  

@@ -1221,7 +1221,7 @@ router.delete('/:id', (req, res, next) => {
         }
       }
       else {
-        res.send("No se puede borrar el equipo porque pertenece a un torneo y/o jugador");
+        res.json("No se puede borrar el equipo porque pertenece a un torneo/estadio/jugador");
       }
     } 
     else {

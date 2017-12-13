@@ -1,23 +1,46 @@
-<hr>
-<h2 class="title">Nuevo Torneo</h2>
-<hr>
-<div class="container altura-cont">
-  <div class="row">
-    <div>
-        <form (ngSubmit)="altaTorneo()" name="altaTorneo" action="#">
-            <md-form-field class="form-inputs">
+<div *ngIf="!modificacion; else ElseBlock">
+    <hr>
+    <h2 class="title">Nuevo Torneo</h2>
+    <hr>
+    <div class="container altura-cont">
+        <div class="row">
+            <form (ngSubmit)="altaTorneo()" name="altaTorneo" action="#">
+                <md-form-field class="form-inputs">
                 <input mdInput name="nombre" placeholder="Nombre del torneo" type="text" [(ngModel)]="torneo.nombre" required>
-            </md-form-field>
-            <md-form-field class="form-inputs">
-                <input mdInput name="logo" placeholder="URL Logo del torneo" type="text" [(ngModel)]="torneo.logo">
-            </md-form-field>
-            <md-form-field class="form-inputs">
-                <input mdInput name="trofeo" placeholder="URL Trofeo del torneo" type="text" [(ngModel)]="torneo.imagen_trofeo">
-            </md-form-field>
-            <a md-button (click)="altaTorneo()" class="submit-styles" routerLink="/principal">
+                </md-form-field>
+                <md-form-field class="form-inputs">
+                <input mdInput name="logo" placeholder="URL Logo del torneo" type="text" [(ngModel)]="torneo.logo" required>
+                </md-form-field>
+                <md-form-field class="form-inputs">
+                <input mdInput name="trofeo" placeholder="URL Trofeo del torneo" type="text" [(ngModel)]="torneo.imagen_trofeo" required>
+                </md-form-field>
+                <a md-button (click)="altaTorneo()" class="submit-styles" routerLink="/principal">
                 Crear
-            </a>
-        </form>
+                </a>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
+<ng-template #ElseBlock>
+    <hr>
+    <h2 class="title">Modificación de Torneo</h2>
+    <hr>
+    <div class="container altura-cont">
+        <div class="row">
+            <form (ngSubmit)="editarTorneo()" name="editTorneo" action="#">
+                <md-form-field class="form-inputs">
+                <input mdInput name="nombre" placeholder="Nombre del torneo" type="text" [(ngModel)]="torneo.nombre" required>
+                </md-form-field>
+                <md-form-field class="form-inputs">
+                <input mdInput name="logo" placeholder="URL Logo del torneo" type="text" [(ngModel)]="torneo.logo" required>
+                </md-form-field>
+                <md-form-field class="form-inputs">
+                <input mdInput name="trofeo" placeholder="URL Trofeo del torneo" type="text" [(ngModel)]="torneo.imagen_trofeo" required>
+                </md-form-field>
+                <a md-button (click)="editarTorneo()" class="submit-styles" routerLink="/principal">
+                Modificar
+                </a>
+            </form>
+        </div>
+    </div>
+</ng-template> 
