@@ -11,5 +11,5 @@ Para extender el trabajo práctico 2 se realiza lo siguiente:
 - Tabla de goleadores.
 - Tabla de tarjetas rojas.
 - Tabla de tarjetas amarillas.
-- Todos los ABM hacerlos desde el frontend en vez de Postman.
+- Los principales ABM hacerlos desde el frontend en vez de Postman.
 - Todo lo mencionado anteriormente será por Torneos.
