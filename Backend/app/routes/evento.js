@@ -56,11 +56,10 @@ router.post('/', (req, res, next) => {
       res.send(err);
     }
     else if (correcto != null) {
-      if(req.body.tiempo_ocurrencia <= 90 && req.body.tiempo_ocurrencia >= 0) {
+      if((req.body.tiempo_ocurrencia <= 90) && (req.body.tiempo_ocurrencia >= 0)) {
         var today = new Date();
-        today.setHours(today.getHours() - 3);
-        if (correcto.fecha_hora > (today.getTime() - (6300000)) &&
-        correcto.fecha_hora < today.getTime()) {
+        if (((correcto.fecha_hora) > (today.getTime() - (6300000))) &&
+        ((correcto.fecha_hora) < (today.getTime()))) {
           let tiempo_ocurrenciaNuevo = req.body.tiempo_ocurrencia;
           let partidoNuevo = req.body.partido;
           let equipoNuevo = null;
