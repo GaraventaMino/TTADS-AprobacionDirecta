@@ -27,8 +27,8 @@
     margin-bottom: 1%;
 }
 .logo {
-    width: 180px;
-    height: 180px;
+    width: 300px;
+    height: 300px;
 }
 .trofeo{
     width:100px;
@@ -45,8 +45,8 @@
     margin-bottom: 50px;
   }
 .escudo {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
 }
 .iconos {
     width: 20px;
@@ -56,4 +56,48 @@
 .separar {
     margin-top: 2%;
 }
-
+.overflow {
+    width: 210px;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.overflow-less {
+    width: 160px;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.versus-cartel {
+    text-align: center;
+    margin-top: 6%;
+}
+.equipo-cartel {
+    text-align: center;
+    margin-top: 8%;
+    margin-bottom: 10%;
+    color: black;
+}
+.equipo-cartel a{
+    color: black;
+}
+.escudo-equipo {
+    width: 53%;
+    height: 53%;
+    margin-left: 20%;
+}
+.ul-style {
+    list-style: none;
+    padding: 0;
+    height: 400px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.background-mid {
+    background-color: white;
+}
+.li-edited {
+    margin-bottom: 5%;
+}

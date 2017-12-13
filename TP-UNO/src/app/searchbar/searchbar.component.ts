@@ -14,7 +14,7 @@ import 'rxjs/add/operator/catch';
   styleUrls: ['./searchbar.component.css']
 })
 export class SearchbarComponent implements OnInit {
-  items: any;
+  items: any = [];
   torneos: any = [{
     nombre: '',
     logo: '',
@@ -26,14 +26,17 @@ export class SearchbarComponent implements OnInit {
     private http:Http) { }
 
   onSearchChange(searchValue:string){
+    this.items = []
     if(searchValue==""){
-      this.items=null;        //vacia la lista si no busca nada
+      this.items = [];        //vacia la lista si no busca nada
     }else{
       for(let torneo of this.torneos){
-        if(torneo.nombre.indexOf(searchValue)){
-          this.items.push(torneo);
-        }           
-        console.log(searchValue, torneo.nombre)
+        if(torneo.nombre.match(searchValue)){
+          if(!this.items.includes(torneo)) {
+            this.items.push(torneo);
+            console.log(searchValue, torneo.nombre, this.items)
+          }
+        }      
       }
     }
      
@@ -41,7 +44,7 @@ export class SearchbarComponent implements OnInit {
   
   onBlur(){
     setTimeout(()=>{   //Tiene timeout para que primero haga el routing al detalle, sino se vacian los items antes
-      this.items = null;
+      this.items = [];
     },300);
   }
 

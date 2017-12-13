@@ -654,7 +654,11 @@ router.get('/', (req, res, next) => {
 //GET ONE
 router.get('/:id', (req, res, next) => {
   Torneo.findOne({_id: req.params.id}).
-  populate('equipos').
+  populate( {
+    path: 'equipos',
+    populate: ({
+      path: 'estadio',
+    }),}).
   exec((err, result) => {
     if (err) {
       res.send(err);

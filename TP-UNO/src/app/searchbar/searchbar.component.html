@@ -3,7 +3,7 @@
         <input mdInput (input)="onSearchChange($event.target.value)" (blur)="onBlur()" placeholder="Buscar torneo">
     </md-form-field>
 </div>
-<div *ngIf="items" class="lista">      
+<div *ngIf="items[0]" class="lista">      
         <div *ngFor="let item of items; let i=index">
             <div *ngIf="i<5">
                 <img class='mini' src='{{item.logo}}' alt="">

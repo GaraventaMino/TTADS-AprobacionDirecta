@@ -88,5 +88,13 @@ export class TorneosService {
         return this.http.put(this.urlTorneoById.replace('{id}', id), torneo, options)
                             .map((res:Response) => res.json())
                             .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
-    }  
+    } 
+    deleteTorneo(id: any) : Observable<any> {
+        // ...using get request
+        return this.http.delete(this.urlTorneoById.replace('{id}', id))
+                        // ...and calling .json() on the response to return data
+                        .map((res:Response) => res.json()) 
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    } 
 }
