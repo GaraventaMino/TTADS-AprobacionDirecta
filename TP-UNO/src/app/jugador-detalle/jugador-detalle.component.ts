@@ -36,9 +36,8 @@ export class JugadorDetalleComponent implements OnInit {
   eliminarJugador(id: any) {
     this.jugadoresService.deleteJugador(id)
     .subscribe(
-        data => console.log("EXITO"),
-        error => console.log(error)
+        data => alert(data),
+        error => alert(error)
       );
-      alert("Jugador eliminado correctamente !");
   }
 }

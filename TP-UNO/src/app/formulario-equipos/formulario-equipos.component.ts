@@ -63,10 +63,9 @@ export class FormularioEquiposComponent implements OnInit {
     delete this.equipo._id;
     this.equiposService.editEquipo(id, this.equipo)
     .subscribe(
-        data => console.log("EXITO"),
-        error => console.log(error)
+        data => alert(data),
+        error => alert(error)
       );
-      alert("Equipo modificado correctamente !");
   }
 
 
@@ -76,10 +75,9 @@ export class FormularioEquiposComponent implements OnInit {
     else {
       this.equiposService.addEquipo(this.equipo)
                             .subscribe(
-                                data => console.log("EXITO"),
-                                error => console.log(error)
+                                data => alert(data),
+                                error => alert(error)
                               );
-                              alert("Equipo creado correctamente !");
     }
   }
 

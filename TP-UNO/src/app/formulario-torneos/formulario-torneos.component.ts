@@ -29,10 +29,9 @@ export class FormularioTorneosComponent implements OnInit {
     else {
       this.torneosService.addTorneo(this.torneo)
                             .subscribe(
-                                data => console.log("EXITO"),
-                                error => console.log(error)
+                                data => alert(data),
+                                error => alert(error)
                               );
-                              alert("Torneo creado con exito !")
     }
   }
   ngOnInit() {
@@ -62,10 +61,9 @@ export class FormularioTorneosComponent implements OnInit {
     console.log(this.torneo);
     this.torneosService.editTorneo(id, this.torneo)
     .subscribe(
-        data => console.log("EXITO"),
-        error => console.log(error)
+        data => alert(data),
+        error => alert(error)
       );
-      alert("Equipo modificado correctamente !");
   }
 
 }

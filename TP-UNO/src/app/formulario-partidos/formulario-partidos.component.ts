@@ -51,10 +51,9 @@ export class FormularioPartidosComponent implements OnInit {
     else {
       this.partidosService.addPartido(this.partido)
                             .subscribe(
-                                data => console.log("EXITO"),
-                                error => console.log(error)
+                                data => alert(data),
+                                error => alert(error)
                               );
-                              alert("Partido creado con éxito !")
     }
   }
 

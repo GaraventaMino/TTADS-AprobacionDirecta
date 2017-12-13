@@ -31,10 +31,9 @@ export class FormularioJugadoresComponent implements OnInit {
     else {
       this.jugadoresService.addJugador(this.jugador)
                             .subscribe(
-                                data => console.log("EXITO"),
-                                error => console.log(error)
+                                data => alert(data),
+                                error => alert(error)
                               );
-                              alert("Jugador creado con exito !")
     }
   }
 
@@ -69,10 +68,9 @@ export class FormularioJugadoresComponent implements OnInit {
     console.log(this.jugador);
     this.jugadoresService.editJugador(id, this.jugador)
     .subscribe(
-        data => console.log("EXITO"),
-        error => console.log(error)
+        data => alert(data),
+        error => alert(error)
       );
-      alert("Equipo modificado correctamente !");
   }
 
   loadEquipos() {
