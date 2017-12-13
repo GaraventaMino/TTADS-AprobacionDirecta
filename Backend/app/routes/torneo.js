@@ -729,12 +729,12 @@ router.delete('/:id', (req, res, next) => {
             res.send(err);
           }
           else {
-            res.send("Torneo eliminado con éxito");
+            res.json("Torneo eliminado con éxito");
           }
         });
       }
       else {
-        res.send("No se puede eliminar el torneo porque tiene partidos y/o equipos asignados");
+        res.json("No se puede eliminar el torneo porque tiene partidos y/o equipos asignados");
       }
     }
     else {

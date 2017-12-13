@@ -90,9 +90,7 @@ router.post('/', (req, res, next) => {
 
 //UPDATE
 router.put('/:id', (req, res, next) => {
-  Jugador.findOne({_id: req.params.id}).
-  populate('equipo').
-  exec((err, result) => {
+  Jugador.findOne({_id: req.params.id}, (err, result) => {
     if (err) {
       res.send(err);
     } 
@@ -101,7 +99,7 @@ router.put('/:id', (req, res, next) => {
       result.edad = req.body.edad || result.edad;
       result.imagen = req.body.imagen || result.imagen;
       if(req.body.equipo) {
-        if(req.body.equipo == result.equipo._id) {
+        if(req.body.equipo == result.equipo) {
           result.save((err) => {
             if(err) {
               res.send(err);
@@ -123,9 +121,12 @@ router.put('/:id', (req, res, next) => {
                 if(err) {
                   res.send(err);
                 }
-                else if (e != null) {
+                else if (e != null) {                  
                   result.equipo = req.body.equipo;
+
+                  //Borro el anterior
                   for(var i = 0; i < eq.jugadores.length; i++) {
+                    
                     if(eq.jugadores[i]._id.equals(result._id)) {
                       var removed = eq.jugadores.splice(i, 1);
                       eq.save((err) => {
@@ -160,7 +161,7 @@ router.put('/:id', (req, res, next) => {
               });              
             }
             else {
-              res.send("Error al intentar localizar el equipo actual del jugador");
+              res.send("Error al intentar localizar el equipo actual del jugador. NO DEBERIA PASAR ESTO");
             }
           });
         }        

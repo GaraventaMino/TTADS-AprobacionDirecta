@@ -996,99 +996,229 @@ router.delete('/:id', (req, res, next) => {
       res.send(err);
     }
     else if(result != null) {
-      if(result.torneo == null && result.estadio == null && result.jugadores.length == 0) {
-        Evento.find({}, 'equipo').
-        populate('equipo').
-        exec((err, eventos) => {
-          if(err){
-            res.send(err);
-          }
-          else if (eventos.length != 0) {
-            var continuar = 1;
-            for(var i = 0; i < eventos.length; i++) {
-              if(eventos[i].equipo._id == result._id) {
-                res.send("No se puede borrar el equipo porque se utiliza en un evento de algun partido");
-              }
-              else if(continuar == eventos.length) {
-                Partido.find({}, 'equipo_local equipo_visitante').
-                populate('equipo_local').
-                populate('equipo_visitante').
-                exec((err, partidos) => {
-                  if(err){
-                    res.send(err);
-                  }
-                  else if (partidos.length != 0) {
-                    var continuar2 = 1;
-                    for(var j = 0; j < partidos.length; j++) {
-                      if(partidos[j].equipo_local._id == result._id || 
-                      partidos[j].equipo_visitante._id == result._id) {
-                        res.send("No se puede borrar el equipo porque se utiliza en un partido");
-                      }
-                      else if (continuar2 == partidos.length) {
-                        result.remove((err) => {
-                          if(err) {
-                            res.send(err);
-                          }
-                          else {
-                            res.send("Equipo eliminado correctamente");
-                          }
-                        });
-                      }
-                      else {
-                        continuar2++;
-                      }
+      if(result.torneo == null && result.jugadores.length == 0) {
+        if(result.estadio == null) {
+          Evento.find({}, 'equipo').
+          populate('equipo').
+          exec((err, eventos) => {
+            if(err){
+              res.send(err);
+            }
+            else if (eventos.length != 0) {
+              var continuar = 1;
+              for(var i = 0; i < eventos.length; i++) {
+                if(eventos[i].equipo._id == result._id) {
+                  res.send("No se puede borrar el equipo porque se utiliza en un evento de algun partido");
+                }
+                else if(continuar == eventos.length) {
+                  Partido.find({}, 'equipo_local equipo_visitante').
+                  populate('equipo_local').
+                  populate('equipo_visitante').
+                  exec((err, partidos) => {
+                    if(err){
+                      res.send(err);
                     }
-                  }                  
-                });
-              }
-              else {
-                continuar++;
-              }
-            }            
-          }
-          else {
-            Partido.find({}, 'equipo_local equipo_visitante').
-            populate('equipo_local').
-            populate('equipo_visitante').
-            exec((err, partidos) => {
-              if(err){
-                res.send(err);
-              }
-              else if (partidos.length != 0) {
-                var continuar2 = 1;
-                for(var j = 0; j < partidos.length; j++) {
-                  if(partidos[j].equipo_local._id == result._id || 
-                  partidos[j].equipo_visitante._id == result._id) {
-                    res.send("No se puede borrar el equipo porque se utiliza en un partido");
-                  }
-                  else if (continuar2 == partidos.length) {
-                    result.remove((err) => {
-                      if(err) {
-                        res.send(err);
+                    else if (partidos.length != 0) {
+                      var continuar2 = 1;
+                      for(var j = 0; j < partidos.length; j++) {
+                        if(partidos[j].equipo_local._id == result._id || 
+                        partidos[j].equipo_visitante._id == result._id) {
+                          res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                        }
+                        else if (continuar2 == partidos.length) {
+                          result.remove((err) => {
+                            if(err) {
+                              res.send(err);
+                            }
+                            else {
+                              res.send("Equipo eliminado correctamente");
+                            }
+                          });
+                        }
+                        else {
+                          continuar2++;
+                        }
                       }
-                      else {
-                        res.send("Equipo eliminado correctamente");
-                      }
-                    });
-                  }
-                  else {
-                    continuar2++;
+                    }                  
+                  });
+                }
+                else {
+                  continuar++;
+                }
+              }            
+            }
+            else {
+              Partido.find({}, 'equipo_local equipo_visitante').
+              populate('equipo_local').
+              populate('equipo_visitante').
+              exec((err, partidos) => {
+                if(err){
+                  res.send(err);
+                }
+                else if (partidos.length != 0) {
+                  var continuar2 = 1;
+                  for(var j = 0; j < partidos.length; j++) {
+                    if(partidos[j].equipo_local._id == result._id || 
+                    partidos[j].equipo_visitante._id == result._id) {
+                      res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                    }
+                    else if (continuar2 == partidos.length) {
+                      result.remove((err) => {
+                        if(err) {
+                          res.send(err);
+                        }
+                        else {
+                          res.send("Equipo eliminado correctamente");
+                        }
+                      });
+                    }
+                    else {
+                      continuar2++;
+                    }
                   }
                 }
-              }
-              else {
-                result.remove((err) => {
-                  if(err) {
-                    res.send(err);
-                  }
-                  else {
-                    res.send("Equipo eliminado correctamente");
-                  }
-                });
-              }                  
-            });
-          }
-        });
+                else {
+                  result.remove((err) => {
+                    if(err) {
+                      res.send(err);
+                    }
+                    else {
+                      res.send("Equipo eliminado correctamente");
+                    }
+                  });
+                }                  
+              });
+            }
+          });
+        }
+        else {
+          Estadio.findOne({_id: result.estadio._id}, (err, es) => {
+            if(err) {
+              res.send(err);
+            }
+            else if(es != null) {
+              Evento.find({}, 'equipo').
+              populate('equipo').
+              exec((err, eventos) => {
+                if(err){
+                  res.send(err);
+                }
+                else if (eventos.length != 0) {
+                  var continuar = 1;
+                  for(var i = 0; i < eventos.length; i++) {
+                    if(eventos[i].equipo._id == result._id) {
+                      res.send("No se puede borrar el equipo porque se utiliza en un evento de algun partido");
+                    }
+                    else if(continuar == eventos.length) {
+                      Partido.find({}, 'equipo_local equipo_visitante').
+                      populate('equipo_local').
+                      populate('equipo_visitante').
+                      exec((err, partidos) => {
+                        if(err){
+                          res.send(err);
+                        }
+                        else if (partidos.length != 0) {
+                          var continuar2 = 1;
+                          for(var j = 0; j < partidos.length; j++) {
+                            if(partidos[j].equipo_local._id == result._id || 
+                            partidos[j].equipo_visitante._id == result._id) {
+                              res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                            }
+                            else if (continuar2 == partidos.length) {
+                              es.equipo = null;
+                              es.save((err) => {
+                                if(err) {
+                                  res.send(err);
+                                }
+                                else {
+                                  result.remove((err) => {
+                                    if(err) {
+                                      res.send(err);
+                                    }
+                                    else {
+                                      res.send("Equipo eliminado correctamente(tenia estadio)");
+                                    }
+                                  });
+                                }
+                              });                              
+                            }
+                            else {
+                              continuar2++;
+                            }
+                          }
+                        }                  
+                      });
+                    }
+                    else {
+                      continuar++;
+                    }
+                  }            
+                }
+                else {
+                  Partido.find({}, 'equipo_local equipo_visitante').
+                  populate('equipo_local').
+                  populate('equipo_visitante').
+                  exec((err, partidos) => {
+                    if(err){
+                      res.send(err);
+                    }
+                    else if (partidos.length != 0) {
+                      var continuar2 = 1;
+                      for(var j = 0; j < partidos.length; j++) {
+                        if(partidos[j].equipo_local._id == result._id || 
+                        partidos[j].equipo_visitante._id == result._id) {
+                          res.send("No se puede borrar el equipo porque se utiliza en un partido");
+                        }
+                        else if (continuar2 == partidos.length) {
+                          es.equipo = null;
+                          es.save((err) => {
+                            if(err) {
+                              res.send(err);
+                            }
+                            else {
+                              result.remove((err) => {
+                                if(err) {
+                                  res.send(err);
+                                }
+                                else {
+                                  res.send("Equipo eliminado correctamente(tenia estadio)");
+                                }
+                              });
+                            }
+                          });
+                        }
+                        else {
+                          continuar2++;
+                        }
+                      }
+                    }
+                    else {
+                      es.equipo = null;
+                      es.save((err) => {
+                        if(err) {
+                          res.send(err);
+                        }
+                        else {
+                          result.remove((err) => {
+                            if(err) {
+                              res.send(err);
+                            }
+                            else {
+                              res.send("Equipo eliminado correctamente(tenia estadio)");
+                            }
+                          });
+                        }
+                      });
+                    }                  
+                  });
+                }
+              });
+            }
+            else {
+              res.send("Error al buscar el estadio del equipo. NO DEBERIA PASAR ESTO");
+            }
+          });
+        }
       }
       else {
         res.json("No se puede borrar el equipo porque pertenece a un torneo/estadio/jugador");
