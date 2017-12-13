@@ -6,8 +6,7 @@ var router=require('express').Router()
 
 //GET LIBRES
 router.get('/libres', (req, res, next) => {
-  Estadio.find().
-  where('equipo' == null). //CHEQUEAR ESTO
+  Estadio.find({'equipo': null}).
   populate('equipo').
   exec((err, result) => {
     if (err) {
